@@ -1,0 +1,29 @@
+.dashboard {
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  flex: 1;
+}
+
+.dashboard-header h1 {
+  margin: 0;
+}
+
+.dashboard-header .today {
+  margin-top: 4px;
+  color: var(--text);
+}
+
+.widget-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  align-items: start;
+}
+
+@media (max-width: 700px) {
+  .dashboard {
+    padding: 20px;
+  }
+}
