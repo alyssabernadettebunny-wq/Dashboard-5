@@ -110,11 +110,7 @@ function App() {
               <div className="header-left">
                 <div className="illustration-slot avatar-slot">character illustration</div>
                 <div className="greeting-block">
-                  <h1>
-                    Good day,
-                    <br />
-                    Alyssa! ♡
-                  </h1>
+                  <img className="greeting-banner" src="/Dashboard-5/images/greeting-banner.png" alt="Good morning, Alyssa!" />
                   <span className="affirmation-pill">{todaysAffirmation()}</span>
                 </div>
               </div>

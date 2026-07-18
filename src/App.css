@@ -194,6 +194,13 @@
   gap: 14px;
 }
 
+.greeting-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
 .illustration-slot {
   display: flex;
   align-items: center;
@@ -213,12 +220,10 @@
   height: 76px;
 }
 
-.greeting-block h1 {
-  font-family: var(--font-script);
-  font-size: 34px;
-  font-weight: 700;
-  color: var(--purple-deep);
-  margin: 0 0 4px;
+.greeting-banner {
+  height: 56px;
+  width: auto;
+  display: block;
 }
 
 .affirmation-pill {
