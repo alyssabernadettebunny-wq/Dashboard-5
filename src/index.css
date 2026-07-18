@@ -1,3 +1,19 @@
+@font-face {
+  font-family: 'Charmonman';
+  src: url('/Dashboard-5/fonts/Charmonman-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Charmonman';
+  src: url('/Dashboard-5/fonts/Charmonman-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   /* background */
   --bg-gradient-start: #fdf0f6;
@@ -37,7 +53,7 @@
   --radius-pill: 999px;
   --radius-badge: 14px;
 
-  --font-script: 'Parisienne', cursive;
+  --font-script: 'Charmonman', cursive;
   --font-ui: 'Quicksand', sans-serif;
 
   font: 14px/145% var(--font-ui);
