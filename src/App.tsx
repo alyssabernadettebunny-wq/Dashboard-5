@@ -32,6 +32,35 @@ function todaysAffirmation() {
   return AFFIRMATIONS[dayOfYear % AFFIRMATIONS.length]
 }
 
+const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+function formatDate(d: Date) {
+  return `${WEEKDAYS[d.getDay()]}, ${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`
+}
+
+function formatTime(d: Date) {
+  let hours = d.getHours()
+  const minutes = d.getMinutes().toString().padStart(2, '0')
+  const meridiem = hours >= 12 ? 'PM' : 'AM'
+  hours = hours % 12
+  if (hours === 0) hours = 12
+  return { value: `${hours}:${minutes}`, meridiem }
+}
+
+function weatherIcon(condition: string) {
+  const c = condition.toLowerCase()
+  if (c.includes('storm') || c.includes('thunder')) return '⛈️'
+  if (c.includes('snow')) return '❄️'
+  if (c.includes('rain') || c.includes('shower') || c.includes('drizzle')) return '🌧️'
+  if (c.includes('partly') || c.includes('mostly sunny') || c.includes('mostly cloudy')) return '⛅'
+  if (c.includes('cloud') || c.includes('overcast')) return '☁️'
+  if (c.includes('sun') || c.includes('clear')) return '☀️'
+  if (c.includes('wind')) return '🌬️'
+  if (c.includes('fog') || c.includes('mist') || c.includes('haze')) return '🌫️'
+  return '🌤️'
+}
+
 function App() {
   const [page, setPage] = useState('home')
   const [clock, setClock] = useState(() => new Date())
@@ -42,10 +71,8 @@ function App() {
     return () => clearInterval(id)
   }, [])
 
-  const today = clock.toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })
-  const timeParts = clock.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }).split(' ')
-  const timeValue = timeParts[0]
-  const meridiem = timeParts[1] ?? ''
+  const today = formatDate(clock)
+  const { value: timeValue, meridiem } = formatTime(clock)
 
   return (
     <div className="page-wrap">
@@ -108,7 +135,7 @@ function App() {
                   <div className="date">{today}</div>
                   {(weather.temp || weather.condition) && (
                     <div className="weather-row">
-                      <span>☁️</span>
+                      <span>{weatherIcon(weather.condition)}</span>
                       {weather.temp && <span>{weather.temp}</span>}
                       {weather.condition && <span>{weather.condition}</span>}
                     </div>
