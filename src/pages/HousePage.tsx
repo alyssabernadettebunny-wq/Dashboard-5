@@ -1,8 +1,10 @@
 import ChoreRhythm from '../widgets/ChoreRhythm'
 import ResetTimer from '../widgets/ResetTimer'
-import ChecklistCard from '../widgets/ChecklistCard'
 import TodayHomeReset from '../widgets/TodayHomeReset'
 import RoomCard from '../widgets/RoomCard'
+import KitchenCard from '../widgets/KitchenCard'
+import LaundryCard from '../widgets/LaundryCard'
+import ShoppingList from '../widgets/ShoppingList'
 
 export default function HousePage() {
   return (
@@ -12,27 +14,8 @@ export default function HousePage() {
         <TodayHomeReset />
         <ChoreRhythm />
         <ResetTimer />
-        <RoomCard
-          number={2}
-          icon="🍳"
-          title="Kitchen"
-          storageKey="house.room.kitchen"
-          placeholder="Add a kitchen task..."
-          defaultItems={['Dishes', 'Wipe counters', 'Empty trash', 'Fridge check', 'Meal prep']}
-          infoLabel="Meal plan"
-          infoIcon="🍓"
-          infoStorageKey="house.info.kitchen"
-          infoPlaceholder="Chicken bowl, salad, fruit"
-        />
-        <RoomCard
-          number={3}
-          icon="🧺"
-          title="Laundry"
-          storageKey="house.room.laundry"
-          placeholder="Add a laundry task..."
-          defaultItems={['1 Load wash', 'Dry / fluff', 'Fold', 'Put away', 'Bedding refresh']}
-          supply={{ label: 'Detergent', storageKey: 'house.supply.detergent', max: 100, unit: '%', defaultValue: 80 }}
-        />
+        <KitchenCard />
+        <LaundryCard />
         <RoomCard
           number={4}
           icon="🛋️"
@@ -58,7 +41,7 @@ export default function HousePage() {
           defaultItems={['Wipe sink', 'Toilet clean', 'Restock', 'Towels fresh', 'Empty bin']}
           supply={{ label: 'Toilet paper', storageKey: 'house.supply.toiletpaper', max: 10, unit: ' rolls', defaultValue: 6 }}
         />
-        <ChecklistCard icon="🛒" title="Supplies to Buy" storageKey="house.supplies" placeholder="Add a supply..." />
+        <ShoppingList />
       </div>
     </>
   )

@@ -811,3 +811,199 @@
   font-weight: 700;
   text-align: center;
 }
+
+/* card divider */
+.card-divider {
+  border: none;
+  border-top: 1.5px dashed var(--pink-line);
+  margin: 0;
+  opacity: 0.7;
+}
+
+/* two-column checklist with custom pink circular checkbox */
+.two-col-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 16px;
+}
+
+.pink-check-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--text-body);
+}
+
+.pink-check-item.done span.item-text {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+
+.pink-checkbox {
+  width: 17px;
+  height: 17px;
+  min-width: 17px;
+  border-radius: 50%;
+  border: 1.5px solid var(--pink-accent);
+  background: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  color: white;
+  font-size: 10px;
+}
+
+.pink-checkbox.checked {
+  background: var(--pink-accent);
+}
+
+/* kitchen quick status */
+.status-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 0;
+  border-bottom: 1px dotted var(--border-hairline);
+}
+
+.status-row:last-child {
+  border-bottom: none;
+}
+
+.status-icon {
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.status-label {
+  flex: 1;
+  min-width: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-heading);
+}
+
+.status-pill {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.status-pill input {
+  width: 100px;
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: 3px 10px;
+  font: inherit;
+  font-size: 10.5px;
+  font-weight: 700;
+  text-align: center;
+  color: var(--text-heading);
+}
+
+.status-pill.peach input {
+  background: #ffe4c4;
+}
+
+.status-pill.green input {
+  background: #d4f0da;
+}
+
+.status-pill.pink input {
+  background: var(--pink-pale);
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid var(--border-hairline);
+  cursor: pointer;
+  padding: 0;
+}
+
+.status-dot.peach {
+  background: #ffe4c4;
+}
+
+.status-dot.green {
+  background: #d4f0da;
+}
+
+.status-dot.pink {
+  background: var(--pink-pale);
+}
+
+/* laundry current load */
+.load-status {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--purple-heading);
+}
+
+.load-label-input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  font-size: 11.5px;
+  color: var(--text-muted);
+  padding: 0;
+  margin-bottom: 4px;
+}
+
+.load-label-input:focus {
+  outline: none;
+}
+
+.load-remaining {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin: 4px 0 8px;
+}
+
+/* shopping list */
+.shopping-cols {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.shopping-col h4 {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+  color: var(--purple-heading);
+  margin: 0 0 6px;
+}
+
+.shopping-add {
+  display: flex;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.shopping-add input {
+  flex: 1;
+  min-width: 0;
+  padding: 4px 8px;
+  border-radius: 8px;
+  border: 1px solid var(--border-hairline);
+  background: var(--card-bg-tint);
+  font: inherit;
+  font-size: 10.5px;
+}
+
+.shopping-add button {
+  border: none;
+  background: var(--pink-pale);
+  color: var(--purple-heading);
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  width: 22px;
+  cursor: pointer;
+}

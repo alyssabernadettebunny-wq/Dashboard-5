@@ -8,10 +8,25 @@ interface Item {
   done: boolean
 }
 
-const ZONES = ['Kitchen', 'Bathroom', 'Living Room', 'Bedrooms', 'Laundry']
+const ZONES = ['Kitchen', 'Bathroom', 'Living Room', 'Bedroom', 'Laundry']
+
+const DEFAULT_ITEMS = [
+  'Make beds',
+  'Tidy living room',
+  'Clear kitchen counters',
+  'Start a load of laundry',
+  'Wipe bathroom surfaces',
+  'Take out trash',
+  'Vacuum high-traffic areas',
+  'Water plants',
+  '5-minute evening reset',
+]
 
 export default function TodayHomeReset() {
-  const [items, setItems] = useLocalStorage<Item[]>('house.today.priorities', [])
+  const [items, setItems] = useLocalStorage<Item[]>(
+    'house.today.priorities',
+    DEFAULT_ITEMS.map((text) => ({ id: crypto.randomUUID(), text, done: false })),
+  )
   const [text, setText] = useState('')
   const [zone, setZone] = useLocalStorage('house.today.zone', ZONES[0])
 
@@ -30,23 +45,34 @@ export default function TodayHomeReset() {
     setItems(items.filter((i) => i.id !== id))
   }
 
+  const doneCount = items.filter((i) => i.done).length
+  const mid = Math.ceil(items.length / 2)
+  const colA = items.slice(0, mid)
+  const colB = items.slice(mid)
+
   return (
-    <Card icon="🎀" title="1. Today's Home Reset">
-      <p className="card-subtitle">Top priorities</p>
-      <div className="room-body">
-        <ul className="c-list" style={{ flex: 1 }}>
-          {items.length === 0 && <li className="c-empty">Nothing prioritized yet</li>}
-          {items.map((item) => (
-            <li key={item.id} className={`c-list-item ${item.done ? 'struck' : ''}`}>
-              <input type="checkbox" checked={item.done} onChange={() => toggleItem(item.id)} />
-              <span>{item.text}</span>
-              <button className="remove" onClick={() => removeItem(item.id)} aria-label="Remove item">
-                ×
-              </button>
-            </li>
-          ))}
-        </ul>
-        <div className="sticky-note">You got this! ♡</div>
+    <Card icon="✨" title="1. Today's Home Reset" meta={items.length ? `${doneCount} / ${items.length} done` : undefined}>
+      <hr className="card-divider" />
+      <div className="two-col-list">
+        {[colA, colB].map((col, ci) => (
+          <ul key={ci} className="c-list">
+            {col.map((item) => (
+              <li key={item.id} className={`pink-check-item ${item.done ? 'done' : ''}`}>
+                <button
+                  className={`pink-checkbox ${item.done ? 'checked' : ''}`}
+                  onClick={() => toggleItem(item.id)}
+                  aria-label="Toggle done"
+                >
+                  {item.done && '✓'}
+                </button>
+                <span className="item-text">{item.text}</span>
+                <button className="remove" onClick={() => removeItem(item.id)} aria-label="Remove item">
+                  ×
+                </button>
+              </li>
+            ))}
+          </ul>
+        ))}
       </div>
       <div className="c-input-row">
         <input
