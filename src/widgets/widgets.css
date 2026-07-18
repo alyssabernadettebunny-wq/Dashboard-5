@@ -1,10 +1,11 @@
 .widget {
   position: relative;
-  background: var(--card-bg);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background-color: var(--card-bg);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cg fill='%23f3c6e8' opacity='0.6'%3E%3Cpath d='M24 8 L26.5 18 L36 20 L26.5 22 L24 32 L21.5 22 L12 20 L21.5 18 Z'/%3E%3C/g%3E%3Cg fill='%23ddc7fb' opacity='0.55'%3E%3Cpath d='M122 66 L123.5 72 L129 73.5 L123.5 75 L122 81 L120.5 75 L115 73.5 L120.5 72 Z'/%3E%3C/g%3E%3Cg fill='%238fd3f7' opacity='0.5'%3E%3Cpath d='M66 118 L67 122 L71 123 L67 124 L66 128 L65 124 L61 123 L65 122 Z'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 160px 160px;
   border: 1.5px solid var(--border);
-  border-radius: 18px;
+  border-radius: 20px;
   padding: 20px;
   text-align: left;
   display: flex;
@@ -14,20 +15,17 @@
   overflow: visible;
 }
 
-.widget::after {
-  content: '♡';
-  position: absolute;
-  bottom: 10px;
-  right: 14px;
-  color: var(--pink-deep);
-  opacity: 0.25;
-  font-size: 16px;
-  pointer-events: none;
-}
-
 .widget h2 {
   margin: 0;
   color: var(--accent);
+}
+
+.widget-count {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent-2);
+  white-space: nowrap;
+  margin-left: auto;
 }
 
 .icon-badge {
@@ -38,7 +36,7 @@
   height: 30px;
   border-radius: 10px;
   font-size: 15px;
-  background: linear-gradient(150deg, var(--pink) 0%, var(--pink-deep) 100%);
+  background: linear-gradient(150deg, var(--peach) 0%, var(--peach-deep) 100%);
   flex-shrink: 0;
 }
 
@@ -51,7 +49,7 @@
 }
 
 .widget:nth-of-type(4n) .icon-badge {
-  background: linear-gradient(150deg, var(--mint) 0%, #7fe0b3 100%);
+  background: linear-gradient(150deg, var(--pink) 0%, var(--pink-deep) 100%);
 }
 
 .subcard {
@@ -148,7 +146,7 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
 }
 
 .task-list li,
@@ -161,8 +159,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  padding: 8px 4px;
-  border-bottom: 1px solid var(--border);
+  padding: 2px 2px;
 }
 
 .task-list label,

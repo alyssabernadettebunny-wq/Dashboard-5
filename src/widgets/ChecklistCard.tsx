@@ -37,9 +37,18 @@ export default function ChecklistCard({
     setItems(items.filter((i) => i.id !== id))
   }
 
+  const doneCount = items.filter((i) => i.done).length
+
   return (
     <section className="widget">
-      <h2><span className="icon-badge">{icon}</span> {title}</h2>
+      <h2>
+        <span className="icon-badge">{icon}</span> {title}
+        {items.length > 0 && (
+          <span className="widget-count">
+            {doneCount} / {items.length}
+          </span>
+        )}
+      </h2>
       <div className="task-input">
         <input
           type="text"

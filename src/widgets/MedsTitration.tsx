@@ -93,7 +93,14 @@ export default function MedsTitration() {
 
   return (
     <section className="widget">
-      <h2><span className="icon-badge">💊</span> Meds & Titration</h2>
+      <h2>
+        <span className="icon-badge">💊</span> Meds & Titration
+        {meds.length > 0 && (
+          <span className="widget-count">
+            {meds.filter((m) => m.takenToday).length} / {meds.length}
+          </span>
+        )}
+      </h2>
 
       <div className="subcard">
         <h3>Daily Meds</h3>

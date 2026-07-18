@@ -12,12 +12,14 @@
   --text: #8a7a92;
   --text-h: #6b4a86;
   --bg: #fdf3fa;
-  --card-bg: rgba(255, 255, 255, 0.78);
-  --border: #f0b8de;
+  --card-bg: #fdf9f0;
+  --border: #ddc9f0;
   --accent: #a06bd6;
   --accent-2: #c9679e;
   --accent-bg: #fbe6f6;
-  --accent-border: #f0b8de;
+  --accent-border: #ddc9f0;
+  --peach: #ffcfa8;
+  --peach-deep: #ffab6b;
   --shadow: rgba(192, 130, 200, 0.18) 0 8px 20px -8px, rgba(192, 130, 200, 0.12) 0 2px 6px -3px;
 
   --sans: 'Quicksand', system-ui, 'Segoe UI', Roboto, sans-serif;
@@ -137,15 +139,17 @@ input[type='checkbox'] {
   min-width: 18px;
   border: 2px solid var(--accent-border);
   border-radius: 6px;
-  background: var(--card-bg);
+  background: white;
   cursor: pointer;
   position: relative;
   display: inline-block;
+  transition: border-radius 0.15s ease;
 }
 
 input[type='checkbox']:checked {
   background: var(--green-check);
   border-color: var(--green-check);
+  border-radius: 50%;
 }
 
 input[type='checkbox']:checked::after {
