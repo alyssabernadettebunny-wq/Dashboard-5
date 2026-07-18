@@ -699,8 +699,9 @@
 }
 
 .room-illustration {
-  width: 64px;
-  height: 64px;
+  width: 108px;
+  height: 92px;
+  border-radius: 16px;
 }
 
 .sticky-note {
@@ -775,4 +776,38 @@
   font: inherit;
   font-weight: 700;
   font-size: 11.5px;
+}
+
+.supply-strip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--pink-pale);
+  border-radius: 12px;
+  padding: 8px 12px;
+}
+
+.supply-strip .info-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--purple-heading);
+  white-space: nowrap;
+}
+
+.supply-track {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.supply-input {
+  width: 42px;
+  padding: 2px 4px;
+  border-radius: 8px;
+  border: 1px solid var(--border-hairline);
+  background: var(--card-bg);
+  color: var(--purple-heading);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
 }
