@@ -1,34 +1,53 @@
 .widget {
-  background: var(--bg);
+  background: var(--card-bg);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 16px;
   padding: 20px;
   text-align: left;
   display: flex;
   flex-direction: column;
   gap: 12px;
+  box-shadow: var(--shadow);
 }
 
 .widget h2 {
   margin: 0;
 }
 
-.task-input,
-.link-input {
+.subcard {
+  background: var(--accent-bg);
+  border-radius: 12px;
+  padding: 14px;
   display: flex;
+  flex-direction: column;
   gap: 8px;
 }
 
-.link-input {
+.subcard h3 {
+  color: var(--text-h);
+}
+
+/* Inputs & buttons */
+.task-input,
+.link-input,
+.reminder-input,
+.weather-input,
+.youtube-input {
+  display: flex;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
 .task-input input,
-.link-input input {
+.link-input input,
+.reminder-input input,
+.weather-input input,
+.youtube-input input,
+.youtube-input select {
   flex: 1;
   min-width: 0;
   padding: 8px 10px;
-  border-radius: 6px;
+  border-radius: 8px;
   border: 1px solid var(--border);
   background: var(--bg);
   color: var(--text-h);
@@ -36,18 +55,29 @@
 }
 
 .task-input button,
-.link-input button {
+.link-input button,
+.reminder-input button,
+.youtube-input button,
+.fun-fact button,
+.titration-controls button {
   padding: 8px 14px;
-  border-radius: 6px;
+  border-radius: 8px;
   border: none;
   background: var(--accent);
   color: white;
   cursor: pointer;
   font: inherit;
+  white-space: nowrap;
 }
 
+/* Lists */
 .task-list,
-.link-list {
+.link-list,
+.med-list,
+.titration-list,
+.capture-list,
+.reminder-list,
+.feed-list {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -57,15 +87,21 @@
 }
 
 .task-list li,
-.link-list li {
+.link-list li,
+.med-list li,
+.capture-list li,
+.reminder-list li,
+.feed-list li {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
   padding: 6px 0;
+  border-bottom: 1px solid var(--border);
 }
 
-.task-list label {
+.task-list label,
+.med-list label {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -79,9 +115,15 @@
 }
 
 .task-list .empty,
-.link-list .empty {
+.link-list .empty,
+.med-list .empty,
+.titration-list .empty,
+.capture-list .empty,
+.reminder-list .empty,
+.feed-list .empty {
   opacity: 0.6;
   font-style: italic;
+  border-bottom: none;
 }
 
 .remove {
@@ -103,12 +145,282 @@
   min-height: 160px;
   resize: vertical;
   padding: 10px;
-  border-radius: 6px;
+  border-radius: 8px;
   border: 1px solid var(--border);
   background: var(--bg);
   color: var(--text-h);
   font: inherit;
   box-sizing: border-box;
+}
+
+.notes-area.small {
+  min-height: 70px;
+}
+
+/* Status board */
+.status-columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.status-group h3 {
+  color: var(--accent);
+}
+
+.person-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.person-name {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  color: var(--text-h);
+  font: inherit;
+  padding: 4px 0;
+}
+
+.person-row select {
+  padding: 4px 8px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-h);
+  font: inherit;
+}
+
+/* Mood picker */
+.mood-picker {
+  display: flex;
+  gap: 8px;
+}
+
+.mood-btn {
+  font-size: 22px;
+  background: var(--bg);
+  border: 2px solid transparent;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  cursor: pointer;
+}
+
+.mood-btn.selected {
+  border-color: var(--accent);
+}
+
+.slider-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.slider-row input[type='range'] {
+  accent-color: var(--accent);
+}
+
+/* Hydration */
+.hydration .cups {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.cup {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 18px;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  opacity: 0.35;
+}
+
+.cup.filled {
+  opacity: 1;
+  background: var(--accent-bg);
+  border-color: var(--accent);
+}
+
+.hydration-count {
+  margin-top: 6px;
+  font-size: 14px;
+}
+
+.protein-tracker label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+}
+
+.protein-tracker input[type='number'] {
+  width: 60px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-h);
+  font: inherit;
+}
+
+.progress-bar {
+  margin-top: 6px;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--accent-bg);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.3s;
+}
+
+/* Meds */
+.refill-toggle {
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.titration-item {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+}
+
+.titration-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.titration-dose {
+  font-size: 14px;
+}
+
+.titration-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 13px;
+}
+
+.titration-controls input[type='date'] {
+  padding: 4px 6px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-h);
+}
+
+.titration-history summary {
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--accent);
+}
+
+.titration-history ul {
+  margin: 4px 0 0;
+  padding-left: 18px;
+  font-size: 12px;
+}
+
+/* Dogs */
+.dog-checks {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: 14px;
+}
+
+.dog-checks label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tummy-flag {
+  color: #c96b6b;
+}
+
+.dog-notes {
+  width: 100%;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-h);
+  font: inherit;
+  box-sizing: border-box;
+}
+
+.fun-fact {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: var(--accent-bg);
+  border-radius: 12px;
+  padding: 12px;
+  font-size: 13px;
+}
+
+/* Quick capture */
+.capture-time {
+  font-size: 12px;
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+.capture-text {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Reminders */
+.reminder-date {
+  font-size: 12px;
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+/* World feed */
+.feed-note {
+  font-size: 13px;
+  opacity: 0.75;
+  font-style: italic;
+}
+
+.feed-columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.youtube-input {
+  flex-direction: column;
+}
+
+.youtube-item {
+  align-items: flex-start;
+}
+
+.youtube-summary {
+  font-size: 12px;
+  opacity: 0.8;
+  margin-top: 2px;
 }
 
 .link-list a {
