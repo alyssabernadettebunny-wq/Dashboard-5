@@ -7,6 +7,7 @@ import QuickCapture from '../widgets/QuickCapture'
 import ChecklistCard from '../widgets/ChecklistCard'
 import Reminders from '../widgets/Reminders'
 import WorldFeed from '../widgets/WorldFeed'
+import WaitingMode from '../widgets/WaitingMode'
 
 export default function HomePage() {
   return (
@@ -20,6 +21,7 @@ export default function HomePage() {
       <ChecklistCard icon="⭐" title="My Tasks" storageKey="dashboard.tasks.me" placeholder="Add a task..." />
       <ChecklistCard icon="🎀" title="Girls' To-Dos" storageKey="dashboard.tasks.girls" placeholder="Add something for the girls..." />
       <Reminders />
+      <WaitingMode />
       <WorldFeed />
     </div>
   )

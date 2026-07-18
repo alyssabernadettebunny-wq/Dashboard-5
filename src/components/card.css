@@ -401,3 +401,44 @@
   opacity: 1;
   color: var(--pink-accent);
 }
+
+/* waiting mode / parking lot */
+.waiting-subtitle {
+  font-size: 11.5px;
+  font-style: italic;
+  color: var(--text-muted);
+  margin: -4px 0 0;
+}
+
+.waiting-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.waiting-item {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+}
+
+.waiting-bullet {
+  color: var(--pink-accent);
+  font-size: 14px;
+  line-height: 1;
+}
+
+.waiting-text {
+  flex: 1;
+  min-width: 0;
+  font-size: 12.5px;
+  color: var(--text-body);
+}
+
+.waiting-btn {
+  align-self: stretch;
+  text-align: center;
+}
