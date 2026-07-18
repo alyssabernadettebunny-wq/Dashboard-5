@@ -473,7 +473,7 @@
 .mini-cal-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 2px;
+  gap: 3px;
 }
 
 .mini-cal-weekday {
@@ -485,16 +485,49 @@
 }
 
 .mini-cal-day {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 22px;
+  height: 24px;
   font-size: 10.5px;
+  font-family: inherit;
   color: var(--text-body);
-  border-radius: 50%;
+  background: var(--card-bg-tint);
+  border: 1px solid var(--border-hairline);
+  border-radius: 7px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.mini-cal-day:hover {
+  border-color: var(--pink-line);
+  background: var(--pink-pale);
+}
+
+.mini-cal-day.empty {
+  border: none;
+  background: none;
+  cursor: default;
 }
 
 .mini-cal-day.today {
   font-size: 13px;
   background: var(--pink-pale);
+  border-color: var(--pink-accent);
+}
+
+.mini-cal-day.marked {
+  background: var(--purple-pill);
+  border-color: var(--purple-heading);
+}
+
+.mini-cal-dot {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--pink-accent);
 }

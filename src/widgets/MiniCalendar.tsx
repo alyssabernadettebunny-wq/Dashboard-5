@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useLocalStorage } from '../hooks/useLocalStorage'
 import Card from '../components/Card'
 
 const WEEKDAY_LABELS = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
@@ -11,9 +12,14 @@ function isSameDay(a: Date, b: Date) {
   return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate()
 }
 
+function dateKey(d: Date) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
 export default function MiniCalendar() {
   const today = new Date()
   const [viewDate, setViewDate] = useState(new Date(today.getFullYear(), today.getMonth(), 1))
+  const [marks, setMarks] = useLocalStorage<Record<string, string>>('dashboard.calendarMarks', {})
 
   const year = viewDate.getFullYear()
   const month = viewDate.getMonth()
@@ -28,6 +34,18 @@ export default function MiniCalendar() {
 
   function changeMonth(delta: number) {
     setViewDate(new Date(year, month + delta, 1))
+  }
+
+  function markDay(cellDate: Date) {
+    const key = dateKey(cellDate)
+    const existing = marks[key] ?? ''
+    const label = window.prompt('What\'s marked on this day? (leave blank to remove)', existing)
+    if (label === null) return
+    const trimmed = label.trim()
+    const next = { ...marks }
+    if (trimmed) next[key] = trimmed
+    else delete next[key]
+    setMarks(next)
   }
 
   return (
@@ -50,12 +68,21 @@ export default function MiniCalendar() {
           </span>
         ))}
         {cells.map((day, i) => {
-          const cellDate = day ? new Date(year, month, day) : null
-          const isToday = cellDate && isSameDay(cellDate, today)
+          if (!day) return <span key={i} className="mini-cal-day empty" />
+          const cellDate = new Date(year, month, day)
+          const isToday = isSameDay(cellDate, today)
+          const key = dateKey(cellDate)
+          const mark = marks[key]
           return (
-            <span key={i} className={`mini-cal-day ${isToday ? 'today' : ''}`}>
-              {isToday ? '🌸' : day ?? ''}
-            </span>
+            <button
+              key={i}
+              className={`mini-cal-day ${isToday ? 'today' : ''} ${mark ? 'marked' : ''}`}
+              onClick={() => markDay(cellDate)}
+              title={mark || 'Click to mark this day'}
+            >
+              {isToday ? '🌸' : day}
+              {mark && <span className="mini-cal-dot" />}
+            </button>
           )
         })}
       </div>
