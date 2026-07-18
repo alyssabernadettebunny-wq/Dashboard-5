@@ -2,14 +2,14 @@ import { useState } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import Card from '../components/Card'
 
-interface GroceryItem {
+export interface GroceryItem {
   id: string
   text: string
   done: boolean
   starred: boolean
 }
 
-const DEFAULT_ITEMS: Omit<GroceryItem, 'id'>[] = [
+export const DEFAULT_GROCERY_ITEMS: Omit<GroceryItem, 'id'>[] = [
   { text: 'Eggs', done: false, starred: false },
   { text: 'Chicken breasts', done: false, starred: false },
   { text: 'Mangoes', done: false, starred: true },
@@ -23,7 +23,7 @@ const DEFAULT_ITEMS: Omit<GroceryItem, 'id'>[] = [
 export default function GroceryList() {
   const [items, setItems] = useLocalStorage<GroceryItem[]>(
     'food.grocerylist',
-    DEFAULT_ITEMS.map((i) => ({ ...i, id: crypto.randomUUID() })),
+    DEFAULT_GROCERY_ITEMS.map((i) => ({ ...i, id: crypto.randomUUID() })),
   )
   const [text, setText] = useState('')
 

@@ -3,6 +3,7 @@ import HomePage from './pages/HomePage'
 import HousePage from './pages/HousePage'
 import BodyWeatherPage from './pages/BodyWeatherPage'
 import FoodPage from './pages/FoodPage'
+import PetsPage from './pages/PetsPage'
 import { useLocalStorage } from './hooks/useLocalStorage'
 import './App.css'
 
@@ -12,7 +13,7 @@ const NAV_ITEMS = [
   { key: 'body-weather', label: 'Body Weather', icon: '☁️', enabled: true },
   { key: 'house', label: 'Home', icon: '🏡', enabled: true },
   { key: 'girls', label: 'Girls', icon: '💗', enabled: false },
-  { key: 'pets', label: 'Pets', icon: '🐾', enabled: false },
+  { key: 'pets', label: 'Pets', icon: '🐾', enabled: true },
   { key: 'food', label: 'Food', icon: '🍡', enabled: true },
   { key: 'money', label: 'Money', icon: '💰', enabled: false },
   { key: 'notes', label: 'Notes', icon: '⭐', enabled: false },
@@ -149,6 +150,7 @@ function App() {
             {page === 'house' && <HousePage />}
             {page === 'body-weather' && <BodyWeatherPage />}
             {page === 'food' && <FoodPage />}
+            {page === 'pets' && <PetsPage />}
 
             {page === 'home' && (
               <div className="bottom-strip">

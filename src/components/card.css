@@ -1041,7 +1041,7 @@
   padding: 6px 14px;
 }
 
-.card-aphorism input {
+.card-aphorism input:not([type='checkbox']) {
   width: 100%;
   border: none;
   background: transparent;
@@ -1051,7 +1051,7 @@
   color: var(--purple-heading);
 }
 
-.card-aphorism input:focus {
+.card-aphorism input:not([type='checkbox']):focus {
   outline: none;
 }
 
@@ -1506,4 +1506,207 @@
 
 .grocery-star.active {
   color: var(--warn-yellow);
+}
+
+/* pet overview */
+.pet-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.pet-profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+}
+
+.pet-profile .card-illustration {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+}
+
+.pet-name-input {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--purple-heading);
+  border: none;
+  background: transparent;
+  text-align: center;
+  width: 100%;
+}
+
+.pet-nickname-input {
+  font-size: 10.5px;
+  color: var(--purple-heading);
+  background: var(--pink-pale);
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: 2px 10px;
+  text-align: center;
+  width: 100%;
+  max-width: 130px;
+}
+
+.pet-name-input:focus,
+.pet-nickname-input:focus {
+  outline: none;
+}
+
+.pet-facts {
+  text-align: left;
+  font-size: 11px;
+  color: var(--text-body);
+  width: 100%;
+  margin-top: 4px;
+}
+
+.pet-facts div {
+  margin-bottom: 2px;
+}
+
+.pet-facts b {
+  color: var(--purple-heading);
+}
+
+/* training goals */
+.goal-row {
+  margin-bottom: 6px;
+}
+
+.goal-row-top {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--text-heading);
+  margin-bottom: 2px;
+}
+
+.goal-blocks {
+  display: flex;
+  gap: 2px;
+}
+
+.goal-block {
+  flex: 1;
+  height: 8px;
+  border-radius: 3px;
+  background: var(--pink-pale);
+}
+
+.goal-block.filled {
+  background: var(--pink-accent);
+}
+
+.goal-today-note {
+  background: var(--pink-pale);
+  border-radius: var(--radius-pill);
+  padding: 6px 12px;
+  font-size: 11px;
+  color: var(--purple-heading);
+  text-align: center;
+}
+
+/* stock dots */
+.stock-table-row {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 0.8fr;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 0;
+  border-bottom: 1px dotted var(--border-hairline);
+  font-size: 11px;
+}
+
+.stock-dots {
+  display: flex;
+  gap: 2px;
+}
+
+.stock-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1px solid var(--warn-yellow);
+  background: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.stock-dot.filled {
+  background: var(--warn-yellow);
+}
+
+/* potty tracker */
+.potty-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.potty-card {
+  background: var(--card-bg-tint);
+  border: 1px solid var(--border-hairline);
+  border-radius: 14px;
+  padding: 10px 12px;
+  text-align: center;
+}
+
+.potty-streak {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--pink-accent);
+  margin: 4px 0 0;
+}
+
+/* behavior notes */
+.behavior-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.behavior-card textarea {
+  width: 100%;
+  min-height: 90px;
+  border: none;
+  background: transparent;
+  font: inherit;
+  font-size: 11px;
+  color: var(--text-body);
+  resize: vertical;
+}
+
+.behavior-card textarea:focus {
+  outline: none;
+}
+
+/* photo memories */
+.memory-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.memory-card {
+  text-align: center;
+}
+
+.memory-card input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--purple-heading);
+  text-align: center;
+  margin-top: 4px;
+}
+
+.memory-card input:focus {
+  outline: none;
 }
