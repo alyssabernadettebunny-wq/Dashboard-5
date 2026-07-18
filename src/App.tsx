@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react'
 import HomePage from './pages/HomePage'
 import HousePage from './pages/HousePage'
+import BodyWeatherPage from './pages/BodyWeatherPage'
 import { useLocalStorage } from './hooks/useLocalStorage'
 import './App.css'
 
 const NAV_ITEMS = [
   { key: 'home', label: 'Today', icon: '🏠', enabled: true },
   { key: 'rhythm', label: 'Rhythm', icon: '🗓️', enabled: false },
-  { key: 'body-weather', label: 'Body Weather', icon: '☁️', enabled: false },
+  { key: 'body-weather', label: 'Body Weather', icon: '☁️', enabled: true },
   { key: 'house', label: 'Home', icon: '🏡', enabled: true },
   { key: 'girls', label: 'Girls', icon: '💗', enabled: false },
   { key: 'pets', label: 'Pets', icon: '🐾', enabled: false },
@@ -145,6 +146,7 @@ function App() {
 
             {page === 'home' && <HomePage />}
             {page === 'house' && <HousePage />}
+            {page === 'body-weather' && <BodyWeatherPage />}
 
             {page === 'home' && (
               <div className="bottom-strip">
