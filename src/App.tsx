@@ -1,108 +1,146 @@
-import StatusBoard from './widgets/StatusBoard'
-import BodyCheckin from './widgets/BodyCheckin'
-import WaterProtein from './widgets/WaterProtein'
-import MedsTitration from './widgets/MedsTitration'
-import DogsCare from './widgets/DogsCare'
-import QuickCapture from './widgets/QuickCapture'
-import ChecklistCard from './widgets/ChecklistCard'
-import Reminders from './widgets/Reminders'
-import WorldFeed from './widgets/WorldFeed'
+import { useState } from 'react'
+import HomePage from './pages/HomePage'
+import HousePage from './pages/HousePage'
 import './App.css'
 
 const NAV_ITEMS = [
-  { label: 'Home', icon: '🏠', active: true },
-  { label: 'Body Weather', icon: '🌤️', active: false },
-  { label: 'House', icon: '🏡', active: false },
-  { label: 'Girls', icon: '💕', active: false },
-  { label: 'Pets', icon: '🐾', active: false },
-  { label: 'Money', icon: '💸', active: false },
-  { label: 'Notes', icon: '📓', active: false },
+  { key: 'home', label: 'Home', icon: '🏠', enabled: true },
+  { key: 'rhythm', label: 'Rhythm', icon: '🗓️', enabled: false },
+  { key: 'body-weather', label: 'Body Weather', icon: '☁️', enabled: false },
+  { key: 'house', label: 'House', icon: '🏡', enabled: true },
+  { key: 'girls', label: 'Girls', icon: '💗', enabled: false },
+  { key: 'pets', label: 'Pets', icon: '🐾', enabled: false },
+  { key: 'food', label: 'Food', icon: '🍡', enabled: false },
+  { key: 'money', label: 'Money', icon: '💰', enabled: false },
+  { key: 'notes', label: 'Notes', icon: '⭐', enabled: false },
+  { key: 'spark', label: 'Spark', icon: '✨', enabled: false },
+  { key: 'more', label: 'More', icon: '⋯', enabled: false },
 ]
 
 const AFFIRMATIONS = [
+  'you are enough ✦',
   "you're allowed to take up space",
   'soft plans, kind days',
   "you don't have to have it all figured out",
   'one step at a time, you got this',
-  'plan softly, live kindly',
   'proud of you for showing up today',
 ]
 
 function todaysAffirmation() {
-  const dayOfYear = Math.floor(
-    (Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000,
-  )
+  const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000)
   return AFFIRMATIONS[dayOfYear % AFFIRMATIONS.length]
 }
 
 function App() {
-  const today = new Date().toLocaleDateString(undefined, {
-    weekday: 'long',
-    month: 'long',
-    day: 'numeric',
-  })
+  const [page, setPage] = useState('home')
+
+  const today = new Date().toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })
   const now = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
 
   return (
-    <div className="dashboard-shell">
-      <aside className="sidebar">
-        <div className="sidebar-title">
-          <span className="bow">🎀</span> Alyssa
+    <div className="page-wrap">
+      <div className="window">
+        <div className="titlebar">
+          <div className="titlebar-left">
+            <span className="dot" /> Alyssa Daily Dashboard
+          </div>
+          <div className="titlebar-controls">
+            <span className="min" />
+            <span className="max" />
+            <span className="close" />
+          </div>
         </div>
-        <nav>
-          {NAV_ITEMS.map((item) => (
-            <div key={item.label} className={`nav-item ${item.active ? 'active' : 'coming-soon'}`}>
-              <span className="nav-icon">{item.icon}</span>
-              {item.label}
-              {item.active ? <span className="nav-heart">♡</span> : <span className="soon">soon</span>}
+
+        <div className="scallop top" />
+
+        <div className="app-body">
+          <nav className="sidebar">
+            {NAV_ITEMS.map((item) => (
+              <button
+                key={item.key}
+                className={`nav-item ${page === item.key ? 'active' : ''}`}
+                disabled={!item.enabled}
+                onClick={() => item.enabled && setPage(item.key)}
+                title={item.enabled ? undefined : 'Coming soon'}
+              >
+                <span className="badge">{item.icon}</span> {item.label}
+              </button>
+            ))}
+          </nav>
+
+          <main className="main">
+            <div className="header">
+              <div className="header-left">
+                <div className="illustration-slot avatar-slot">character illustration</div>
+                <div className="greeting-block">
+                  <h1>
+                    Good day,
+                    <br />
+                    Alyssa! ♡
+                  </h1>
+                  <span className="affirmation-pill">{todaysAffirmation()}</span>
+                </div>
+              </div>
+
+              <div className="header-center">
+                <div className="bow">🎀</div>
+                <h2>Alyssa Daily Dashboard</h2>
+                <div className="tagline">plan softly, live kindly, chase little joys ♡</div>
+              </div>
+
+              <div className="header-right">
+                <div className="illustration-slot mascot-slot">mascot illust.</div>
+                <div className="speech-bubble">be kind to your future self.</div>
+                <div className="datetime-card">
+                  <div className="time">{now}</div>
+                  <div className="date">{today}</div>
+                </div>
+              </div>
             </div>
-          ))}
-        </nav>
-        <div className="vibe-note">
-          <p className="vibe-label">today's vibe</p>
-          <p className="vibe-text">{todaysAffirmation()}</p>
+
+            {page === 'home' && <HomePage />}
+            {page === 'house' && <HousePage />}
+
+            {page === 'home' && (
+              <div className="bottom-strip">
+                <div className="chip">
+                  <span className="icon">☕</span>
+                  <span className="txt">
+                    <b>Coffee fix</b>Iced vanilla latte
+                  </span>
+                </div>
+                <div className="chip">
+                  <span className="icon">📖</span>
+                  <span className="txt">
+                    <b>Book nook</b>Currently reading
+                  </span>
+                </div>
+                <div className="chip">
+                  <span className="icon">💿</span>
+                  <span className="txt">
+                    <b>K-pop radar</b>New drops this week
+                  </span>
+                </div>
+                <div className="chip">
+                  <span className="icon">📓</span>
+                  <span className="txt">
+                    <b>Notebook</b>Brain dump open
+                  </span>
+                </div>
+                <div className="chip">
+                  <span className="icon">🐾</span>
+                  <span className="txt">
+                    <b>Frenchie &amp; Maltipoo</b>Good pups today
+                  </span>
+                </div>
+              </div>
+            )}
+
+            <div className="charm-strand">illustration charm strand</div>
+          </main>
         </div>
-      </aside>
 
-      <div className="dashboard">
-        <header className="dashboard-header">
-          <div className="header-greeting">
-            <span className="bow small">🎀</span>
-            <p>
-              Good day, <span className="greeting-name">Alyssa!</span> <span className="heart">♡</span>
-            </p>
-          </div>
-
-          <div className="header-center">
-            <h1 className="dashboard-title">Alyssa Daily Dashboard</h1>
-            <p className="tagline">plan softly, live kindly, chase little joys ♡</p>
-          </div>
-
-          <div className="time-badge">
-            <span className="time">{now}</span>
-            <span className="date-sub">{today}</span>
-          </div>
-        </header>
-
-        <p className="affirmation-pill">💗 {todaysAffirmation()}</p>
-
-        <main className="widget-grid">
-          <StatusBoard />
-          <BodyCheckin />
-          <WaterProtein />
-          <MedsTitration />
-          <DogsCare />
-          <QuickCapture />
-          <ChecklistCard icon="⭐" title="My Tasks" storageKey="dashboard.tasks.me" placeholder="Add a task..." />
-          <ChecklistCard
-            icon="🎀"
-            title="Girls' To-Dos"
-            storageKey="dashboard.tasks.girls"
-            placeholder="Add something for the girls..."
-          />
-          <Reminders />
-          <WorldFeed />
-        </main>
+        <div className="scallop bottom" />
       </div>
     </div>
   )

@@ -1,5 +1,5 @@
 import { useLocalStorage } from '../hooks/useLocalStorage'
-import './widgets.css'
+import Card from '../components/Card'
 
 const WATER_GOAL = 8
 
@@ -9,50 +9,40 @@ export default function WaterProtein() {
   const [proteinGoal, setProteinGoal] = useLocalStorage('dashboard.proteinGoal', 100)
 
   return (
-    <section className="widget">
-      <h2><span className="icon-badge">💧</span> Water & Protein</h2>
-      <div className="hydration">
-        <div className="cups">
-          {Array.from({ length: WATER_GOAL }).map((_, i) => (
-            <button
-              key={i}
-              className={`cup ${i < water ? 'filled' : ''}`}
-              onClick={() => setWater(i + 1 === water ? i : i + 1)}
-              aria-label={`Cup ${i + 1}`}
-            >
-              💧
-            </button>
-          ))}
-        </div>
-        <p className="hydration-count">
-          {water} / {WATER_GOAL} cups
-        </p>
-      </div>
-      <div className="protein-tracker">
-        <label>
-          Protein (g):
-          <input
-            type="number"
-            min={0}
-            value={protein}
-            onChange={(e) => setProtein(Number(e.target.value))}
+    <Card icon="💧" title="Water & Protein" meta={`${water} / ${WATER_GOAL} cups`}>
+      <div className="cup-row">
+        {Array.from({ length: WATER_GOAL }).map((_, i) => (
+          <button
+            key={i}
+            className={`cup ${i < water ? 'filled' : ''}`}
+            onClick={() => setWater(i + 1 === water ? i : i + 1)}
+            aria-label={`Cup ${i + 1}`}
           />
-          <span className="goal-of"> / </span>
+        ))}
+      </div>
+      <div>
+        <div className="stat-row">
+          <span>Protein</span>
+          <span>
+            {protein} / {proteinGoal}g
+          </span>
+        </div>
+        <div className="progress-track">
+          <div
+            className="progress-fill"
+            style={{ width: `${Math.min(100, (protein / (proteinGoal || 1)) * 100)}%` }}
+          />
+        </div>
+        <div className="c-input-row">
+          <input type="number" min={0} value={protein} onChange={(e) => setProtein(Number(e.target.value))} />
           <input
             type="number"
             min={0}
             value={proteinGoal}
             onChange={(e) => setProteinGoal(Number(e.target.value))}
           />
-          <span> g goal</span>
-        </label>
-        <div className="progress-bar">
-          <div
-            className="progress-fill"
-            style={{ width: `${Math.min(100, (protein / (proteinGoal || 1)) * 100)}%` }}
-          />
         </div>
       </div>
-    </section>
+    </Card>
   )
 }

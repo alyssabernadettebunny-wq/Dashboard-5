@@ -1,0 +1,327 @@
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-card);
+  padding: 16px 17px;
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card-wide {
+  grid-column: 1 / -1;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.card-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--purple-heading);
+}
+
+.card-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.card-footer-btn {
+  align-self: flex-start;
+  margin-top: 2px;
+  background: var(--pink-pale);
+  color: var(--purple-heading);
+  font-size: 11.5px;
+  font-weight: 700;
+  border: none;
+  padding: 7px 16px;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.card-footer-btn:hover {
+  box-shadow: var(--shadow-soft);
+  transform: translateY(-1px);
+}
+
+/* generic list */
+.c-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.c-list-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--text-body);
+}
+
+.c-list-item .sub {
+  color: var(--text-muted);
+  font-size: 11px;
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.c-list-item.struck span:not(.sub) {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+
+.c-list-item .remove {
+  background: none;
+  border: none;
+  color: var(--pink-line);
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 2px;
+  margin-left: 4px;
+}
+
+.c-list-item .remove:hover {
+  color: var(--pink-accent);
+}
+
+/* inputs */
+.c-input-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.c-input-row input,
+.c-input-row select {
+  flex: 1;
+  min-width: 0;
+  padding: 7px 11px;
+  border-radius: 12px;
+  border: 1.5px solid var(--border-hairline);
+  background: var(--card-bg-tint);
+  color: var(--text-body);
+  font: inherit;
+  font-size: 12.5px;
+}
+
+.c-input-row input:focus,
+.c-input-row select:focus {
+  outline: none;
+  border-color: var(--pink-accent);
+}
+
+.c-input-row button {
+  padding: 7px 14px;
+  border-radius: var(--radius-pill);
+  border: none;
+  background: var(--pink-pale);
+  color: var(--purple-heading);
+  font: inherit;
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.c-input-row button:hover {
+  box-shadow: var(--shadow-soft);
+  transform: translateY(-1px);
+}
+
+.c-textarea {
+  width: 100%;
+  min-height: 70px;
+  resize: vertical;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1.5px solid var(--border-hairline);
+  background: var(--card-bg-tint);
+  color: var(--text-body);
+  font: inherit;
+  font-size: 12.5px;
+  box-sizing: border-box;
+}
+
+.c-textarea:focus {
+  outline: none;
+  border-color: var(--pink-accent);
+}
+
+.c-empty {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* progress bars */
+.stat-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-heading);
+  margin-bottom: 2px;
+}
+
+.stat-row span:last-child {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.progress-track {
+  width: 100%;
+  height: 7px;
+  background: var(--pink-pale);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(90deg, var(--pink-accent), var(--purple-heading));
+  transition: width 0.3s;
+}
+
+/* mood picker */
+.mood-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.mood-face {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  background: var(--pink-pale);
+  border: none;
+  cursor: pointer;
+}
+
+.mood-face.selected {
+  background: var(--pink-accent);
+  box-shadow: 0 0 0 3px var(--purple-pill);
+}
+
+/* hydration cups */
+.cup-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.cup {
+  width: 18px;
+  height: 24px;
+  border: 1.5px solid var(--pink-line);
+  border-radius: 3px 3px 6px 6px;
+  background: var(--pink-pale);
+  cursor: pointer;
+  padding: 0;
+}
+
+.cup.filled {
+  background: linear-gradient(180deg, var(--pink-accent), var(--purple-heading));
+  border-color: transparent;
+}
+
+/* status board */
+.status-cols {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 14px;
+}
+
+.status-cols h4,
+.section-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--purple-heading);
+  margin: 10px 0 6px;
+  font-weight: 700;
+}
+
+.section-label:first-child {
+  margin-top: 0;
+}
+
+.subsection {
+  background: var(--card-bg-tint);
+  border: 1px solid var(--border-hairline);
+  border-radius: 14px;
+  padding: 12px 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.two-col {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.mini-profile {
+  flex: 1;
+  min-width: 130px;
+}
+
+.mini-profile .name {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--purple-heading);
+  margin-bottom: 4px;
+}
+
+.status-person {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.status-person input.pname {
+  border: none;
+  background: transparent;
+  color: var(--text-heading);
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 0;
+  min-width: 0;
+}
+
+.status-person select {
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--border-hairline);
+  background: var(--pink-pale);
+  color: var(--text-heading);
+  font: inherit;
+  font-size: 11px;
+}

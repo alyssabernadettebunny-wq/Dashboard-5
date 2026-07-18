@@ -1,5 +1,5 @@
 import { useLocalStorage } from '../hooks/useLocalStorage'
-import './widgets.css'
+import Card from '../components/Card'
 
 interface Person {
   id: string
@@ -30,35 +30,6 @@ const DEFAULT_DOGS: Person[] = [
   { id: 'd2', name: 'Maltipoo', status: 'Home' },
 ]
 
-function PersonRow({
-  person,
-  statuses,
-  onChange,
-  onRename,
-}: {
-  person: Person
-  statuses: string[]
-  onChange: (status: string) => void
-  onRename: (name: string) => void
-}) {
-  return (
-    <div className="person-row">
-      <input
-        className="person-name"
-        value={person.name}
-        onChange={(e) => onRename(e.target.value)}
-      />
-      <select value={person.status} onChange={(e) => onChange(e.target.value)}>
-        {statuses.map((s) => (
-          <option key={s} value={s}>
-            {s}
-          </option>
-        ))}
-      </select>
-    </div>
-  )
-}
-
 function PersonGroup({
   title,
   people,
@@ -71,20 +42,30 @@ function PersonGroup({
   statuses: string[]
 }) {
   return (
-    <div className="status-group">
-      <h3>{title}</h3>
+    <div>
+      <h4>{title}</h4>
       {people.map((person) => (
-        <PersonRow
-          key={person.id}
-          person={person}
-          statuses={statuses}
-          onChange={(status) =>
-            setPeople(people.map((p) => (p.id === person.id ? { ...p, status } : p)))
-          }
-          onRename={(name) =>
-            setPeople(people.map((p) => (p.id === person.id ? { ...p, name } : p)))
-          }
-        />
+        <div key={person.id} className="status-person">
+          <input
+            className="pname"
+            value={person.name}
+            onChange={(e) =>
+              setPeople(people.map((p) => (p.id === person.id ? { ...p, name: e.target.value } : p)))
+            }
+          />
+          <select
+            value={person.status}
+            onChange={(e) =>
+              setPeople(people.map((p) => (p.id === person.id ? { ...p, status: e.target.value } : p)))
+            }
+          >
+            {statuses.map((s) => (
+              <option key={s} value={s}>
+                {s}
+              </option>
+            ))}
+          </select>
+        </div>
       ))}
     </div>
   )
@@ -96,13 +77,12 @@ export default function StatusBoard() {
   const [dogs, setDogs] = useLocalStorage('dashboard.status.dogs', DEFAULT_DOGS)
 
   return (
-    <section className="widget widget-wide">
-      <h2><span className="icon-badge">📍</span> Today's Status Board</h2>
-      <div className="status-columns">
+    <Card icon="📍" title="Today's Status Board" wide>
+      <div className="status-cols">
         <PersonGroup title="Me & the Girls" people={core} setPeople={setCore} statuses={CORE_STATUSES} />
         <PersonGroup title="Household" people={extended} setPeople={setExtended} statuses={EXTENDED_STATUSES} />
         <PersonGroup title="Dogs" people={dogs} setPeople={setDogs} statuses={DOG_STATUSES} />
       </div>
-    </section>
+    </Card>
   )
 }

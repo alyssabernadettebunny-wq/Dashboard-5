@@ -1,5 +1,5 @@
 import { useLocalStorage } from '../hooks/useLocalStorage'
-import './widgets.css'
+import Card from '../components/Card'
 
 const MOODS = ['😊', '🙂', '😐', '😟', '😢', '😤']
 
@@ -9,13 +9,12 @@ export default function BodyCheckin() {
   const [notes, setNotes] = useLocalStorage('dashboard.body.notes', '')
 
   return (
-    <section className="widget">
-      <h2><span className="icon-badge">💗</span> Body & Mood Check-In</h2>
-      <div className="mood-picker">
+    <Card icon="💗" title="Body & Mood Check-In">
+      <div className="mood-row">
         {MOODS.map((emoji) => (
           <button
             key={emoji}
-            className={`mood-btn ${mood === emoji ? 'selected' : ''}`}
+            className={`mood-face ${mood === emoji ? 'selected' : ''}`}
             onClick={() => setMood(emoji)}
             aria-label="Select mood"
           >
@@ -23,23 +22,26 @@ export default function BodyCheckin() {
           </button>
         ))}
       </div>
-      <div className="slider-row">
-        <label htmlFor="sensory">Sensory load: {sensory}/10</label>
+      <div>
+        <div className="stat-row">
+          <span>Sensory load</span>
+          <span>{sensory} / 10</span>
+        </div>
         <input
-          id="sensory"
           type="range"
           min={0}
           max={10}
           value={sensory}
           onChange={(e) => setSensory(Number(e.target.value))}
+          style={{ width: '100%', accentColor: 'var(--pink-accent)' }}
         />
       </div>
       <textarea
-        className="notes-area small"
+        className="c-textarea"
         placeholder="How's your body feeling today?"
         value={notes}
         onChange={(e) => setNotes(e.target.value)}
       />
-    </section>
+    </Card>
   )
 }

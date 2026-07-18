@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
-import './widgets.css'
+import Card from '../components/Card'
 
 interface Note {
   id: string
@@ -25,9 +25,8 @@ export default function QuickCapture() {
   }
 
   return (
-    <section className="widget">
-      <h2><span className="icon-badge">📝</span> Quick Capture</h2>
-      <div className="task-input">
+    <Card icon="📝" title="Quick Capture">
+      <div className="c-input-row">
         <input
           type="text"
           value={text}
@@ -37,18 +36,20 @@ export default function QuickCapture() {
         />
         <button onClick={addNote}>Save</button>
       </div>
-      <ul className="capture-list">
-        {notes.length === 0 && <li className="empty">Nothing captured yet</li>}
+      <ul className="c-list">
+        {notes.length === 0 && <li className="c-empty">Nothing captured yet</li>}
         {notes.map((note) => (
-          <li key={note.id}>
-            <span className="capture-time">{note.time}</span>
-            <span className="capture-text">{note.text}</span>
+          <li key={note.id} className="c-list-item">
+            <span className="sub" style={{ marginLeft: 0 }}>
+              {note.time}
+            </span>
+            <span>{note.text}</span>
             <button className="remove" onClick={() => removeNote(note.id)} aria-label="Remove note">
               ×
             </button>
           </li>
         ))}
       </ul>
-    </section>
+    </Card>
   )
 }

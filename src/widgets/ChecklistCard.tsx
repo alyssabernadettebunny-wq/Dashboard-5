@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
-import './widgets.css'
+import Card from '../components/Card'
 
 interface Item {
   id: string
@@ -40,16 +40,8 @@ export default function ChecklistCard({
   const doneCount = items.filter((i) => i.done).length
 
   return (
-    <section className="widget">
-      <h2>
-        <span className="icon-badge">{icon}</span> {title}
-        {items.length > 0 && (
-          <span className="widget-count">
-            {doneCount} / {items.length}
-          </span>
-        )}
-      </h2>
-      <div className="task-input">
+    <Card icon={icon} title={title} meta={items.length ? `${doneCount} / ${items.length}` : undefined}>
+      <div className="c-input-row">
         <input
           type="text"
           value={text}
@@ -59,20 +51,18 @@ export default function ChecklistCard({
         />
         <button onClick={addItem}>Add</button>
       </div>
-      <ul className="task-list">
-        {items.length === 0 && <li className="empty">Nothing here yet</li>}
+      <ul className="c-list">
+        {items.length === 0 && <li className="c-empty">Nothing here yet</li>}
         {items.map((item) => (
-          <li key={item.id} className={item.done ? 'done' : ''}>
-            <label>
-              <input type="checkbox" checked={item.done} onChange={() => toggleItem(item.id)} />
-              <span>{item.text}</span>
-            </label>
+          <li key={item.id} className={`c-list-item ${item.done ? 'struck' : ''}`}>
+            <input type="checkbox" checked={item.done} onChange={() => toggleItem(item.id)} />
+            <span>{item.text}</span>
             <button className="remove" onClick={() => removeItem(item.id)} aria-label="Remove item">
               ×
             </button>
           </li>
         ))}
       </ul>
-    </section>
+    </Card>
   )
 }

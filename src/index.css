@@ -1,123 +1,77 @@
 :root {
-  --pink: #ffd3ec;
-  --pink-deep: #ff9ad5;
-  --pink-line: #f3c6e8;
-  --lavender: #ddc7fb;
-  --lavender-deep: #c299fa;
-  --blue: #c3e8fc;
-  --mint: #c6f5df;
-  --green-check: #7bc9a0;
-  --cream: #fffaf3;
+  /* background */
+  --bg-gradient-start: #fdf0f6;
+  --bg-gradient-end: #efe4fa;
 
-  --text: #8a7a92;
-  --text-h: #6b4a86;
-  --bg: #fdf3fa;
-  --card-bg: #fdf9f0;
-  --border: #ddc9f0;
-  --accent: #a06bd6;
-  --accent-2: #c9679e;
-  --accent-bg: #fbe6f6;
-  --accent-border: #ddc9f0;
-  --peach: #ffcfa8;
-  --peach-deep: #ffab6b;
-  --shadow: rgba(192, 130, 200, 0.18) 0 8px 20px -8px, rgba(192, 130, 200, 0.12) 0 2px 6px -3px;
+  /* surfaces */
+  --card-bg: #ffffff;
+  --card-bg-tint: #fff7fa;
+  --sidebar-bg: #fffafc;
+  --titlebar-bg: #f3e3f2;
 
-  --sans: 'Quicksand', system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: 'Baloo 2', 'Quicksand', system-ui, sans-serif;
-  --title: 'Berkshire Swash', 'Georgia', cursive;
+  /* brand / accent */
+  --purple-heading: #7b5fa6;
+  --purple-deep: #6b4e96;
+  --purple-pill: #e9d5f5;
+  --pink-accent: #f5a9c8;
+  --pink-soft: #f6b8d0;
+  --pink-pale: #fce4ee;
+  --pink-line: #f0b9d3;
 
-  font: 16px/145% var(--sans);
-  color-scheme: light dark;
-  color: var(--text);
+  /* text */
+  --text-heading: #5b4e66;
+  --text-body: #584b68;
+  --text-muted: #a896b8;
+
+  /* feedback */
+  --success-green: #8fcb9b;
+  --warn-yellow: #f3c77c;
+
+  /* structure */
+  --border-hairline: #f3dcea;
+  --shadow-color: rgba(178, 140, 182, 0.22);
+  --shadow-soft: 0 6px 18px var(--shadow-color);
+  --shadow-lift: 0 10px 26px var(--shadow-color);
+
+  --radius-card: 20px;
+  --radius-pill: 999px;
+  --radius-badge: 14px;
+
+  --font-script: 'Dancing Script', cursive;
+  --font-ui: 'Quicksand', sans-serif;
+
+  font: 14px/145% var(--font-ui);
+  color-scheme: light;
+  color: var(--text-body);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+* {
+  box-sizing: border-box;
+}
+
+*:focus-visible {
+  outline: 2px solid var(--purple-heading);
+  outline-offset: 2px;
+}
+
 body {
   margin: 0;
   min-height: 100svh;
-  background-color: #fdf3fa;
-  background-image:
-    repeating-linear-gradient(
-      0deg,
-      rgba(255, 179, 224, 0.12) 0,
-      rgba(255, 179, 224, 0.12) 1px,
-      transparent 1px,
-      transparent 34px
-    ),
-    repeating-linear-gradient(
-      90deg,
-      rgba(221, 199, 251, 0.14) 0,
-      rgba(221, 199, 251, 0.14) 1px,
-      transparent 1px,
-      transparent 34px
-    ),
-    radial-gradient(circle at 90% 6%, rgba(195, 232, 252, 0.4) 0, transparent 34%),
-    radial-gradient(circle at 6% 90%, rgba(198, 245, 223, 0.35) 0, transparent 34%);
+  background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
   background-attachment: fixed;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #cbb8d4;
-    --text-h: #e9d3f5;
-    --bg: #241b2c;
-    --card-bg: rgba(44, 34, 51, 0.78);
-    --border: #4d3a58;
-    --accent: #d3a4ef;
-    --accent-2: #eb9dc4;
-    --accent-bg: #3a2c44;
-    --accent-border: #5a4468;
-    --shadow: rgba(0, 0, 0, 0.4) 0 8px 20px -8px, rgba(0, 0, 0, 0.25) 0 2px 6px -3px;
-  }
-
-  body {
-    background-color: #241b2c;
-    background-image:
-      repeating-linear-gradient(
-        0deg,
-        rgba(211, 164, 239, 0.06) 0,
-        rgba(211, 164, 239, 0.06) 1px,
-        transparent 1px,
-        transparent 34px
-      ),
-      repeating-linear-gradient(
-        90deg,
-        rgba(235, 157, 196, 0.06) 0,
-        rgba(235, 157, 196, 0.06) 1px,
-        transparent 1px,
-        transparent 34px
-      );
-    background-attachment: fixed;
-  }
 }
 
 h1,
 h2,
 h3 {
-  font-family: var(--heading);
+  font-family: var(--font-ui);
   font-weight: 700;
-  color: var(--text-h);
-}
-
-h1 {
-  font-size: 30px;
+  color: var(--text-heading);
   margin: 0;
-}
-
-h2 {
-  font-size: 18px;
-  margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-h3 {
-  font-size: 14px;
-  margin: 0 0 6px;
 }
 
 p {
@@ -134,22 +88,20 @@ button {
 input[type='checkbox'] {
   appearance: none;
   -webkit-appearance: none;
-  width: 18px;
-  height: 18px;
-  min-width: 18px;
-  border: 2px solid var(--accent-border);
-  border-radius: 6px;
-  background: white;
+  width: 15px;
+  height: 15px;
+  min-width: 15px;
+  border-radius: 5px;
+  border: 1.5px solid var(--pink-line);
+  background: var(--card-bg);
   cursor: pointer;
   position: relative;
   display: inline-block;
-  transition: border-radius 0.15s ease;
 }
 
 input[type='checkbox']:checked {
-  background: var(--green-check);
-  border-color: var(--green-check);
-  border-radius: 50%;
+  background: var(--success-green);
+  border-color: var(--success-green);
 }
 
 input[type='checkbox']:checked::after {
@@ -160,6 +112,6 @@ input[type='checkbox']:checked::after {
   align-items: center;
   justify-content: center;
   color: white;
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 700;
 }

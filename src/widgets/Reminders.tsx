@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
-import './widgets.css'
+import Card from '../components/Card'
 
 interface Reminder {
   id: string
@@ -32,9 +32,8 @@ export default function Reminders() {
   }
 
   return (
-    <section className="widget">
-      <h2><span className="icon-badge">🔔</span> Reminders</h2>
-      <div className="reminder-input">
+    <Card icon="🔔" title="Reminders">
+      <div className="c-input-row">
         <input
           type="text"
           value={text}
@@ -45,18 +44,18 @@ export default function Reminders() {
         <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
         <button onClick={addReminder}>Add</button>
       </div>
-      <ul className="reminder-list">
-        {reminders.length === 0 && <li className="empty">No reminders set</li>}
+      <ul className="c-list">
+        {reminders.length === 0 && <li className="c-empty">No reminders set</li>}
         {reminders.map((r) => (
-          <li key={r.id}>
+          <li key={r.id} className="c-list-item">
             <span>🔔 {r.text}</span>
-            {r.date && <span className="reminder-date">{r.date}</span>}
+            {r.date && <span className="sub">{r.date}</span>}
             <button className="remove" onClick={() => removeReminder(r.id)} aria-label="Remove reminder">
               ×
             </button>
           </li>
         ))}
       </ul>
-    </section>
+    </Card>
   )
 }
