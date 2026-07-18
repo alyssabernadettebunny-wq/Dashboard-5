@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import HomePage from './pages/HomePage'
 import HousePage from './pages/HousePage'
+import { useLocalStorage } from './hooks/useLocalStorage'
 import './App.css'
 
 const NAV_ITEMS = [
@@ -33,9 +34,18 @@ function todaysAffirmation() {
 
 function App() {
   const [page, setPage] = useState('home')
+  const [clock, setClock] = useState(() => new Date())
+  const [weather] = useLocalStorage('dashboard.worldfeed.weather', { temp: '', condition: '' })
 
-  const today = new Date().toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })
-  const now = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
+  useEffect(() => {
+    const id = setInterval(() => setClock(new Date()), 30000)
+    return () => clearInterval(id)
+  }, [])
+
+  const today = clock.toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })
+  const timeParts = clock.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }).split(' ')
+  const timeValue = timeParts[0]
+  const meridiem = timeParts[1] ?? ''
 
   return (
     <div className="page-wrap">
@@ -91,8 +101,21 @@ function App() {
                 <div className="illustration-slot mascot-slot">mascot illust.</div>
                 <div className="speech-bubble">be kind to your future self.</div>
                 <div className="datetime-card">
-                  <div className="time">{now}</div>
+                  <div className="time">
+                    {timeValue}
+                    <span className="meridiem">{meridiem}</span>
+                  </div>
                   <div className="date">{today}</div>
+                  {(weather.temp || weather.condition) && (
+                    <div className="weather-row">
+                      <span>☁️</span>
+                      {weather.temp && <span>{weather.temp}</span>}
+                      {weather.condition && <span>{weather.condition}</span>}
+                    </div>
+                  )}
+                  <span className="datetime-flower" aria-hidden="true">
+                    🌸
+                  </span>
                 </div>
               </div>
             </div>
