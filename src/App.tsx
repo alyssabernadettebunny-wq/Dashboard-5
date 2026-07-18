@@ -83,8 +83,13 @@ function App() {
               </div>
 
               <div className="header-center">
-                <div className="bow">🎀</div>
-                <h2>Alyssa Daily Dashboard</h2>
+                <div className="title-scallop" aria-hidden="true" />
+                <h2>
+                  <span className="title-heart left">♡</span>
+                  Alyssa Daily Dashboard
+                  <span className="title-heart right">♡</span>
+                </h2>
+                <div className="title-scallop bottom" aria-hidden="true" />
                 <div className="tagline">plan softly, live kindly, chase little joys ♡</div>
               </div>
 
