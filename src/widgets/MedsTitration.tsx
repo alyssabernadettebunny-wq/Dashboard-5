@@ -30,6 +30,7 @@ function todayStr() {
 export default function MedsTitration() {
   const [meds, setMeds] = useLocalStorage<Med[]>('dashboard.meds', [])
   const [medName, setMedName] = useState('')
+  const [addingMed, setAddingMed] = useState(false)
 
   const [titrationMeds, setTitrationMeds] = useLocalStorage<TitrationMed[]>(
     'dashboard.titration',
@@ -42,6 +43,7 @@ export default function MedsTitration() {
     if (!trimmed) return
     setMeds([...meds, { id: crypto.randomUUID(), name: trimmed, takenToday: false, refillNeeded: false }])
     setMedName('')
+    setAddingMed(false)
   }
 
   function updateMed(id: string, patch: Partial<Med>) {
@@ -86,38 +88,53 @@ export default function MedsTitration() {
 
   return (
     <Card icon="💊" title="Meds & Titration" meta={meds.length ? `${takenCount} / ${meds.length}` : undefined}>
-      <p className="section-label">Daily Meds</p>
-      <div className="c-input-row">
-        <input
-          type="text"
-          value={medName}
-          placeholder="Add a medication..."
-          onChange={(e) => setMedName(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && addMed()}
-        />
-        <button onClick={addMed}>Add</button>
+      <div className="med-section-header">
+        <span className="section-label" style={{ margin: 0 }}>
+          💊 Medication (Daily Check)
+        </span>
+        {meds.length > 0 && (
+          <span className="card-meta">
+            {takenCount} / {meds.length}
+          </span>
+        )}
       </div>
-      <ul className="c-list">
+      <ul className="med-list">
         {meds.length === 0 && <li className="c-empty">No meds added yet</li>}
         {meds.map((med) => (
-          <li key={med.id} className="c-list-item">
-            <input type="checkbox" checked={med.takenToday} onChange={(e) => updateMed(med.id, { takenToday: e.target.checked })} />
-            <span>{med.name}</span>
-            <span className="sub">{med.refillNeeded ? 'refill needed' : 'stocked'}</span>
-            <button
-              className="remove"
-              onClick={() => updateMed(med.id, { refillNeeded: !med.refillNeeded })}
-              aria-label="Toggle refill needed"
-              title="Toggle refill needed"
-            >
-              ⟳
-            </button>
-            <button className="remove" onClick={() => removeMed(med.id)} aria-label="Remove med">
+          <li key={med.id} className="med-row">
+            <input
+              type="checkbox"
+              checked={med.takenToday}
+              onChange={(e) => updateMed(med.id, { takenToday: e.target.checked })}
+            />
+            <span className="med-name">{med.name}</span>
+            <span className={`med-status ${med.takenToday ? 'taken' : 'missed'}`}>
+              {med.takenToday ? 'Taken' : 'Missed'}
+            </span>
+            <span className={`med-circle ${med.takenToday ? 'filled' : ''}`}>{med.takenToday && '✓'}</span>
+            <button className="med-remove" onClick={() => removeMed(med.id)} aria-label="Remove med">
               ×
             </button>
           </li>
         ))}
       </ul>
+      {addingMed ? (
+        <div className="c-input-row">
+          <input
+            type="text"
+            value={medName}
+            placeholder="Add a medication..."
+            autoFocus
+            onChange={(e) => setMedName(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && addMed()}
+          />
+          <button onClick={addMed}>Add</button>
+        </div>
+      ) : (
+        <button className="card-footer-btn" onClick={() => setAddingMed(true)}>
+          + Add / Edit meds 💊
+        </button>
+      )}
 
       <p className="section-label">Titration Tracking</p>
       <div className="c-input-row">

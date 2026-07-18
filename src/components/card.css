@@ -325,3 +325,79 @@
   font: inherit;
   font-size: 11px;
 }
+
+/* medication daily-check list */
+.med-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.med-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.med-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.med-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 12.5px;
+  color: var(--text-body);
+}
+
+.med-status {
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.med-status.taken {
+  color: var(--purple-heading);
+}
+
+.med-status.missed {
+  color: var(--pink-accent);
+}
+
+.med-circle {
+  width: 17px;
+  height: 17px;
+  min-width: 17px;
+  border-radius: 50%;
+  border: 1.5px solid var(--pink-line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: white;
+}
+
+.med-circle.filled {
+  background: var(--success-green);
+  border-color: var(--success-green);
+}
+
+.med-remove {
+  background: none;
+  border: none;
+  color: var(--pink-line);
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 2px;
+  opacity: 0.5;
+}
+
+.med-remove:hover {
+  opacity: 1;
+  color: var(--pink-accent);
+}
