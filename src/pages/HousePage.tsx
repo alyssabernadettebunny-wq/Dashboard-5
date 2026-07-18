@@ -37,7 +37,6 @@ export default function HousePage() {
           number={4}
           icon="🛋️"
           title="Living Room"
-          location="Downstairs"
           storageKey="house.room.living"
           placeholder="Add a living room task..."
           defaultItems={['Tidy surfaces', 'Fluff pillows', 'Vacuum rugs', 'Declutter', 'Reset coffee table']}
@@ -46,7 +45,6 @@ export default function HousePage() {
           number={5}
           icon="🛏️"
           title="Bedroom"
-          location="Upstairs"
           storageKey="house.room.bedrooms"
           placeholder="Add a bedroom task..."
           defaultItems={['Make bed', 'Clear nightstand', 'Dust surfaces', 'Vacuum', 'Close blinds', 'Reset desk']}
