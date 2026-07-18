@@ -1,9 +1,9 @@
 .widget {
   position: relative;
   background: var(--card-bg);
-  border: 2px solid var(--border);
-  border-radius: 20px;
-  padding: 22px 20px 20px;
+  border: 1.5px solid var(--border);
+  border-radius: 18px;
+  padding: 20px;
   text-align: left;
   display: flex;
   flex-direction: column;
@@ -12,39 +12,25 @@
   overflow: visible;
 }
 
-.widget::before {
-  content: '';
+.widget::after {
+  content: '♡';
   position: absolute;
-  top: -10px;
-  left: 22px;
-  width: 46px;
-  height: 18px;
-  background: linear-gradient(120deg, var(--pink) 0%, var(--pink-deep) 100%);
-  opacity: 0.85;
-  transform: rotate(-4deg);
-  border-radius: 3px;
-  box-shadow: rgba(0, 0, 0, 0.08) 0 2px 4px;
-}
-
-.widget:nth-of-type(4n + 2)::before {
-  background: linear-gradient(120deg, var(--lavender) 0%, var(--lavender-deep) 100%);
-}
-
-.widget:nth-of-type(4n + 3)::before {
-  background: linear-gradient(120deg, var(--blue) 0%, #8fd3f7 100%);
-}
-
-.widget:nth-of-type(4n)::before {
-  background: linear-gradient(120deg, var(--mint) 0%, #7fe0b3 100%);
+  bottom: 10px;
+  right: 14px;
+  color: var(--pink-deep);
+  opacity: 0.25;
+  font-size: 16px;
+  pointer-events: none;
 }
 
 .widget h2 {
   margin: 0;
+  color: var(--accent);
 }
 
 .subcard {
   background: var(--accent-bg);
-  border: 1px dashed var(--accent-border);
+  border: 1px solid var(--accent-border);
   border-radius: 14px;
   padding: 14px;
   display: flex;
@@ -75,7 +61,7 @@
 .youtube-input select {
   flex: 1;
   min-width: 0;
-  padding: 9px 12px;
+  padding: 8px 12px;
   border-radius: 12px;
   border: 1.5px solid var(--border);
   background: var(--bg);
@@ -100,16 +86,16 @@
 .youtube-input button,
 .fun-fact button,
 .titration-controls button {
-  padding: 9px 16px;
+  padding: 8px 16px;
   border-radius: 20px;
-  border: none;
-  background: linear-gradient(120deg, var(--accent) 0%, var(--accent-2) 100%);
-  color: white;
+  border: 1.5px solid var(--accent-border);
+  background: var(--accent-bg);
+  color: var(--accent-2);
   cursor: pointer;
   font: inherit;
   font-weight: 700;
   white-space: nowrap;
-  transition: transform 0.15s ease;
+  transition: background 0.15s ease, transform 0.15s ease;
 }
 
 .task-input button:hover,
@@ -118,7 +104,8 @@
 .youtube-input button:hover,
 .fun-fact button:hover,
 .titration-controls button:hover {
-  transform: translateY(-2px) scale(1.03);
+  background: var(--pink);
+  transform: translateY(-1px);
 }
 
 /* Lists */
@@ -134,7 +121,7 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 
 .task-list li,
@@ -148,7 +135,7 @@
   justify-content: space-between;
   gap: 8px;
   padding: 8px 4px;
-  border-bottom: 1px dashed var(--border);
+  border-bottom: 1px solid var(--border);
 }
 
 .task-list label,
@@ -160,17 +147,9 @@
   min-width: 0;
 }
 
-.task-list input[type='checkbox'],
-.med-list input[type='checkbox'],
-.dog-checks input[type='checkbox'] {
-  accent-color: var(--accent);
-  width: 16px;
-  height: 16px;
-}
-
 .task-list li.done span {
   text-decoration: line-through;
-  opacity: 0.55;
+  opacity: 0.5;
 }
 
 .task-list .empty,
@@ -188,8 +167,8 @@
 .remove {
   background: none;
   border: none;
-  color: var(--accent);
-  font-size: 18px;
+  color: var(--accent-2);
+  font-size: 17px;
   line-height: 1;
   cursor: pointer;
   padding: 0 4px;
@@ -235,6 +214,8 @@
   display: flex;
   align-items: center;
   gap: 4px;
+  border-bottom: 1px dotted var(--border);
+  padding-bottom: 4px;
 }
 
 .person-row {
@@ -264,7 +245,7 @@
   padding: 5px 10px;
   border-radius: 20px;
   border: 1.5px solid var(--border);
-  background: var(--bg);
+  background: var(--accent-bg);
   color: var(--text-h);
   font: inherit;
   font-size: 13px;
@@ -281,19 +262,19 @@
   background: var(--bg);
   border: 2px solid transparent;
   border-radius: 50%;
-  width: 44px;
-  height: 44px;
+  width: 42px;
+  height: 42px;
   cursor: pointer;
   transition: transform 0.15s ease;
 }
 
 .mood-btn:hover {
-  transform: scale(1.12);
+  transform: scale(1.1);
 }
 
 .mood-btn.selected {
-  border-color: var(--accent);
-  background: var(--accent-bg);
+  border-color: var(--pink-deep);
+  background: var(--pink);
 }
 
 .slider-row {
@@ -303,7 +284,7 @@
 }
 
 .slider-row input[type='range'] {
-  accent-color: var(--accent);
+  accent-color: var(--accent-2);
 }
 
 /* Hydration */
@@ -318,8 +299,8 @@
   border: 1.5px solid var(--border);
   border-radius: 10px;
   font-size: 18px;
-  width: 36px;
-  height: 36px;
+  width: 34px;
+  height: 34px;
   cursor: pointer;
   opacity: 0.35;
   transition: transform 0.15s ease, opacity 0.15s ease;
@@ -331,14 +312,14 @@
 
 .cup.filled {
   opacity: 1;
-  background: var(--accent-bg);
-  border-color: var(--accent);
+  background: var(--blue);
+  border-color: #8fd3f7;
 }
 
 .hydration-count {
   margin-top: 6px;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 700;
   color: var(--accent-2);
 }
 
@@ -350,7 +331,7 @@
 }
 
 .protein-tracker input[type='number'] {
-  width: 60px;
+  width: 56px;
   padding: 7px 8px;
   border-radius: 10px;
   border: 1.5px solid var(--border);
@@ -361,7 +342,7 @@
 
 .progress-bar {
   margin-top: 6px;
-  height: 10px;
+  height: 9px;
   border-radius: 20px;
   background: var(--accent-bg);
   overflow: hidden;
@@ -369,7 +350,7 @@
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 100%);
+  background: linear-gradient(90deg, var(--lavender-deep) 0%, var(--pink-deep) 100%);
   transition: width 0.3s;
 }
 
@@ -417,7 +398,7 @@
 .titration-history summary {
   cursor: pointer;
   font-size: 12px;
-  color: var(--accent);
+  color: var(--accent-2);
   font-weight: 600;
 }
 
@@ -461,11 +442,15 @@
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  background: linear-gradient(120deg, var(--mint) 0%, var(--blue) 100%);
-  border-radius: 16px;
+  background: var(--mint);
+  border-radius: 14px;
   padding: 12px 14px;
   font-size: 13px;
   color: #3f5c52;
+}
+
+.fun-fact button {
+  background: white;
 }
 
 /* Quick capture */
@@ -483,9 +468,10 @@
 
 /* Reminders */
 .reminder-date {
-  font-size: 12px;
-  color: white;
-  background: var(--accent-2);
+  font-size: 11px;
+  color: var(--accent-2);
+  background: var(--accent-bg);
+  border: 1px solid var(--accent-border);
   padding: 2px 8px;
   border-radius: 20px;
   white-space: nowrap;
@@ -519,7 +505,7 @@
 }
 
 .link-list a {
-  color: var(--accent);
+  color: var(--accent-2);
   text-decoration: none;
 }
 

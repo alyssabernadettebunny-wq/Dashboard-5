@@ -54,26 +54,37 @@ function App() {
             <div key={item.label} className={`nav-item ${item.active ? 'active' : 'coming-soon'}`}>
               <span className="nav-icon">{item.icon}</span>
               {item.label}
-              {!item.active && <span className="soon">soon</span>}
+              {item.active ? <span className="nav-heart">♡</span> : <span className="soon">soon</span>}
             </div>
           ))}
         </nav>
-        <div className="sidebar-sticker">✨🌸✨</div>
+        <div className="vibe-note">
+          <p className="vibe-label">today's vibe</p>
+          <p className="vibe-text">{todaysAffirmation()}</p>
+        </div>
       </aside>
 
       <div className="dashboard">
         <header className="dashboard-header">
-          <div>
-            <h1>
-              Good day, Alyssa <span className="sparkle">✨</span>
-            </h1>
-            <p className="today">{today}</p>
-            <p className="affirmation">💗 {todaysAffirmation()}</p>
+          <div className="header-greeting">
+            <span className="bow small">🎀</span>
+            <p>
+              Good day, <span className="greeting-name">Alyssa!</span> <span className="heart">♡</span>
+            </p>
           </div>
+
+          <div className="header-center">
+            <h1 className="dashboard-title">Alyssa's Dashboard</h1>
+            <p className="tagline">plan softly, live kindly, chase little joys ♡</p>
+          </div>
+
           <div className="time-badge">
             <span className="time">{now}</span>
+            <span className="date-sub">{today}</span>
           </div>
         </header>
+
+        <p className="affirmation-pill">💗 {todaysAffirmation()}</p>
 
         <main className="widget-grid">
           <StatusBoard />
