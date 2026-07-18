@@ -1,13 +1,41 @@
 .widget {
+  position: relative;
   background: var(--card-bg);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 20px;
+  border: 2px solid var(--border);
+  border-radius: 20px;
+  padding: 22px 20px 20px;
   text-align: left;
   display: flex;
   flex-direction: column;
   gap: 12px;
   box-shadow: var(--shadow);
+  overflow: visible;
+}
+
+.widget::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 22px;
+  width: 46px;
+  height: 18px;
+  background: linear-gradient(120deg, var(--pink) 0%, var(--pink-deep) 100%);
+  opacity: 0.85;
+  transform: rotate(-4deg);
+  border-radius: 3px;
+  box-shadow: rgba(0, 0, 0, 0.08) 0 2px 4px;
+}
+
+.widget:nth-of-type(4n + 2)::before {
+  background: linear-gradient(120deg, var(--lavender) 0%, var(--lavender-deep) 100%);
+}
+
+.widget:nth-of-type(4n + 3)::before {
+  background: linear-gradient(120deg, var(--blue) 0%, #8fd3f7 100%);
+}
+
+.widget:nth-of-type(4n)::before {
+  background: linear-gradient(120deg, var(--mint) 0%, #7fe0b3 100%);
 }
 
 .widget h2 {
@@ -16,7 +44,8 @@
 
 .subcard {
   background: var(--accent-bg);
-  border-radius: 12px;
+  border: 1px dashed var(--accent-border);
+  border-radius: 14px;
   padding: 14px;
   display: flex;
   flex-direction: column;
@@ -24,7 +53,7 @@
 }
 
 .subcard h3 {
-  color: var(--text-h);
+  color: var(--accent-2);
 }
 
 /* Inputs & buttons */
@@ -46,12 +75,23 @@
 .youtube-input select {
   flex: 1;
   min-width: 0;
-  padding: 8px 10px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
+  padding: 9px 12px;
+  border-radius: 12px;
+  border: 1.5px solid var(--border);
   background: var(--bg);
   color: var(--text-h);
   font: inherit;
+}
+
+.task-input input:focus,
+.link-input input:focus,
+.reminder-input input:focus,
+.weather-input input:focus,
+.youtube-input input:focus,
+.youtube-input select:focus,
+.person-row select:focus {
+  outline: none;
+  border-color: var(--accent);
 }
 
 .task-input button,
@@ -60,14 +100,25 @@
 .youtube-input button,
 .fun-fact button,
 .titration-controls button {
-  padding: 8px 14px;
-  border-radius: 8px;
+  padding: 9px 16px;
+  border-radius: 20px;
   border: none;
-  background: var(--accent);
+  background: linear-gradient(120deg, var(--accent) 0%, var(--accent-2) 100%);
   color: white;
   cursor: pointer;
   font: inherit;
+  font-weight: 700;
   white-space: nowrap;
+  transition: transform 0.15s ease;
+}
+
+.task-input button:hover,
+.link-input button:hover,
+.reminder-input button:hover,
+.youtube-input button:hover,
+.fun-fact button:hover,
+.titration-controls button:hover {
+  transform: translateY(-2px) scale(1.03);
 }
 
 /* Lists */
@@ -96,8 +147,8 @@
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  padding: 6px 0;
-  border-bottom: 1px solid var(--border);
+  padding: 8px 4px;
+  border-bottom: 1px dashed var(--border);
 }
 
 .task-list label,
@@ -109,9 +160,17 @@
   min-width: 0;
 }
 
+.task-list input[type='checkbox'],
+.med-list input[type='checkbox'],
+.dog-checks input[type='checkbox'] {
+  accent-color: var(--accent);
+  width: 16px;
+  height: 16px;
+}
+
 .task-list li.done span {
   text-decoration: line-through;
-  opacity: 0.6;
+  opacity: 0.55;
 }
 
 .task-list .empty,
@@ -129,28 +188,35 @@
 .remove {
   background: none;
   border: none;
-  color: var(--text);
+  color: var(--accent);
   font-size: 18px;
   line-height: 1;
   cursor: pointer;
   padding: 0 4px;
+  border-radius: 50%;
 }
 
 .remove:hover {
-  color: var(--text-h);
+  color: white;
+  background: var(--pink-deep);
 }
 
 .notes-area {
   width: 100%;
   min-height: 160px;
   resize: vertical;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
+  padding: 12px;
+  border-radius: 14px;
+  border: 1.5px solid var(--border);
   background: var(--bg);
   color: var(--text-h);
   font: inherit;
   box-sizing: border-box;
+}
+
+.notes-area:focus {
+  outline: none;
+  border-color: var(--accent);
 }
 
 .notes-area.small {
@@ -165,7 +231,10 @@
 }
 
 .status-group h3 {
-  color: var(--accent);
+  color: var(--accent-2);
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .person-row {
@@ -182,16 +251,23 @@
   background: transparent;
   color: var(--text-h);
   font: inherit;
+  font-weight: 600;
   padding: 4px 0;
 }
 
+.person-name:focus {
+  outline: none;
+  border-bottom: 1px dashed var(--accent);
+}
+
 .person-row select {
-  padding: 4px 8px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
+  padding: 5px 10px;
+  border-radius: 20px;
+  border: 1.5px solid var(--border);
   background: var(--bg);
   color: var(--text-h);
   font: inherit;
+  font-size: 13px;
 }
 
 /* Mood picker */
@@ -208,10 +284,16 @@
   width: 44px;
   height: 44px;
   cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.mood-btn:hover {
+  transform: scale(1.12);
 }
 
 .mood-btn.selected {
   border-color: var(--accent);
+  background: var(--accent-bg);
 }
 
 .slider-row {
@@ -233,13 +315,18 @@
 
 .cup {
   background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 8px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
   font-size: 18px;
   width: 36px;
   height: 36px;
   cursor: pointer;
   opacity: 0.35;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.cup:hover {
+  transform: translateY(-2px);
 }
 
 .cup.filled {
@@ -251,6 +338,8 @@
 .hydration-count {
   margin-top: 6px;
   font-size: 14px;
+  font-weight: 600;
+  color: var(--accent-2);
 }
 
 .protein-tracker label {
@@ -262,9 +351,9 @@
 
 .protein-tracker input[type='number'] {
   width: 60px;
-  padding: 6px 8px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
+  padding: 7px 8px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
   background: var(--bg);
   color: var(--text-h);
   font: inherit;
@@ -272,15 +361,15 @@
 
 .progress-bar {
   margin-top: 6px;
-  height: 8px;
-  border-radius: 4px;
+  height: 10px;
+  border-radius: 20px;
   background: var(--accent-bg);
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
-  background: var(--accent);
+  background: linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 100%);
   transition: width 0.3s;
 }
 
@@ -318,9 +407,9 @@
 }
 
 .titration-controls input[type='date'] {
-  padding: 4px 6px;
-  border-radius: 6px;
-  border: 1px solid var(--border);
+  padding: 5px 8px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
   background: var(--bg);
   color: var(--text-h);
 }
@@ -329,6 +418,7 @@
   cursor: pointer;
   font-size: 12px;
   color: var(--accent);
+  font-weight: 600;
 }
 
 .titration-history ul {
@@ -352,14 +442,14 @@
 }
 
 .tummy-flag {
-  color: #c96b6b;
+  color: #d16b8f;
 }
 
 .dog-notes {
   width: 100%;
-  padding: 6px 10px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
+  padding: 7px 12px;
+  border-radius: 12px;
+  border: 1.5px solid var(--border);
   background: var(--bg);
   color: var(--text-h);
   font: inherit;
@@ -371,16 +461,18 @@
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  background: var(--accent-bg);
-  border-radius: 12px;
-  padding: 12px;
+  background: linear-gradient(120deg, var(--mint) 0%, var(--blue) 100%);
+  border-radius: 16px;
+  padding: 12px 14px;
   font-size: 13px;
+  color: #3f5c52;
 }
 
 /* Quick capture */
 .capture-time {
   font-size: 12px;
-  color: var(--accent);
+  color: var(--accent-2);
+  font-weight: 700;
   white-space: nowrap;
 }
 
@@ -392,7 +484,10 @@
 /* Reminders */
 .reminder-date {
   font-size: 12px;
-  color: var(--accent);
+  color: white;
+  background: var(--accent-2);
+  padding: 2px 8px;
+  border-radius: 20px;
   white-space: nowrap;
 }
 

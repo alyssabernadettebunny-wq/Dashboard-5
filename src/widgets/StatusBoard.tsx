@@ -97,7 +97,7 @@ export default function StatusBoard() {
 
   return (
     <section className="widget widget-wide">
-      <h2>Today's Status Board</h2>
+      <h2>📍 Today's Status Board</h2>
       <div className="status-columns">
         <PersonGroup title="Me & the Girls" people={core} setPeople={setCore} statuses={CORE_STATUSES} />
         <PersonGroup title="Household" people={extended} setPeople={setExtended} statuses={EXTENDED_STATUSES} />

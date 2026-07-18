@@ -10,7 +10,7 @@ export default function WaterProtein() {
 
   return (
     <section className="widget">
-      <h2>Water & Protein</h2>
+      <h2>💧 Water & Protein</h2>
       <div className="hydration">
         <div className="cups">
           {Array.from({ length: WATER_GOAL }).map((_, i) => (

@@ -47,7 +47,7 @@ export default function DogsCare() {
 
   return (
     <section className="widget">
-      <h2>Dogs</h2>
+      <h2>🐾 Dogs</h2>
       {dogs.map((dog) => (
         <div key={dog.id} className="subcard">
           <h3>{dog.name}</h3>

@@ -57,7 +57,7 @@ export default function WorldFeed() {
 
   return (
     <section className="widget widget-wide">
-      <h2>World Feed</h2>
+      <h2>🌐 World Feed</h2>
       <p className="feed-note">
         Manual for now — weather, K-pop releases, and YouTube updates will sync automatically once
         we wire up live data sources.

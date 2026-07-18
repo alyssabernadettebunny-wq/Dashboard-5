@@ -1,64 +1,93 @@
 :root {
-  --text: #7a6b7d;
-  --text-h: #4a3b52;
-  --bg: #fdf7fb;
-  --card-bg: #ffffff;
-  --border: #f0d9ec;
-  --accent: #c98bd9;
-  --accent-bg: rgba(201, 139, 217, 0.12);
-  --accent-border: rgba(201, 139, 217, 0.5);
-  --shadow:
-    rgba(201, 139, 217, 0.15) 0 8px 20px -6px, rgba(201, 139, 217, 0.1) 0 2px 6px -2px;
+  --pink: #ffd3ec;
+  --pink-deep: #ff9ad5;
+  --lavender: #ddc7fb;
+  --lavender-deep: #c299fa;
+  --blue: #c3e8fc;
+  --mint: #c6f5df;
+  --cream: #fffaf3;
 
-  --sans: 'Nunito', 'Quicksand', system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: 'Quicksand', 'Nunito', system-ui, 'Segoe UI', Roboto, sans-serif;
+  --text: #7a6b7d;
+  --text-h: #5b4066;
+  --bg: #fff6fb;
+  --card-bg: #fffdfb;
+  --border: #f6d9ef;
+  --accent: #d98fd0;
+  --accent-2: #a98ff0;
+  --accent-bg: rgba(217, 143, 208, 0.12);
+  --accent-border: rgba(217, 143, 208, 0.45);
+  --shadow:
+    rgba(217, 143, 208, 0.22) 0 10px 24px -8px, rgba(169, 143, 240, 0.15) 0 3px 8px -3px;
+
+  --sans: 'Quicksand', system-ui, 'Segoe UI', Roboto, sans-serif;
+  --heading: 'Baloo 2', 'Quicksand', system-ui, sans-serif;
 
   font: 16px/145% var(--sans);
   color-scheme: light dark;
   color: var(--text);
-  background: linear-gradient(180deg, #fdf7fb 0%, #f7f0fb 100%);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #c9bcd0;
-    --text-h: #f3e9f7;
-    --bg: #211b26;
-    --card-bg: #2b2331;
-    --border: #3e3345;
-    --accent: #d9a6ea;
-    --accent-bg: rgba(217, 166, 234, 0.15);
-    --accent-border: rgba(217, 166, 234, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 8px 20px -6px, rgba(0, 0, 0, 0.25) 0 2px 6px -2px;
-    background: linear-gradient(180deg, #211b26 0%, #241e2c 100%);
-  }
-}
-
 body {
   margin: 0;
+  background:
+    radial-gradient(circle at 8% 12%, rgba(255, 211, 236, 0.55) 0, transparent 40%),
+    radial-gradient(circle at 92% 8%, rgba(195, 232, 252, 0.5) 0, transparent 38%),
+    radial-gradient(circle at 85% 90%, rgba(198, 245, 223, 0.45) 0, transparent 40%),
+    radial-gradient(circle at 10% 88%, rgba(221, 199, 251, 0.5) 0, transparent 40%),
+    linear-gradient(180deg, #fff6fb 0%, #fbf2ff 100%);
+  background-attachment: fixed;
+  min-height: 100svh;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text: #d0c1d6;
+    --text-h: #f5e8fa;
+    --bg: #241b2c;
+    --card-bg: #2c2233;
+    --border: #4a3855;
+    --accent: #e6a8dd;
+    --accent-2: #c3a8f5;
+    --accent-bg: rgba(230, 168, 221, 0.15);
+    --accent-border: rgba(230, 168, 221, 0.45);
+    --shadow:
+      rgba(0, 0, 0, 0.4) 0 10px 24px -8px, rgba(0, 0, 0, 0.25) 0 3px 8px -3px;
+  }
+
+  body {
+    background:
+      radial-gradient(circle at 8% 12%, rgba(230, 168, 221, 0.12) 0, transparent 40%),
+      radial-gradient(circle at 92% 8%, rgba(163, 190, 230, 0.1) 0, transparent 38%),
+      radial-gradient(circle at 85% 90%, rgba(160, 220, 190, 0.08) 0, transparent 40%),
+      radial-gradient(circle at 10% 88%, rgba(195, 168, 245, 0.1) 0, transparent 40%),
+      linear-gradient(180deg, #241b2c 0%, #201828 100%);
+    background-attachment: fixed;
+  }
 }
 
 h1,
 h2,
 h3 {
   font-family: var(--heading);
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-h);
 }
 
 h1 {
-  font-size: 32px;
+  font-size: 34px;
   margin: 0;
 }
 
 h2 {
-  font-size: 18px;
+  font-size: 19px;
   margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 h3 {

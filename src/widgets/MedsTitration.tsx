@@ -93,7 +93,7 @@ export default function MedsTitration() {
 
   return (
     <section className="widget">
-      <h2>Meds & Titration</h2>
+      <h2>💊 Meds & Titration</h2>
 
       <div className="subcard">
         <h3>Daily Meds</h3>
