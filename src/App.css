@@ -215,7 +215,7 @@
 
 .greeting-block h1 {
   font-family: var(--font-script);
-  font-size: 30px;
+  font-size: 34px;
   font-weight: 700;
   color: var(--purple-deep);
   margin: 0 0 4px;
@@ -264,7 +264,7 @@
 
 .header-center h2 {
   font-family: var(--font-script);
-  font-size: 44px;
+  font-size: 52px;
   font-weight: 700;
   color: var(--purple-deep);
   margin: 0;
@@ -340,7 +340,7 @@
 
 .page-title {
   font-family: var(--font-script);
-  font-size: 34px;
+  font-size: 40px;
   color: var(--purple-deep);
   margin-bottom: 16px;
 }
