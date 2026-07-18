@@ -442,3 +442,59 @@
   align-self: stretch;
   text-align: center;
 }
+
+/* mini calendar */
+.mini-cal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mini-cal-label {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--purple-heading);
+}
+
+.mini-cal-nav {
+  background: none;
+  border: none;
+  color: var(--pink-accent);
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 4px;
+}
+
+.mini-cal-nav:hover {
+  color: var(--purple-heading);
+}
+
+.mini-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.mini-cal-weekday {
+  text-align: center;
+  font-size: 9.5px;
+  font-weight: 700;
+  color: var(--text-muted);
+  padding-bottom: 2px;
+}
+
+.mini-cal-day {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 22px;
+  font-size: 10.5px;
+  color: var(--text-body);
+  border-radius: 50%;
+}
+
+.mini-cal-day.today {
+  font-size: 13px;
+  background: var(--pink-pale);
+}

@@ -8,11 +8,13 @@ import ChecklistCard from '../widgets/ChecklistCard'
 import Reminders from '../widgets/Reminders'
 import WorldFeed from '../widgets/WorldFeed'
 import WaitingMode from '../widgets/WaitingMode'
+import MiniCalendar from '../widgets/MiniCalendar'
 
 export default function HomePage() {
   return (
     <div className="grid">
       <StatusBoard />
+      <MiniCalendar />
       <BodyCheckin />
       <WaterProtein />
       <MedsTitration />
