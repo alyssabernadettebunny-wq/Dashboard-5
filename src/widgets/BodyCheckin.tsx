@@ -1,27 +1,12 @@
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import Card from '../components/Card'
 
-const MOODS = ['😊', '🙂', '😐', '😟', '😢', '😤']
-
 export default function BodyCheckin() {
-  const [mood, setMood] = useLocalStorage('dashboard.body.mood', '')
   const [sensory, setSensory] = useLocalStorage('dashboard.body.sensory', 5)
   const [notes, setNotes] = useLocalStorage('dashboard.body.notes', '')
 
   return (
-    <Card icon="💗" title="Body & Mood Check-In">
-      <div className="mood-row">
-        {MOODS.map((emoji) => (
-          <button
-            key={emoji}
-            className={`mood-face ${mood === emoji ? 'selected' : ''}`}
-            onClick={() => setMood(emoji)}
-            aria-label="Select mood"
-          >
-            {emoji}
-          </button>
-        ))}
-      </div>
+    <Card icon="🌤️" title="Body Check-In">
       <div>
         <div className="stat-row">
           <span>Sensory load</span>

@@ -9,12 +9,14 @@ import Reminders from '../widgets/Reminders'
 import WorldFeed from '../widgets/WorldFeed'
 import WaitingMode from '../widgets/WaitingMode'
 import MiniCalendar from '../widgets/MiniCalendar'
+import MoodCheckIn from '../widgets/MoodCheckIn'
 
 export default function HomePage() {
   return (
     <div className="grid">
       <StatusBoard />
       <MiniCalendar />
+      <MoodCheckIn />
       <BodyCheckin />
       <WaterProtein />
       <MedsTitration />
