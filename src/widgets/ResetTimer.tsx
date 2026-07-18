@@ -31,9 +31,12 @@ export default function ResetTimer() {
 
   return (
     <Card icon="⏱️" title="Home Reset Timer">
-      <p style={{ fontSize: 32, fontWeight: 700, color: 'var(--purple-deep)', textAlign: 'center', margin: '6px 0' }}>
-        {label}
-      </p>
+      <div className="room-body" style={{ alignItems: 'center', justifyContent: 'center' }}>
+        <p style={{ fontSize: 32, fontWeight: 700, color: 'var(--purple-deep)', textAlign: 'center', margin: '6px 0', flex: 1 }}>
+          {label}
+        </p>
+        <div className="card-illustration room-illustration">illustration</div>
+      </div>
       <div className="c-input-row">
         <button
           onClick={() => setRunning((r) => !r)}
