@@ -289,6 +289,7 @@
 }
 
 .datetime-card .time {
+  font-family: var(--font-numeral);
   font-size: 28px;
   font-weight: 700;
   color: #d6698c;
@@ -296,6 +297,7 @@
 }
 
 .datetime-card .meridiem {
+  font-family: var(--font-numeral);
   font-size: 13px;
   font-weight: 700;
   margin-left: 3px;

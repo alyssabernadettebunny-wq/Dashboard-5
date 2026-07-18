@@ -39,6 +39,7 @@
 
   --font-script: 'Parisienne', cursive;
   --font-ui: 'Quicksand', sans-serif;
+  --font-numeral: 'Baloo 2', 'Quicksand', sans-serif;
 
   font: 14px/145% var(--font-ui);
   color-scheme: light;
