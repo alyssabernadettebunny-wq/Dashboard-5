@@ -1367,3 +1367,143 @@
   background: var(--pink-pale);
   color: var(--purple-heading);
 }
+
+/* today's meals */
+.meal-slot {
+  background: var(--card-bg-tint);
+  border: 1px solid var(--border-hairline);
+  border-radius: 14px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.meal-slot-label {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--purple-heading);
+}
+
+.meal-dish-input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text-heading);
+  padding: 0;
+}
+
+.meal-details-input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  font: inherit;
+  font-size: 11px;
+  color: var(--text-muted);
+  padding: 0;
+}
+
+.meal-dish-input:focus,
+.meal-details-input:focus {
+  outline: none;
+}
+
+/* weekly meal plan table */
+.week-table-wrap {
+  overflow-x: auto;
+}
+
+.week-table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 10.5px;
+}
+
+.week-table th {
+  color: var(--purple-heading);
+  font-weight: 700;
+  padding: 4px 6px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.week-table td {
+  border: 1px solid var(--border-hairline);
+  padding: 2px;
+  min-width: 78px;
+}
+
+.week-table td.row-label {
+  border: none;
+  color: var(--purple-heading);
+  font-weight: 700;
+  text-align: right;
+  padding-right: 8px;
+  white-space: nowrap;
+}
+
+.week-table input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  font: inherit;
+  font-size: 10.5px;
+  color: var(--text-body);
+  text-align: center;
+  padding: 4px 2px;
+  box-sizing: border-box;
+}
+
+.week-table input:focus {
+  outline: none;
+  background: var(--pink-pale);
+  border-radius: 6px;
+}
+
+/* pantry staples */
+.pantry-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 0;
+  border-bottom: 1px dotted var(--border-hairline);
+}
+
+.pantry-item:last-child {
+  border-bottom: none;
+}
+
+.pantry-icon {
+  font-size: 15px;
+}
+
+.pantry-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 12.5px;
+  color: var(--text-body);
+}
+
+.pantry-status {
+  background: none;
+  border: none;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+/* grocery star toggle */
+.grocery-star {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--pink-line);
+  padding: 0 2px;
+}
+
+.grocery-star.active {
+  color: var(--warn-yellow);
+}
