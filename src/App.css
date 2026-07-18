@@ -236,49 +236,12 @@
   flex: 1;
   min-width: 280px;
   position: relative;
-  background: linear-gradient(180deg, var(--pink-pale) 0%, rgba(255, 255, 255, 0) 100%);
-  border-radius: 18px;
-  padding: 8px 24px 6px;
 }
 
-.title-scallop {
-  height: 10px;
-  background: radial-gradient(
-      circle at 6px 0px,
-      transparent 6px,
-      var(--pink-soft) 6.5px,
-      var(--pink-soft) 7px,
-      transparent 7.5px
-    )
-    repeat-x;
-  background-size: 12px 12px;
-  opacity: 0.75;
-  margin: 0 auto 4px;
-  max-width: 340px;
-}
-
-.title-scallop.bottom {
-  transform: rotate(180deg);
-  margin: 4px auto 0;
-}
-
-.header-center h2 {
-  font-family: var(--font-script);
-  font-size: 52px;
-  font-weight: 700;
-  color: var(--purple-deep);
-  margin: 0;
-  line-height: 1;
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
-  gap: 10px;
-  white-space: nowrap;
-}
-
-.title-heart {
-  color: var(--pink-accent);
-  font-size: 18px;
+.title-banner {
+  max-width: 100%;
+  height: auto;
+  width: 480px;
 }
 
 .header-center .tagline {
