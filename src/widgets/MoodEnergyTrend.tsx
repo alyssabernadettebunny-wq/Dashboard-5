@@ -7,14 +7,13 @@ interface Entry {
   energy: number
 }
 
-const FACES = ['😊', '🙂', '😐', '😟', '😢']
-
 function todayStr() {
   return new Date().toISOString().slice(0, 10)
 }
 
-function dayLabel(dateStr: string) {
-  return new Date(dateStr + 'T00:00:00').toLocaleDateString(undefined, { weekday: 'narrow' })
+function dayLabel(dateStr: string, isToday: boolean) {
+  if (isToday) return 'Today'
+  return new Date(dateStr + 'T00:00:00').toLocaleDateString(undefined, { weekday: 'short' })
 }
 
 export default function MoodEnergyTrend() {
@@ -31,44 +30,50 @@ export default function MoodEnergyTrend() {
   }
 
   const last7 = history.slice(-7)
-  const w = 220
-  const h = 70
+  const w = 260
+  const h = 80
   const stepX = last7.length > 1 ? w / (last7.length - 1) : 0
 
   function pointsFor(key: 'mood' | 'energy') {
     return last7.map((e, i) => `${i * stepX},${h - (e[key] / 10) * h}`).join(' ')
   }
 
+  const moodPoints = pointsFor('mood')
+  const areaPoints = last7.length > 1 ? `0,${h} ${moodPoints} ${(last7.length - 1) * stepX},${h}` : ''
+
   return (
-    <Card icon="💗" title="Mood & Energy Trend (7 days)">
+    <Card icon="📈" title="Trend This Week" meta="Mood & Energy">
       {last7.length === 0 ? (
         <p className="c-empty">Log a few days to see your trend.</p>
       ) : (
-        <>
-          <svg className="trend-chart-wrap" viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none">
-            <polyline points={pointsFor('mood')} fill="none" stroke="var(--pink-accent)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-            <polyline points={pointsFor('energy')} fill="none" stroke="var(--purple-heading)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: 'var(--text-muted)' }}>
-            {last7.map((e) => (
-              <span key={e.date}>{dayLabel(e.date)}</span>
-            ))}
+        <div className="trend2-body">
+          <div className="trend2-legend">
+            <span className="mood">● Mood ♡</span>
+            <span className="energy">● Energy ✦</span>
           </div>
-        </>
+          <div className="trend2-chart-area">
+            <div className="trend2-axis-row">
+              <div className="trend2-yaxis" style={{ height: h }}>
+                <span>10</span>
+                <span>5</span>
+                <span>0</span>
+              </div>
+              <svg className="trend-chart-wrap" viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" style={{ flex: 1 }}>
+                {areaPoints && <polygon points={areaPoints} fill="var(--pink-pale)" opacity="0.6" />}
+                <polyline points={pointsFor('energy')} fill="none" stroke="var(--purple-heading)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                <polyline points={moodPoints} fill="none" stroke="var(--pink-accent)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+            <div className="trend2-daylabels">
+              {last7.map((e, i) => (
+                <span key={e.date} className={i === last7.length - 1 ? 'today' : ''}>
+                  {dayLabel(e.date, i === last7.length - 1)}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
       )}
-      <div className="trend-legend">
-        <span>
-          <span className="dot" style={{ background: 'var(--pink-accent)' }} /> Mood
-        </span>
-        <span>
-          <span className="dot" style={{ background: 'var(--purple-heading)' }} /> Energy
-        </span>
-      </div>
-      <div className="trend-face-row">
-        {FACES.map((f) => (
-          <span key={f}>{f}</span>
-        ))}
-      </div>
       <div className="trend-sliders">
         <div className="stat-row">
           <span>Today's mood</span>

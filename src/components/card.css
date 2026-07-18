@@ -1122,3 +1122,248 @@
   flex-direction: column;
   gap: 6px;
 }
+
+/* trend v2 (Trend This Week) */
+.trend2-body {
+  display: flex;
+  gap: 10px;
+}
+
+.trend2-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.trend2-legend .mood {
+  color: var(--pink-accent);
+}
+
+.trend2-legend .energy {
+  color: var(--purple-heading);
+}
+
+.trend2-chart-area {
+  flex: 1;
+  min-width: 0;
+}
+
+.trend2-axis-row {
+  display: flex;
+  gap: 8px;
+}
+
+.trend2-yaxis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-size: 9px;
+  color: var(--text-muted);
+  padding: 2px 0;
+}
+
+.trend2-daylabels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 9.5px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.trend2-daylabels .today {
+  font-weight: 700;
+  color: var(--purple-heading);
+}
+
+/* status pill (appetite) reuse of status-pill but standalone trigger */
+.appetite-pill {
+  background: var(--pink-pale);
+  border: none;
+  padding: 4px 14px;
+  border-radius: var(--radius-pill);
+  font: inherit;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--purple-heading);
+  cursor: pointer;
+}
+
+.appetite-pill:hover {
+  background: var(--purple-pill);
+}
+
+/* regulation tools grid */
+.tools-subtitle {
+  text-align: center;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--purple-heading);
+  margin: 0;
+}
+
+.tools-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.tool-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: var(--pink-pale);
+  border: 1.5px solid transparent;
+  border-radius: 14px;
+  padding: 10px 6px;
+  cursor: pointer;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--purple-heading);
+  position: relative;
+}
+
+.tool-tile.active {
+  border-color: var(--pink-accent);
+  background: var(--purple-pill);
+}
+
+.tool-tile .tool-icon {
+  font-size: 22px;
+}
+
+.tool-tile .tool-remove {
+  position: absolute;
+  top: 2px;
+  right: 4px;
+  background: none;
+  border: none;
+  color: var(--pink-accent);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.tools-add-link {
+  background: none;
+  border: none;
+  color: var(--purple-heading);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: center;
+  width: 100%;
+}
+
+/* lined notebook paper */
+.notes-paper {
+  background: repeating-linear-gradient(
+    var(--card-bg-tint),
+    var(--card-bg-tint) 21px,
+    var(--border-hairline) 22px
+  );
+  border-radius: 12px;
+  padding: 8px 12px;
+  min-height: 130px;
+}
+
+.notes-paper textarea {
+  width: 100%;
+  min-height: 120px;
+  border: none;
+  background: transparent;
+  font: inherit;
+  font-size: 12.5px;
+  line-height: 22px;
+  color: var(--text-body);
+  resize: vertical;
+}
+
+.notes-paper textarea:focus {
+  outline: none;
+}
+
+/* donut chart */
+.donut-wrap {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.donut {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.donut::after {
+  content: '';
+  position: absolute;
+  inset: 14px;
+  border-radius: 50%;
+  background: var(--card-bg);
+}
+
+.donut-label {
+  position: absolute;
+  inset: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--purple-deep);
+  text-align: center;
+  z-index: 1;
+}
+
+.cycle-phases {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 10.5px;
+}
+
+.cycle-phases .phase-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 5px;
+}
+
+.cycle-phases .phase-row.active {
+  font-weight: 700;
+  color: var(--purple-heading);
+}
+
+/* movement tiles */
+.movement-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.movement-tile {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--card-bg-tint);
+  border: 1px solid var(--border-hairline);
+  border-radius: 12px;
+  padding: 8px 10px;
+  cursor: pointer;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-body);
+}
+
+.movement-tile.done {
+  background: var(--pink-pale);
+  color: var(--purple-heading);
+}
