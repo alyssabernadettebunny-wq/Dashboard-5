@@ -26,7 +26,7 @@ export default function QuickCapture() {
 
   return (
     <section className="widget">
-      <h2>📝 Quick Capture</h2>
+      <h2><span className="icon-badge">📝</span> Quick Capture</h2>
       <div className="task-input">
         <input
           type="text"

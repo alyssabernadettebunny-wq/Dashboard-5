@@ -9,10 +9,12 @@ interface Item {
 }
 
 export default function ChecklistCard({
+  icon,
   title,
   storageKey,
   placeholder,
 }: {
+  icon: string
   title: string
   storageKey: string
   placeholder: string
@@ -37,7 +39,7 @@ export default function ChecklistCard({
 
   return (
     <section className="widget">
-      <h2>{title}</h2>
+      <h2><span className="icon-badge">{icon}</span> {title}</h2>
       <div className="task-input">
         <input
           type="text"

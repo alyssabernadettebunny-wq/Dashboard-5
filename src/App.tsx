@@ -74,7 +74,7 @@ function App() {
           </div>
 
           <div className="header-center">
-            <h1 className="dashboard-title">Alyssa's Dashboard</h1>
+            <h1 className="dashboard-title">Alyssa Daily Dashboard</h1>
             <p className="tagline">plan softly, live kindly, chase little joys ♡</p>
           </div>
 
@@ -93,9 +93,10 @@ function App() {
           <MedsTitration />
           <DogsCare />
           <QuickCapture />
-          <ChecklistCard title="⭐ My Tasks" storageKey="dashboard.tasks.me" placeholder="Add a task..." />
+          <ChecklistCard icon="⭐" title="My Tasks" storageKey="dashboard.tasks.me" placeholder="Add a task..." />
           <ChecklistCard
-            title="🎀 Girls' To-Dos"
+            icon="🎀"
+            title="Girls' To-Dos"
             storageKey="dashboard.tasks.girls"
             placeholder="Add something for the girls..."
           />

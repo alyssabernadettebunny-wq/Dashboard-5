@@ -13,7 +13,7 @@
   --text-h: #6b4a86;
   --bg: #fdf3fa;
   --card-bg: #ffffff;
-  --border: #f3cdec;
+  --border: #f0b8de;
   --accent: #a06bd6;
   --accent-2: #c9679e;
   --accent-bg: #fbe6f6;
@@ -22,7 +22,7 @@
 
   --sans: 'Quicksand', system-ui, 'Segoe UI', Roboto, sans-serif;
   --heading: 'Baloo 2', 'Quicksand', system-ui, sans-serif;
-  --title: 'Fraunces', 'Georgia', serif;
+  --title: 'Berkshire Swash', 'Georgia', cursive;
 
   font: 16px/145% var(--sans);
   color-scheme: light dark;

@@ -33,7 +33,7 @@ export default function Reminders() {
 
   return (
     <section className="widget">
-      <h2>🔔 Reminders</h2>
+      <h2><span className="icon-badge">🔔</span> Reminders</h2>
       <div className="reminder-input">
         <input
           type="text"

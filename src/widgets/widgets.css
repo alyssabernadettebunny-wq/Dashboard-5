@@ -28,9 +28,33 @@
   color: var(--accent);
 }
 
+.icon-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  font-size: 15px;
+  background: linear-gradient(150deg, var(--pink) 0%, var(--pink-deep) 100%);
+  flex-shrink: 0;
+}
+
+.widget:nth-of-type(4n + 2) .icon-badge {
+  background: linear-gradient(150deg, var(--lavender) 0%, var(--lavender-deep) 100%);
+}
+
+.widget:nth-of-type(4n + 3) .icon-badge {
+  background: linear-gradient(150deg, var(--blue) 0%, #8fd3f7 100%);
+}
+
+.widget:nth-of-type(4n) .icon-badge {
+  background: linear-gradient(150deg, var(--mint) 0%, #7fe0b3 100%);
+}
+
 .subcard {
-  background: var(--accent-bg);
-  border: 1px solid var(--accent-border);
+  background: var(--cream);
+  border: 1px solid var(--border);
   border-radius: 14px;
   padding: 14px;
   display: flex;
@@ -86,14 +110,15 @@
 .youtube-input button,
 .fun-fact button,
 .titration-controls button {
-  padding: 8px 16px;
-  border-radius: 20px;
-  border: 1.5px solid var(--accent-border);
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: 1.5px solid var(--border);
   background: var(--accent-bg);
   color: var(--accent-2);
   cursor: pointer;
   font: inherit;
   font-weight: 700;
+  font-size: 13px;
   white-space: nowrap;
   transition: background 0.15s ease, transform 0.15s ease;
 }

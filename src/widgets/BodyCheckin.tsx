@@ -10,7 +10,7 @@ export default function BodyCheckin() {
 
   return (
     <section className="widget">
-      <h2>💗 Body & Mood Check-In</h2>
+      <h2><span className="icon-badge">💗</span> Body & Mood Check-In</h2>
       <div className="mood-picker">
         {MOODS.map((emoji) => (
           <button
