@@ -5,7 +5,7 @@ import ChecklistCard from '../widgets/ChecklistCard'
 export default function HousePage() {
   return (
     <>
-      <h2 className="page-title">House</h2>
+      <h2 className="page-title">Home</h2>
       <div className="grid">
         <ChoreRhythm />
         <ResetTimer />

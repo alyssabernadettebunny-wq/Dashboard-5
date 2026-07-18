@@ -5,10 +5,10 @@ import { useLocalStorage } from './hooks/useLocalStorage'
 import './App.css'
 
 const NAV_ITEMS = [
-  { key: 'home', label: 'Home', icon: '🏠', enabled: true },
+  { key: 'home', label: 'Today', icon: '🏠', enabled: true },
   { key: 'rhythm', label: 'Rhythm', icon: '🗓️', enabled: false },
   { key: 'body-weather', label: 'Body Weather', icon: '☁️', enabled: false },
-  { key: 'house', label: 'House', icon: '🏡', enabled: true },
+  { key: 'house', label: 'Home', icon: '🏡', enabled: true },
   { key: 'girls', label: 'Girls', icon: '💗', enabled: false },
   { key: 'pets', label: 'Pets', icon: '🐾', enabled: false },
   { key: 'food', label: 'Food', icon: '🍡', enabled: false },
