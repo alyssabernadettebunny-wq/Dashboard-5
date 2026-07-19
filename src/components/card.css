@@ -85,7 +85,7 @@
   color: var(--text-muted);
 }
 
-.c-list-item .remove {
+.remove {
   background: none;
   border: none;
   color: var(--pink-line);
@@ -96,7 +96,7 @@
   margin-left: 4px;
 }
 
-.c-list-item .remove:hover {
+.remove:hover {
   color: var(--pink-accent);
 }
 
