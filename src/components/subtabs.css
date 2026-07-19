@@ -8,7 +8,8 @@
 }
 
 .subtab-bow {
-  font-size: 20px;
+  width: 26px;
+  height: auto;
   margin-right: 4px;
   margin-bottom: 8px;
   flex-shrink: 0;
