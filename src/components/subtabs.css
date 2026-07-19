@@ -7,14 +7,6 @@
   margin-bottom: 20px;
 }
 
-.subtab-bow {
-  width: 26px;
-  height: auto;
-  margin-right: 4px;
-  margin-bottom: 8px;
-  flex-shrink: 0;
-}
-
 .subtab-tab {
   position: relative;
   top: 4px;

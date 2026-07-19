@@ -21,7 +21,6 @@ export default function SubTabs({ tabs, storageKey }: { tabs: SubTab[]; storageK
   return (
     <>
       <div className="subtab-strip">
-        <img className="subtab-bow" src="/Dashboard-5/images/subtab-heart.png" alt="" />
         {tabs.map((tab) => (
           <button
             key={tab.key}
