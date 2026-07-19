@@ -1,31 +1,67 @@
-.subtab-row {
+.subtab-strip {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 18px;
+  align-items: flex-end;
+  gap: 6px;
+  border-bottom: 2px solid var(--pink-line);
+  padding-left: 2px;
+  margin-bottom: 20px;
 }
 
-.subtab-pill {
+.subtab-bow {
+  font-size: 20px;
+  margin-right: 4px;
+  margin-bottom: 8px;
+  flex-shrink: 0;
+}
+
+.subtab-tab {
+  position: relative;
+  top: 4px;
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 7px 16px;
-  border-radius: var(--radius-pill);
-  border: 1px solid var(--border-hairline);
-  background: var(--card-bg);
-  color: var(--text-heading);
-  font-size: 12.5px;
+  gap: 4px;
+  padding: 10px 20px 9px;
+  border-radius: 14px 14px 0 0;
+  border: 1px solid var(--pink-line);
+  border-bottom: none;
+  background: var(--pink-pale);
+  color: var(--purple-heading);
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease;
+  transition: all 0.15s ease;
 }
 
-.subtab-pill:hover:not(.active) {
-  background: var(--pink-pale);
+.subtab-tab:hover:not(.active) {
+  background: #fceff7;
+  top: 2px;
 }
 
-.subtab-pill.active {
-  background: var(--purple-pill);
+.subtab-tab.active {
+  top: 0;
+  z-index: 2;
+  background: var(--card-bg);
   color: var(--purple-deep);
-  border-color: transparent;
+  font-weight: 700;
+  box-shadow: 0 -2px 6px rgba(123, 95, 166, 0.08);
+}
+
+.subtab-tab.active::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 2px;
+  background: var(--card-bg);
+}
+
+.subtab-heart {
+  color: var(--pink-accent);
+  font-size: 12px;
+}
+
+.subtab-panel {
+  position: relative;
+  top: -2px;
 }

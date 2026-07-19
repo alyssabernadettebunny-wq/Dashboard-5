@@ -20,18 +20,20 @@ export default function SubTabs({ tabs, storageKey }: { tabs: SubTab[]; storageK
 
   return (
     <>
-      <div className="subtab-row">
+      <div className="subtab-strip">
+        <span className="subtab-bow">🎀</span>
         {tabs.map((tab) => (
           <button
             key={tab.key}
-            className={`subtab-pill ${activeTab.key === tab.key ? 'active' : ''}`}
+            className={`subtab-tab ${activeTab.key === tab.key ? 'active' : ''}`}
             onClick={() => selectTab(tab.key)}
           >
-            <span>{tab.icon}</span> {tab.label}
+            {tab.label}
+            {activeTab.key === tab.key && <span className="subtab-heart">♡</span>}
           </button>
         ))}
       </div>
-      {activeTab.content}
+      <div className="subtab-panel">{activeTab.content}</div>
     </>
   )
 }
