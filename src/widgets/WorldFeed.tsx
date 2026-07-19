@@ -15,8 +15,30 @@ interface YoutubeUpdate {
   summary: string
 }
 
+interface Weather {
+  temp: string
+  condition: string
+  todayHigh: string
+  todayLow: string
+  tonightHigh: string
+  tonightLow: string
+  moonPhase: string
+  moonPct: string
+}
+
+const DEFAULT_WEATHER: Weather = {
+  temp: '',
+  condition: '',
+  todayHigh: '',
+  todayLow: '',
+  tonightHigh: '',
+  tonightLow: '',
+  moonPhase: '',
+  moonPct: '',
+}
+
 export default function WorldFeed() {
-  const [weather, setWeather] = useLocalStorage('dashboard.worldfeed.weather', { temp: '', condition: '' })
+  const [weather, setWeather] = useLocalStorage<Weather>('dashboard.worldfeed.weather', DEFAULT_WEATHER)
 
   const [kpop, setKpop] = useLocalStorage<KpopRelease[]>('dashboard.worldfeed.kpop', [])
   const [artist, setArtist] = useState('')
@@ -59,7 +81,7 @@ export default function WorldFeed() {
       <div className="status-cols">
         <div className="subsection">
           <p className="section-label" style={{ marginTop: 0 }}>
-            Weather
+            Weather & Moon
           </p>
           <div className="c-input-row">
             <input type="text" placeholder="Temp" value={weather.temp} onChange={(e) => setWeather({ ...weather, temp: e.target.value })} />
@@ -68,6 +90,58 @@ export default function WorldFeed() {
               placeholder="Condition"
               value={weather.condition}
               onChange={(e) => setWeather({ ...weather, condition: e.target.value })}
+            />
+          </div>
+          <div className="stat-row">
+            <span>Today</span>
+            <span style={{ display: 'flex', gap: 6 }}>
+              ↑
+              <input
+                type="text"
+                placeholder="24°"
+                value={weather.todayHigh}
+                onChange={(e) => setWeather({ ...weather, todayHigh: e.target.value })}
+                style={{ width: 36, border: 'none', background: 'transparent', font: 'inherit', color: 'inherit' }}
+              />
+              ↓
+              <input
+                type="text"
+                placeholder="14°"
+                value={weather.todayLow}
+                onChange={(e) => setWeather({ ...weather, todayLow: e.target.value })}
+                style={{ width: 36, border: 'none', background: 'transparent', font: 'inherit', color: 'inherit' }}
+              />
+            </span>
+          </div>
+          <div className="stat-row">
+            <span>Tonight</span>
+            <span style={{ display: 'flex', gap: 6 }}>
+              ↑
+              <input
+                type="text"
+                placeholder="17°"
+                value={weather.tonightHigh}
+                onChange={(e) => setWeather({ ...weather, tonightHigh: e.target.value })}
+                style={{ width: 36, border: 'none', background: 'transparent', font: 'inherit', color: 'inherit' }}
+              />
+              ↓
+              <input
+                type="text"
+                placeholder="12°"
+                value={weather.tonightLow}
+                onChange={(e) => setWeather({ ...weather, tonightLow: e.target.value })}
+                style={{ width: 36, border: 'none', background: 'transparent', font: 'inherit', color: 'inherit' }}
+              />
+            </span>
+          </div>
+          <div className="c-input-row">
+            <input type="text" placeholder="Moon phase (e.g. Waning Crescent)" value={weather.moonPhase} onChange={(e) => setWeather({ ...weather, moonPhase: e.target.value })} />
+            <input
+              type="text"
+              placeholder="18%"
+              value={weather.moonPct}
+              onChange={(e) => setWeather({ ...weather, moonPct: e.target.value })}
+              style={{ maxWidth: 60 }}
             />
           </div>
         </div>

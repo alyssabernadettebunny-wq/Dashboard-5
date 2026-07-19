@@ -1710,3 +1710,154 @@
 .memory-card input:focus {
   outline: none;
 }
+
+/* family & kids */
+.family-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+  border-bottom: 1px dotted var(--border-hairline);
+}
+
+.family-row:last-of-type {
+  border-bottom: none;
+}
+
+.family-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--pink-pale);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.family-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.family-name {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--purple-heading);
+  border: none;
+  background: transparent;
+  width: 100%;
+  padding: 0;
+}
+
+.family-activity {
+  font-size: 11px;
+  color: var(--text-muted);
+  border: none;
+  background: transparent;
+  width: 100%;
+  padding: 0;
+}
+
+.family-name:focus,
+.family-activity:focus {
+  outline: none;
+}
+
+.family-action {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--pink-pale);
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+/* grateful for */
+.grateful-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.grateful-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.grateful-line input {
+  flex: 1;
+  border: none;
+  border-bottom: 1px dotted var(--border-hairline);
+  background: transparent;
+  font: inherit;
+  font-size: 12px;
+  color: var(--text-body);
+  padding: 3px 0;
+}
+
+.grateful-line input:focus {
+  outline: none;
+  border-bottom-color: var(--pink-accent);
+}
+
+/* tarot pull */
+.tarot-card {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.tarot-visual {
+  width: 90px;
+  height: 130px;
+  border-radius: 12px;
+  background: linear-gradient(160deg, var(--purple-heading) 0%, var(--purple-deep) 100%);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 8px;
+  flex-shrink: 0;
+  gap: 6px;
+}
+
+.tarot-visual .roman {
+  font-size: 16px;
+}
+
+.tarot-visual .star {
+  font-size: 20px;
+}
+
+.tarot-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.tarot-name {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--purple-heading);
+  margin-bottom: 2px;
+}
+
+.tarot-meaning {
+  font-size: 11px;
+  color: var(--text-body);
+  margin-bottom: 6px;
+}
+
+.tarot-affirmation {
+  font-size: 10.5px;
+  font-style: italic;
+  color: var(--pink-accent);
+}

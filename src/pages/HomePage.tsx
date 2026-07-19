@@ -10,6 +10,9 @@ import WorldFeed from '../widgets/WorldFeed'
 import WaitingMode from '../widgets/WaitingMode'
 import MiniCalendar from '../widgets/MiniCalendar'
 import MoodCheckIn from '../widgets/MoodCheckIn'
+import FamilyKids from '../widgets/FamilyKids'
+import GratefulFor from '../widgets/GratefulFor'
+import TarotPull from '../widgets/TarotPull'
 
 export default function HomePage() {
   return (
@@ -21,7 +24,10 @@ export default function HomePage() {
       <WaterProtein />
       <MedsTitration />
       <DogsCare />
+      <FamilyKids />
       <QuickCapture />
+      <GratefulFor />
+      <TarotPull />
       <ChecklistCard icon="⭐" title="My Tasks" storageKey="dashboard.tasks.me" placeholder="Add a task..." />
       <ChecklistCard icon="🎀" title="Girls' To-Dos" storageKey="dashboard.tasks.girls" placeholder="Add something for the girls..." />
       <Reminders />
