@@ -155,12 +155,13 @@
 }
 
 .nav-item.active {
-  background: var(--purple-pill);
-  color: var(--purple-deep);
+  background: linear-gradient(135deg, var(--purple-heading) 0%, var(--purple-deep) 100%);
+  color: white;
+  box-shadow: var(--shadow-soft);
 }
 
 .nav-item.active .badge {
-  background: var(--card-bg);
+  background: rgba(255, 255, 255, 0.25);
 }
 
 .nav-item:hover:not(.active):not(:disabled) {
@@ -216,8 +217,9 @@
 }
 
 .avatar-slot {
-  width: 76px;
-  height: 76px;
+  width: 104px;
+  height: 104px;
+  border-width: 3px;
 }
 
 .greeting-banner {
@@ -264,8 +266,9 @@
 }
 
 .mascot-slot {
-  width: 64px;
-  height: 64px;
+  width: 88px;
+  height: 88px;
+  border-width: 3px;
 }
 
 .speech-bubble {
@@ -282,15 +285,20 @@
 
 .datetime-card {
   position: relative;
+  display: flex;
+  align-items: stretch;
+  gap: 16px;
   background: linear-gradient(160deg, var(--pink-pale) 0%, var(--card-bg) 70%);
   border: 1.5px solid var(--border-hairline);
   border-radius: var(--radius-card);
-  padding: 12px 20px 14px;
-  text-align: right;
+  padding: 14px 20px 18px;
   color: var(--purple-deep);
-  min-width: 160px;
-  padding-bottom: 34px;
+  min-width: 220px;
   box-shadow: var(--shadow-soft);
+}
+
+.datetime-main {
+  text-align: left;
 }
 
 .datetime-card .time {
@@ -299,6 +307,7 @@
   font-weight: 700;
   color: #d6698c;
   letter-spacing: 0.2px;
+  margin-top: 2px;
 }
 
 .datetime-card .meridiem {
@@ -310,6 +319,13 @@
 }
 
 .datetime-card .date {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--purple-heading);
+  opacity: 0.85;
+}
+
+.datetime-card .weekday {
   font-size: 11.5px;
   font-weight: 600;
   color: var(--purple-heading);
@@ -317,16 +333,31 @@
   margin-top: 2px;
 }
 
-.datetime-card .weather-row {
+.weather-col {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: flex-end;
-  gap: 6px;
-  font-size: 11px;
-  font-weight: 600;
+  justify-content: center;
+  gap: 2px;
+  padding-left: 14px;
+  border-left: 1.5px dashed var(--border-hairline);
+  min-width: 66px;
+  text-align: center;
+}
+
+.weather-col .weather-icon {
+  font-size: 22px;
+}
+
+.weather-col .weather-temp {
+  font-size: 15px;
+  font-weight: 700;
   color: var(--purple-heading);
-  opacity: 0.85;
-  margin-top: 6px;
+}
+
+.weather-col .weather-cond {
+  font-size: 9.5px;
+  color: var(--text-muted);
 }
 
 .datetime-flower {
