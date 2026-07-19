@@ -48,8 +48,31 @@ export default function MiniCalendar() {
     setMarks(next)
   }
 
+  const upcoming = Object.entries(marks)
+    .map(([key, label]) => ({ key, label, date: new Date(`${key}T00:00:00`) }))
+    .filter((m) => m.date >= new Date(today.getFullYear(), today.getMonth(), today.getDate()))
+    .sort((a, b) => a.date.getTime() - b.date.getTime())
+    .slice(0, 4)
+
   return (
     <Card icon="📅" title="This Month">
+      {upcoming.length > 0 && (
+        <div className="coming-up">
+          <p className="section-label" style={{ marginTop: 0 }}>
+            🎗️ Coming Up
+          </p>
+          <ul className="c-list">
+            {upcoming.map((u) => (
+              <li key={u.key} className="c-list-item coming-up-item">
+                <span className="coming-up-date">
+                  {MONTH_LABELS[u.date.getMonth()].slice(0, 3)} {u.date.getDate()}
+                </span>
+                <span>{u.label}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
       <div className="mini-cal-header">
         <button className="mini-cal-nav" onClick={() => changeMonth(-1)} aria-label="Previous month">
           ‹

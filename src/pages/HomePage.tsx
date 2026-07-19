@@ -13,10 +13,13 @@ import MoodCheckIn from '../widgets/MoodCheckIn'
 import FamilyKids from '../widgets/FamilyKids'
 import GratefulFor from '../widgets/GratefulFor'
 import TarotPull from '../widgets/TarotPull'
+import TopPriorities from '../widgets/TopPriorities'
+import HabitsToday from '../widgets/HabitsToday'
 
 export default function HomePage() {
   return (
     <div className="grid">
+      <TopPriorities />
       <StatusBoard />
       <MiniCalendar />
       <MoodCheckIn />
@@ -24,6 +27,7 @@ export default function HomePage() {
       <WaterProtein />
       <MedsTitration />
       <DogsCare />
+      <HabitsToday />
       <FamilyKids />
       <QuickCapture />
       <GratefulFor />
