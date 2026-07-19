@@ -4,12 +4,13 @@ import HousePage from './pages/HousePage'
 import BodyWeatherPage from './pages/BodyWeatherPage'
 import FoodPage from './pages/FoodPage'
 import PetsPage from './pages/PetsPage'
+import RhythmPage from './pages/RhythmPage'
 import { useLocalStorage } from './hooks/useLocalStorage'
 import './App.css'
 
 const NAV_ITEMS = [
   { key: 'home', label: 'Today', icon: '🏠', enabled: true },
-  { key: 'rhythm', label: 'Rhythm', icon: '🗓️', enabled: false },
+  { key: 'rhythm', label: 'Rhythm', icon: '🗓️', enabled: true },
   { key: 'body-weather', label: 'Body Weather', icon: '☁️', enabled: true },
   { key: 'house', label: 'Home', icon: '🏡', enabled: true },
   { key: 'girls', label: 'Girls', icon: '💗', enabled: false },
@@ -147,6 +148,7 @@ function App() {
             </div>
 
             {page === 'home' && <HomePage />}
+            {page === 'rhythm' && <RhythmPage />}
             {page === 'house' && <HousePage />}
             {page === 'body-weather' && <BodyWeatherPage />}
             {page === 'food' && <FoodPage />}
