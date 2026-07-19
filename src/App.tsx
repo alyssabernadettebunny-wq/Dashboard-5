@@ -6,6 +6,7 @@ import FoodPage from './pages/FoodPage'
 import PetsPage from './pages/PetsPage'
 import RhythmPage from './pages/RhythmPage'
 import GirlsPage from './pages/GirlsPage'
+import MoneyPage from './pages/MoneyPage'
 import { useLocalStorage } from './hooks/useLocalStorage'
 import './App.css'
 
@@ -17,7 +18,7 @@ const NAV_ITEMS = [
   { key: 'girls', label: 'Girls', icon: '💗', enabled: true },
   { key: 'pets', label: 'Pets', icon: '🐾', enabled: true },
   { key: 'food', label: 'Food', icon: '🍡', enabled: true },
-  { key: 'money', label: 'Money', icon: '💰', enabled: false },
+  { key: 'money', label: 'Money', icon: '💰', enabled: true },
   { key: 'notes', label: 'Notes', icon: '⭐', enabled: false },
   { key: 'spark', label: 'Spark', icon: '✨', enabled: false },
   { key: 'more', label: 'More', icon: '⋯', enabled: false },
@@ -151,6 +152,7 @@ function App() {
             {page === 'home' && <HomePage />}
             {page === 'rhythm' && <RhythmPage />}
             {page === 'girls' && <GirlsPage />}
+            {page === 'money' && <MoneyPage />}
             {page === 'house' && <HousePage />}
             {page === 'body-weather' && <BodyWeatherPage />}
             {page === 'food' && <FoodPage />}
