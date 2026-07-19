@@ -13,9 +13,9 @@ const DOG_STATUSES = ['Home', 'Out', 'Asleep']
 
 const DEFAULT_CORE: Person[] = [
   { id: 'me', name: 'Me', status: 'Home' },
-  { id: 'g1', name: 'Daughter 1', status: 'Home' },
-  { id: 'g2', name: 'Daughter 2', status: 'Home' },
-  { id: 'g3', name: 'Daughter 3', status: 'Home' },
+  { id: 'g1', name: 'Winnie', status: 'Home' },
+  { id: 'g2', name: 'Amy', status: 'Home' },
+  { id: 'g3', name: 'Holly', status: 'Home' },
 ]
 
 const DEFAULT_EXTENDED: Person[] = [

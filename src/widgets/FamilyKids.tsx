@@ -17,9 +17,9 @@ const ACTION_ICONS: Record<FamilyMember['action'], string> = {
 const ACTION_ORDER: FamilyMember['action'][] = ['call', 'star', 'event']
 
 const DEFAULT_MEMBERS: FamilyMember[] = [
-  { id: '1', name: 'Daughter 1', activity: "Today's activity...", action: 'star' },
-  { id: '2', name: 'Daughter 2', activity: "Today's activity...", action: 'star' },
-  { id: '3', name: 'Daughter 3', activity: "Today's activity...", action: 'star' },
+  { id: '1', name: 'Winnie', activity: "Today's activity...", action: 'star' },
+  { id: '2', name: 'Amy', activity: "Today's activity...", action: 'star' },
+  { id: '3', name: 'Holly', activity: "Today's activity...", action: 'star' },
   { id: '4', name: 'Mom', activity: 'Call tonight', action: 'call' },
 ]
 
