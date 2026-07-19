@@ -75,7 +75,6 @@ function App() {
   }, [])
 
   const today = formatDate(clock)
-  const weekday = clock.toLocaleDateString(undefined, { weekday: 'long' })
   const { value: timeValue, meridiem } = formatTime(clock)
 
   return (
@@ -128,19 +127,16 @@ function App() {
                 <div className="illustration-slot mascot-slot">mascot illust.</div>
                 <div className="speech-bubble">be kind to your future self.</div>
                 <div className="datetime-card">
-                  <div className="datetime-main">
-                    <div className="date">{today}</div>
-                    <div className="time">
-                      {timeValue}
-                      <span className="meridiem">{meridiem}</span>
-                    </div>
-                    <div className="weekday">{weekday}</div>
+                  <div className="time">
+                    {timeValue}
+                    <span className="meridiem">{meridiem}</span>
                   </div>
+                  <div className="date">{today}</div>
                   {(weather.temp || weather.condition) && (
-                    <div className="weather-col">
-                      <span className="weather-icon">{weatherIcon(weather.condition)}</span>
-                      {weather.temp && <span className="weather-temp">{weather.temp}</span>}
-                      {weather.condition && <span className="weather-cond">{weather.condition}</span>}
+                    <div className="weather-row">
+                      <span>{weatherIcon(weather.condition)}</span>
+                      {weather.temp && <span>{weather.temp}</span>}
+                      {weather.condition && <span>{weather.condition}</span>}
                     </div>
                   )}
                   <span className="datetime-flower" aria-hidden="true">
