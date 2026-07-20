@@ -1144,9 +1144,23 @@
 }
 
 /* trend chart */
+.sleep-header-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .trend-chart-wrap {
-  width: 100%;
+  flex: 1;
+  min-width: 0;
   height: 90px;
+}
+
+.sleep-mask-charm {
+  width: 52px;
+  height: auto;
+  flex-shrink: 0;
+  transform: rotate(-6deg);
 }
 
 .trend-legend {
