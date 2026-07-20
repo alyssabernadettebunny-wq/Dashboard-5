@@ -1870,14 +1870,14 @@
 }
 
 .protein-apple-icon {
-  width: 14px;
+  width: 26px;
   height: auto;
-  vertical-align: -2px;
-  margin-right: 2px;
+  vertical-align: -8px;
+  margin-right: 3px;
 }
 
 .quick-capture-laptop {
-  width: 40px;
+  width: 68px;
   height: auto;
   display: block;
   margin: 0 0 6px auto;
@@ -1889,11 +1889,10 @@
   height: auto;
 }
 
-.family-flower-icon {
-  width: 30px;
+.card-title-icon {
+  width: 18px;
   height: auto;
-  display: block;
-  margin: 0 0 6px auto;
+  vertical-align: -4px;
 }
 
 /* tarot pull */

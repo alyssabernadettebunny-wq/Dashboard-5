@@ -15,7 +15,7 @@ export default function GratefulFor() {
   }
 
   return (
-    <Card icon="📔" title="Today I'm Grateful For">
+    <Card icon={<img className="card-title-icon" src="/Dashboard-5/images/pink-flower-outline.png" alt="" />} title="Today I'm Grateful For">
       <div className="grateful-list">
         {lines.map((line, i) => (
           <div key={i} className="grateful-line">

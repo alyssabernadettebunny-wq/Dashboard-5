@@ -9,7 +9,7 @@ export default function Card({
   wide,
   children,
 }: {
-  icon: string
+  icon: ReactNode
   title: string
   meta?: string
   footer?: ReactNode

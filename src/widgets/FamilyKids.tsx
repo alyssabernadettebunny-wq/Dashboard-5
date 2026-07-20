@@ -91,7 +91,6 @@ export default function FamilyKids() {
 
   return (
     <Card icon="👨‍👩‍👧‍👦" title="Family & Kids">
-      <img className="family-flower-icon" src="/Dashboard-5/images/pink-flower-outline.png" alt="" />
       {members.map((m) => (
         <div key={m.id} className="family-row">
           <div className="family-avatar">{m.emoji}</div>
