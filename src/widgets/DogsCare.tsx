@@ -35,8 +35,8 @@ const DEFAULT_DOGS: DogCare[] = [
 const NAME_MIGRATIONS: Record<string, string> = { Frenchie: 'Misa', Maltipoo: 'Coco' }
 
 const PORTRAITS: Record<string, string> = {
-  Misa: '/Dashboard-5/images/misa-portrait.png',
-  Coco: '/Dashboard-5/images/coco-portrait.png',
+  Misa: '/Dashboard-5/images/misa-dogtile.png',
+  Coco: '/Dashboard-5/images/coco-dogtile.png',
   Juno: '/Dashboard-5/images/juno-portrait.png',
 }
 
