@@ -508,6 +508,50 @@
   margin-bottom: 4px;
 }
 
+.dog-portrait-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 2px;
+}
+
+.dog-portrait {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  width: 46px;
+}
+
+.dog-portrait img,
+.dog-portrait-placeholder {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--outline-soft);
+  box-shadow: var(--shadow-soft);
+  background: var(--card-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+}
+
+.dog-portrait-name {
+  font-size: 8.5px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.dog-portrait-empty {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 2px dashed var(--outline-soft);
+  background: rgba(255, 255, 255, 0.4);
+}
+
 .status-person {
   display: flex;
   align-items: center;
@@ -2214,6 +2258,26 @@
 }
 
 /* Habits Today */
+.habit-day-letters {
+  display: flex;
+  justify-content: flex-end;
+  gap: 2px;
+  margin-bottom: 2px;
+}
+
+.habit-day-letters-spacer {
+  flex: 1;
+  min-width: 40px;
+}
+
+.habit-day-letters span {
+  width: 15px;
+  text-align: center;
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
 .habit-rows {
   display: flex;
   flex-direction: column;
@@ -2580,8 +2644,8 @@
 
 .hsb-summary-chip.status-out .hsb-summary-chip-status,
 .hsb-summary-chip.status-walking-around-out-and-about .hsb-summary-chip-status {
-  background: var(--warn-yellow);
-  color: #fff;
+  background: #f0c268;
+  color: #6b4e1a;
 }
 
 .hsb-summary-chip.status-away .hsb-summary-chip-status,
@@ -2591,7 +2655,7 @@
 }
 
 .hsb-summary-chip.status-sleeping .hsb-summary-chip-status {
-  background: var(--purple-deep);
+  background: #b18fd6;
   color: #fff;
 }
 

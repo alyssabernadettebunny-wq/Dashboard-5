@@ -205,6 +205,6 @@ input[type='checkbox']:checked::before {
   font-size: 12px;
   line-height: 1;
   color: var(--pink-accent);
-  animation: checkbox-sparkle-pop 0.55s ease-out;
+  animation: checkbox-sparkle-pop 0.55s ease-out forwards;
   pointer-events: none;
 }

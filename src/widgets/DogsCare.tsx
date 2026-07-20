@@ -29,9 +29,13 @@ const TUMMY_ISSUE_TYPES = [
 const DEFAULT_DOGS: DogCare[] = [
   { id: 'd1', name: 'Misa', hasLunch: true, breakfast: false, lunch: false, dinner: false, tummyIssue: false, tummyIssueType: '', notes: '' },
   { id: 'd2', name: 'Coco', hasLunch: false, breakfast: false, lunch: false, dinner: false, tummyIssue: false, tummyIssueType: '', notes: '' },
+  { id: 'd3', name: 'Juno', hasLunch: false, breakfast: false, lunch: false, dinner: false, tummyIssue: false, tummyIssueType: '', notes: '' },
 ]
 
 const NAME_MIGRATIONS: Record<string, string> = { Frenchie: 'Misa', Maltipoo: 'Coco' }
+
+const PORTRAITS: Record<string, string> = { Misa: '/Dashboard-5/images/misa-portrait.png' }
+const MIN_PORTRAIT_SLOTS = 5
 
 interface DogsDayRecord {
   date: string
@@ -66,17 +70,22 @@ export default function DogsCare() {
   useEffect(() => {
     if (migratedRef.current) return
     migratedRef.current = true
-    const needsMigration = dogs.some((d) => NAME_MIGRATIONS[d.name] || d.hasLunch === undefined || d.lunch === undefined || d.tummyIssueType === undefined)
-    if (needsMigration) {
-      setDogs((prev) =>
-        prev.map((d) => ({
+    const needsFieldMigration = dogs.some((d) => NAME_MIGRATIONS[d.name] || d.hasLunch === undefined || d.lunch === undefined || d.tummyIssueType === undefined)
+    const needsJuno = !dogs.some((d) => d.name === 'Juno')
+    if (needsFieldMigration || needsJuno) {
+      setDogs((prev) => {
+        const migrated = prev.map((d) => ({
           ...d,
           name: NAME_MIGRATIONS[d.name] ?? d.name,
           hasLunch: d.hasLunch ?? d.name === 'Misa',
           lunch: d.lunch ?? false,
           tummyIssueType: d.tummyIssueType ?? '',
-        })),
-      )
+        }))
+        if (needsJuno) {
+          migrated.push({ id: crypto.randomUUID(), name: 'Juno', hasLunch: false, breakfast: false, lunch: false, dinner: false, tummyIssue: false, tummyIssueType: '', notes: '' })
+        }
+        return migrated
+      })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -85,17 +94,36 @@ export default function DogsCare() {
     setDogs(dogs.map((d) => (d.id === id ? { ...d, ...patch } : d)))
   }
 
+  function removeDog(id: string) {
+    setDogs(dogs.filter((d) => d.id !== id))
+  }
+
+  const portraitSlots = Math.max(MIN_PORTRAIT_SLOTS, dogs.length + 1)
+
   return (
-    <Card
-      icon="🐾"
-      title="Dogs"
-      variant="gingham"
-      anchor={<img src="/Dashboard-5/images/misa-portrait.png" alt="" style={{ borderRadius: '50%' }} />}
-    >
+    <Card icon="🐾" title="Dogs" variant="gingham">
+      <div className="dog-portrait-row">
+        {dogs.map((dog) => (
+          <div key={dog.id} className="dog-portrait" title={dog.name}>
+            {PORTRAITS[dog.name] ? <img src={PORTRAITS[dog.name]} alt={dog.name} /> : <span className="dog-portrait-placeholder">🐾</span>}
+            <span className="dog-portrait-name">{dog.name}</span>
+          </div>
+        ))}
+        {Array.from({ length: Math.max(0, portraitSlots - dogs.length) }).map((_, i) => (
+          <div key={i} className="dog-portrait-empty" aria-hidden="true" />
+        ))}
+      </div>
       <div className="two-col">
         {dogs.map((dog) => (
           <div key={dog.id} className="mini-profile">
-            <div className="name">{dog.name}</div>
+            <div className="name">
+              {dog.name}
+              {dogs.length > 1 && (
+                <button className="remove" onClick={() => removeDog(dog.id)} aria-label={`Remove ${dog.name}`} style={{ float: 'right' }}>
+                  ×
+                </button>
+              )}
+            </div>
             <ul className="c-list">
               <li className="c-list-item">
                 <input type="checkbox" checked={dog.breakfast} onChange={(e) => updateDog(dog.id, { breakfast: e.target.checked })} />

@@ -32,6 +32,12 @@ interface FamilyDayRecord {
   activities: { name: string; activity: string }[]
 }
 
+interface TodoItem {
+  id: string
+  text: string
+  done: boolean
+}
+
 export default function FamilyKids() {
   const [members, setMembers] = useLocalStorage<FamilyMember[]>('dashboard.familykids', DEFAULT_MEMBERS)
   const [familyDay, setFamilyDay] = useLocalStorage('dashboard.familykids.day', logicalDateKey())
@@ -39,6 +45,8 @@ export default function FamilyKids() {
   const archivedRef = useRef(false)
   const migratedRef = useRef(false)
   const [showHistory, setShowHistory] = useState(false)
+  const [todos, setTodos] = useLocalStorage<TodoItem[]>('dashboard.tasks.girls', [])
+  const [todoText, setTodoText] = useState('')
 
   useEffect(() => {
     if (migratedRef.current) return
@@ -89,8 +97,28 @@ export default function FamilyKids() {
     setMembers([...members, { id: crypto.randomUUID(), name, emoji: '🙂', activity: '', action: 'star' }])
   }
 
+  function addTodo() {
+    const trimmed = todoText.trim()
+    if (!trimmed) return
+    setTodos([...todos, { id: crypto.randomUUID(), text: trimmed, done: false }])
+    setTodoText('')
+  }
+
+  function toggleTodo(id: string) {
+    setTodos(todos.map((t) => (t.id === id ? { ...t, done: !t.done } : t)))
+  }
+
+  function removeTodo(id: string) {
+    setTodos(todos.filter((t) => t.id !== id))
+  }
+
   return (
-    <Card icon="👨‍👩‍👧‍👦" title="Family & Kids" surface="peach">
+    <Card
+      icon="👨‍👩‍👧‍👦"
+      title="Family & Kids"
+      surface="peach"
+      meta={todos.length ? `${todos.filter((t) => t.done).length} / ${todos.length} to-dos` : undefined}
+    >
       {members.map((m) => (
         <div key={m.id} className="family-row">
           <div className="family-avatar">{m.emoji}</div>
@@ -106,6 +134,31 @@ export default function FamilyKids() {
       <button className="card-footer-btn" onClick={addMember}>
         + Add reminder ♡
       </button>
+
+      <p className="section-label">Girls' To-Dos</p>
+      <div className="c-input-row">
+        <input
+          type="text"
+          value={todoText}
+          placeholder="Add something for the girls..."
+          onChange={(e) => setTodoText(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && addTodo()}
+        />
+        <button onClick={addTodo}>Add</button>
+      </div>
+      <ul className="c-list">
+        {todos.length === 0 && <li className="c-empty">Nothing here yet</li>}
+        {todos.map((t) => (
+          <li key={t.id} className={`c-list-item ${t.done ? 'struck' : ''}`}>
+            <input type="checkbox" checked={t.done} onChange={() => toggleTodo(t.id)} />
+            <span>{t.text}</span>
+            <button className="remove" onClick={() => removeTodo(t.id)} aria-label="Remove item">
+              ×
+            </button>
+          </li>
+        ))}
+      </ul>
+
       {familyHistory.length > 0 && (
         <button className="card-footer-btn" style={{ marginLeft: 8 }} onClick={() => setShowHistory((v) => !v)}>
           {showHistory ? 'Hide past days' : 'View past days'}

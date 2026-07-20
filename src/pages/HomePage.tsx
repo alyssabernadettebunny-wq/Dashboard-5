@@ -51,9 +51,6 @@ export default function HomePage() {
           {show('dogFacts') && <DogFacts />}
           {show('habitsToday') && <HabitsToday />}
           {show('gratefulFor') && <GratefulFor />}
-          {show('girlsTodos') && (
-            <ChecklistCard icon="🎀" title="Girls' To-Dos" storageKey="dashboard.tasks.girls" placeholder="Add something for the girls..." />
-          )}
         </div>
       </div>
       {show('worldFeed') && <WorldFeed />}
