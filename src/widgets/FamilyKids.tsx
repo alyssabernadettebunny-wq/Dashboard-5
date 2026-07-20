@@ -1,4 +1,6 @@
+import { useEffect, useRef, useState } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
+import { logicalDateKey } from '../lib/logicalDate'
 import Card from '../components/Card'
 
 interface FamilyMember {
@@ -23,8 +25,31 @@ const DEFAULT_MEMBERS: FamilyMember[] = [
   { id: '4', name: 'Mom', activity: 'Call tonight', action: 'call' },
 ]
 
+interface FamilyDayRecord {
+  date: string
+  activities: { name: string; activity: string }[]
+}
+
 export default function FamilyKids() {
   const [members, setMembers] = useLocalStorage<FamilyMember[]>('dashboard.familykids', DEFAULT_MEMBERS)
+  const [familyDay, setFamilyDay] = useLocalStorage('dashboard.familykids.day', logicalDateKey())
+  const [familyHistory, setFamilyHistory] = useLocalStorage<FamilyDayRecord[]>('dashboard.familykids.history', [])
+  const archivedRef = useRef(false)
+  const [showHistory, setShowHistory] = useState(false)
+
+  useEffect(() => {
+    const today = logicalDateKey()
+    if (familyDay !== today && !archivedRef.current) {
+      archivedRef.current = true
+      setFamilyHistory((prev) => [
+        { date: familyDay, activities: members.filter((m) => m.activity.trim()).map((m) => ({ name: m.name, activity: m.activity })) },
+        ...prev,
+      ])
+      setMembers((prevMembers) => prevMembers.map((m) => ({ ...m, activity: '' })))
+      setFamilyDay(today)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [familyDay])
 
   function update(id: string, patch: Partial<FamilyMember>) {
     setMembers(members.map((m) => (m.id === id ? { ...m, ...patch } : m)))
@@ -60,6 +85,27 @@ export default function FamilyKids() {
       <button className="card-footer-btn" onClick={addMember}>
         + Add reminder ♡
       </button>
+      {familyHistory.length > 0 && (
+        <button className="card-footer-btn" style={{ marginLeft: 8 }} onClick={() => setShowHistory((v) => !v)}>
+          {showHistory ? 'Hide past days' : 'View past days'}
+        </button>
+      )}
+      {showHistory && (
+        <ul className="c-list" style={{ marginTop: 8 }}>
+          {familyHistory.map((h, i) => (
+            <li key={i} className="c-list-item" style={{ alignItems: 'flex-start' }}>
+              <div>
+                <span className="sub" style={{ marginLeft: 0 }}>
+                  {h.date}
+                </span>
+                <p style={{ fontSize: 11, color: 'var(--text-muted)', margin: '2px 0 0' }}>
+                  {h.activities.length > 0 ? h.activities.map((a) => `${a.name}: ${a.activity}`).join(' · ') : 'nothing recorded'}
+                </p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
     </Card>
   )
 }

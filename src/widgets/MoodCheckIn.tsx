@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { useStreak } from '../hooks/useStreak'
+import { isLogicalToday, logicalDateKey } from '../lib/logicalDate'
 import Card from '../components/Card'
 
 interface MoodNode {
@@ -16,8 +17,10 @@ interface TodayMood {
   image: string | null
 }
 
-function todayStr() {
-  return new Date().toISOString().slice(0, 10)
+interface MoodLogEntry {
+  id: string
+  timestamp: string
+  label: string
 }
 
 function resizeImage(file: File): Promise<string> {
@@ -67,9 +70,13 @@ export default function MoodCheckIn() {
   const [path, setPath] = useState<string[]>([])
   const [editMode, setEditMode] = useState(false)
   const [today, setToday] = useLocalStorage<TodayMood | null>('dashboard.moodToday', null)
+  const [moodLog, setMoodLog] = useLocalStorage<MoodLogEntry[]>('dashboard.moodHistory', [])
+  const [showHistory, setShowHistory] = useState(false)
   const { streak, markToday } = useStreak('streak.mood')
   const fileInputRef = useRef<HTMLInputElement>(null)
   const pendingUpload = useRef<{ path: string[]; nodeId: string | null } | null>(null)
+
+  const todayIsCurrent = today && isLogicalToday(today.date + 'T12:00:00')
 
   const currentLevel = findNode(tree, path)
   const parentLabel = path.length > 0 ? findParentLabel() : null
@@ -125,7 +132,8 @@ export default function MoodCheckIn() {
     if (node.children.length > 0) {
       setPath([...path, node.id])
     } else {
-      setToday({ date: todayStr(), label: node.label, image: node.image })
+      setToday({ date: logicalDateKey(), label: node.label, image: node.image })
+      setMoodLog([{ id: crypto.randomUUID(), timestamp: new Date().toISOString(), label: node.label }, ...moodLog])
       markToday()
       setPath([])
     }
@@ -198,10 +206,31 @@ export default function MoodCheckIn() {
 
       {!editMode && <p className="mood2-footer">It's okay to feel it all. ♡</p>}
 
-      {today && !editMode && (
+      {today && todayIsCurrent && !editMode && (
         <p className="mood2-today">
           Today: {today.image && <img className="mood2-today-img" src={today.image} alt="" />} {today.label}
         </p>
+      )}
+
+      {moodLog.length > 0 && !editMode && (
+        <button className="card-footer-btn" onClick={() => setShowHistory((v) => !v)}>
+          {showHistory ? 'Hide history' : 'View history'}
+        </button>
+      )}
+      {showHistory && !editMode && (
+        <ul className="c-list" style={{ marginTop: 8 }}>
+          {moodLog.map((m) => (
+            <li key={m.id} className="c-list-item">
+              <span className="sub" style={{ marginLeft: 0 }}>
+                {new Date(m.timestamp).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}
+              </span>
+              <span>{m.label}</span>
+              <button className="remove" onClick={() => setMoodLog(moodLog.filter((x) => x.id !== m.id))} aria-label="Remove">
+                ×
+              </button>
+            </li>
+          ))}
+        </ul>
       )}
 
       <input ref={fileInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleFileChange} />

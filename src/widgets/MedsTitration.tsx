@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
+import { logicalDateKey } from '../lib/logicalDate'
 import Card from '../components/Card'
 
 interface Med {
@@ -27,10 +28,30 @@ function todayStr() {
   return new Date().toISOString().slice(0, 10)
 }
 
+interface MedsDayRecord {
+  date: string
+  taken: string[]
+}
+
 export default function MedsTitration() {
   const [meds, setMeds] = useLocalStorage<Med[]>('dashboard.meds', [])
+  const [medsDay, setMedsDay] = useLocalStorage('dashboard.meds.day', logicalDateKey())
+  const [medsHistory, setMedsHistory] = useLocalStorage<MedsDayRecord[]>('dashboard.meds.history', [])
+  const archivedRef = useRef(false)
   const [medName, setMedName] = useState('')
   const [addingMed, setAddingMed] = useState(false)
+  const [showMedsHistory, setShowMedsHistory] = useState(false)
+
+  useEffect(() => {
+    const today = logicalDateKey()
+    if (medsDay !== today && !archivedRef.current) {
+      archivedRef.current = true
+      setMedsHistory((prev) => [{ date: medsDay, taken: meds.filter((m) => m.takenToday).map((m) => m.name) }, ...prev])
+      setMeds((prevMeds) => prevMeds.map((m) => ({ ...m, takenToday: false })))
+      setMedsDay(today)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [medsDay])
 
   const [titrationMeds, setTitrationMeds] = useLocalStorage<TitrationMed[]>(
     'dashboard.titration',
@@ -118,6 +139,27 @@ export default function MedsTitration() {
           </li>
         ))}
       </ul>
+      {medsHistory.length > 0 && (
+        <button className="card-footer-btn" onClick={() => setShowMedsHistory((v) => !v)}>
+          {showMedsHistory ? 'Hide past days' : 'View past days'}
+        </button>
+      )}
+      {showMedsHistory && (
+        <ul className="c-list" style={{ marginTop: 8, marginBottom: 8 }}>
+          {medsHistory.map((h, i) => (
+            <li key={i} className="c-list-item" style={{ alignItems: 'flex-start' }}>
+              <div>
+                <span className="sub" style={{ marginLeft: 0 }}>
+                  {h.date}
+                </span>
+                <p style={{ fontSize: 11, color: 'var(--text-muted)', margin: '2px 0 0' }}>
+                  {h.taken.length > 0 ? `Taken: ${h.taken.join(', ')}` : 'Nothing marked taken'}
+                </p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
       {addingMed ? (
         <div className="c-input-row">
           <input

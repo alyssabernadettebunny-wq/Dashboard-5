@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
+import { logicalDateKey } from '../lib/logicalDate'
 import Card from '../components/Card'
 
 interface DogCare {
@@ -32,9 +33,32 @@ const FACTS = [
   'Both breeds do best with consistent, gentle routines rather than big schedule changes.',
 ]
 
+interface DogsDayRecord {
+  date: string
+  care: { name: string; breakfast: boolean; dinner: boolean; tummyIssue: boolean }[]
+}
+
 export default function DogsCare() {
   const [dogs, setDogs] = useLocalStorage<DogCare[]>('dashboard.dogscare', DEFAULT_DOGS)
+  const [dogsDay, setDogsDay] = useLocalStorage('dashboard.dogscare.day', logicalDateKey())
+  const [dogsHistory, setDogsHistory] = useLocalStorage<DogsDayRecord[]>('dashboard.dogscare.history', [])
+  const archivedRef = useRef(false)
   const [factIndex, setFactIndex] = useState(() => Math.floor(Math.random() * FACTS.length))
+  const [showHistory, setShowHistory] = useState(false)
+
+  useEffect(() => {
+    const today = logicalDateKey()
+    if (dogsDay !== today && !archivedRef.current) {
+      archivedRef.current = true
+      setDogsHistory((prev) => [
+        { date: dogsDay, care: dogs.map((d) => ({ name: d.name, breakfast: d.breakfast, dinner: d.dinner, tummyIssue: d.tummyIssue })) },
+        ...prev,
+      ])
+      setDogs((prevDogs) => prevDogs.map((d) => ({ ...d, breakfast: false, dinner: false, tummyIssue: false })))
+      setDogsDay(today)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dogsDay])
 
   function updateDog(id: string, patch: Partial<DogCare>) {
     setDogs(dogs.map((d) => (d.id === id ? { ...d, ...patch } : d)))
@@ -90,6 +114,29 @@ export default function DogsCare() {
           </div>
         ))}
       </div>
+      {dogsHistory.length > 0 && (
+        <button className="card-footer-btn" onClick={() => setShowHistory((v) => !v)}>
+          {showHistory ? 'Hide past days' : 'View past days'}
+        </button>
+      )}
+      {showHistory && (
+        <ul className="c-list" style={{ marginTop: 8 }}>
+          {dogsHistory.map((h, i) => (
+            <li key={i} className="c-list-item" style={{ alignItems: 'flex-start' }}>
+              <div>
+                <span className="sub" style={{ marginLeft: 0 }}>
+                  {h.date}
+                </span>
+                <p style={{ fontSize: 11, color: 'var(--text-muted)', margin: '2px 0 0' }}>
+                  {h.care
+                    .map((c) => `${c.name}: ${[c.breakfast && 'breakfast', c.dinner && 'dinner', c.tummyIssue && 'tummy trouble'].filter(Boolean).join(', ') || 'no care logged'}`)
+                    .join(' · ')}
+                </p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
     </Card>
   )
 }

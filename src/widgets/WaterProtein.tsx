@@ -1,11 +1,12 @@
 import { useLocalStorage } from '../hooks/useLocalStorage'
+import { useDailyArchive } from '../hooks/useDailyArchive'
 import Card from '../components/Card'
 
 const WATER_GOAL = 8
 
 export default function WaterProtein() {
-  const [water, setWater] = useLocalStorage('dashboard.water', 0)
-  const [protein, setProtein] = useLocalStorage('dashboard.protein', 0)
+  const [water, setWater] = useDailyArchive('dashboard.water', 0)
+  const [protein, setProtein] = useDailyArchive('dashboard.protein', 0)
   const [proteinGoal, setProteinGoal] = useLocalStorage('dashboard.proteinGoal', 100)
 
   return (
