@@ -9,6 +9,7 @@ import GirlsPage from './pages/GirlsPage'
 import MoneyPage from './pages/MoneyPage'
 import NotesPage from './pages/NotesPage'
 import SparkPage from './pages/SparkPage'
+import MorePage from './pages/MorePage'
 import { useLocalStorage } from './hooks/useLocalStorage'
 import './App.css'
 
@@ -23,7 +24,7 @@ const NAV_ITEMS = [
   { key: 'money', label: 'Money', icon: '💰', enabled: true },
   { key: 'notes', label: 'Notes', icon: '⭐', enabled: true },
   { key: 'spark', label: 'Spark', icon: '✨', enabled: true },
-  { key: 'more', label: 'More', icon: '⋯', enabled: false },
+  { key: 'more', label: 'More', icon: '⋯', enabled: true },
 ]
 
 const AFFIRMATIONS = [
@@ -157,6 +158,7 @@ function App() {
             {page === 'money' && <MoneyPage />}
             {page === 'notes' && <NotesPage />}
             {page === 'spark' && <SparkPage />}
+            {page === 'more' && <MorePage />}
             {page === 'house' && <HousePage />}
             {page === 'body-weather' && <BodyWeatherPage />}
             {page === 'food' && <FoodPage />}
