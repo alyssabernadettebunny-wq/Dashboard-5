@@ -107,6 +107,25 @@ function App() {
   const { streak: overallStreak, markToday: markOverallToday } = useStreak('streak.overall')
   const companion = useCompanion()
   const [theme] = useAppTheme()
+  const [coffeeOrder, setCoffeeOrder] = useLocalStorage('dashboard.coffeeOrder', 'Iced vanilla latte')
+  const [currentBook, setCurrentBook] = useLocalStorage('dashboard.currentBook', 'Currently reading')
+  const [dogsCare] = useLocalStorage('dashboard.dogscare', [] as { breakfast: boolean; dinner: boolean }[])
+  const dogsStatus = dogsCare.length > 0 && dogsCare.every((d) => d.breakfast && d.dinner) ? 'Good pups today ♡' : 'Care needed today'
+
+  function editCoffee() {
+    const next = window.prompt('What are you drinking today?', coffeeOrder)
+    if (next !== null) setCoffeeOrder(next)
+  }
+
+  function editBook() {
+    const next = window.prompt("What are you reading?", currentBook)
+    if (next !== null) setCurrentBook(next)
+  }
+
+  function scrollToWorldFeed() {
+    const el = Array.from(document.querySelectorAll('.card-title')).find((n) => n.textContent?.includes('World Feed'))
+    el?.closest('.card')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
 
   useEffect(() => {
     const id = setInterval(() => setClock(new Date()), 30000)
@@ -213,36 +232,39 @@ function App() {
 
             {page === 'home' && (
               <div className="bottom-strip">
-                <div className="chip">
+                <button className="chip" onClick={editCoffee} type="button">
                   <span className="icon">☕</span>
                   <span className="txt">
-                    <b>Coffee fix</b>Iced vanilla latte
+                    <b>Coffee fix</b>
+                    {coffeeOrder}
                   </span>
-                </div>
-                <div className="chip">
+                </button>
+                <button className="chip" onClick={editBook} type="button">
                   <span className="icon">📖</span>
                   <span className="txt">
-                    <b>Book nook</b>Currently reading
+                    <b>Book nook</b>
+                    {currentBook}
                   </span>
-                </div>
-                <div className="chip">
+                </button>
+                <button className="chip" onClick={scrollToWorldFeed} type="button">
                   <span className="icon">💿</span>
                   <span className="txt">
-                    <b>K-pop radar</b>New drops this week
+                    <b>K-pop radar</b>See releases below
                   </span>
-                </div>
-                <div className="chip">
+                </button>
+                <button className="chip" onClick={() => setPage('notes')} type="button">
                   <span className="icon">📓</span>
                   <span className="txt">
-                    <b>Notebook</b>Brain dump open
+                    <b>Notebook</b>Open Notes
                   </span>
-                </div>
-                <div className="chip">
+                </button>
+                <button className="chip" onClick={() => setPage('pets')} type="button">
                   <span className="icon">🐾</span>
                   <span className="txt">
-                    <b>Frenchie &amp; Maltipoo</b>Good pups today
+                    <b>Misa &amp; Coco</b>
+                    {dogsStatus}
                   </span>
-                </div>
+                </button>
               </div>
             )}
 

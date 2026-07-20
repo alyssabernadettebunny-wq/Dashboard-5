@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
+import { useWeather, useWeatherLocation } from '../hooks/useWeather'
 import Card from '../components/Card'
 
 interface KpopRelease {
@@ -15,31 +16,95 @@ interface YoutubeUpdate {
   summary: string
 }
 
-interface Weather {
-  temp: string
-  condition: string
-  todayHigh: string
-  todayLow: string
-  tonightHigh: string
-  tonightLow: string
-  moonPhase: string
-  moonPct: string
+async function geocodeCity(city: string) {
+  const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1`
+  const res = await fetch(url)
+  if (!res.ok) throw new Error('Geocoding failed')
+  const data = await res.json()
+  const first = data.results?.[0]
+  if (!first) throw new Error('City not found')
+  return { lat: first.latitude, lon: first.longitude, label: `${first.name}, ${first.admin1 ?? first.country ?? ''}`.replace(/, $/, '') }
 }
 
-const DEFAULT_WEATHER: Weather = {
-  temp: '',
-  condition: '',
-  todayHigh: '',
-  todayLow: '',
-  tonightHigh: '',
-  tonightLow: '',
-  moonPhase: '',
-  moonPct: '',
+function WeatherSection() {
+  const { weather, loading, error, refresh } = useWeather()
+  const [, setCoords] = useWeatherLocation()
+  const [cityInput, setCityInput] = useState('')
+  const [geoError, setGeoError] = useState('')
+
+  function useMyLocation() {
+    if (!navigator.geolocation) {
+      setGeoError('Location not available in this browser')
+      return
+    }
+    navigator.geolocation.getCurrentPosition(
+      (pos) => setCoords({ lat: pos.coords.latitude, lon: pos.coords.longitude, label: 'My location' }),
+      () => setGeoError('Could not get your location — try setting a city instead'),
+    )
+  }
+
+  async function setCity() {
+    if (!cityInput.trim()) return
+    try {
+      const c = await geocodeCity(cityInput.trim())
+      setCoords(c)
+      setGeoError('')
+      setCityInput('')
+    } catch {
+      setGeoError('Could not find that city')
+    }
+  }
+
+  return (
+    <div className="subsection">
+      <p className="section-label" style={{ marginTop: 0 }}>
+        Weather & Moon
+      </p>
+      {weather.temp ? (
+        <>
+          <div className="stat-row">
+            <span>{weather.condition}</span>
+            <span style={{ fontWeight: 700, fontSize: 15 }}>{weather.temp}</span>
+          </div>
+          <div className="stat-row">
+            <span>Today</span>
+            <span>
+              ↑ {weather.todayHigh} ↓ {weather.todayLow}
+            </span>
+          </div>
+          <div className="stat-row">
+            <span>Moon</span>
+            <span>
+              {weather.moonPhase} ({weather.moonPct})
+            </span>
+          </div>
+          <p style={{ fontSize: 10, color: 'var(--text-muted)', margin: '4px 0 0' }}>
+            {weather.locationLabel}
+            {weather.updatedAt && ` · updated ${new Date(weather.updatedAt).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`}
+          </p>
+          <button className="card-footer-btn" onClick={refresh} disabled={loading} style={{ marginTop: 6 }}>
+            {loading ? 'Refreshing...' : 'Refresh now'}
+          </button>
+        </>
+      ) : (
+        <>
+          <p style={{ fontSize: 11.5, color: 'var(--text-muted)' }}>Set your location to get automatic weather updates.</p>
+          <button className="card-footer-btn" onClick={useMyLocation}>
+            Use my location
+          </button>
+          <div className="c-input-row" style={{ marginTop: 6 }}>
+            <input type="text" placeholder="Or type a city..." value={cityInput} onChange={(e) => setCityInput(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && setCity()} />
+            <button onClick={setCity}>Set</button>
+          </div>
+          {geoError && <p style={{ fontSize: 10.5, color: 'var(--pink-accent)', marginTop: 4 }}>{geoError}</p>}
+        </>
+      )}
+      {error && <p style={{ fontSize: 10.5, color: 'var(--pink-accent)', marginTop: 4 }}>{error}</p>}
+    </div>
+  )
 }
 
 export default function WorldFeed() {
-  const [weather, setWeather] = useLocalStorage<Weather>('dashboard.worldfeed.weather', DEFAULT_WEATHER)
-
   const [kpop, setKpop] = useLocalStorage<KpopRelease[]>('dashboard.worldfeed.kpop', [])
   const [artist, setArtist] = useState('')
   const [releaseDate, setReleaseDate] = useState('')
@@ -71,80 +136,16 @@ export default function WorldFeed() {
     setYoutube(youtube.filter((y) => y.id !== id))
   }
 
+  const todayStr = new Date().toISOString().slice(0, 10)
+  const monthStart = todayStr.slice(0, 8) + '01'
+  const thisMonthKpop = kpop.filter((k) => k.date && k.date >= monthStart && k.date <= todayStr).sort((a, b) => a.date.localeCompare(b.date))
+  const upcomingKpop = kpop.filter((k) => k.date && k.date > todayStr).sort((a, b) => a.date.localeCompare(b.date))
+  const undatedKpop = kpop.filter((k) => !k.date)
+
   return (
     <Card icon="🌐" title="World Feed" wide>
-      <p style={{ fontSize: 11.5, color: 'var(--text-muted)', fontStyle: 'italic' }}>
-        Manual for now — weather, K-pop releases, and YouTube updates will sync automatically once we wire up
-        live data sources.
-      </p>
-
       <div className="status-cols">
-        <div className="subsection">
-          <p className="section-label" style={{ marginTop: 0 }}>
-            Weather & Moon
-          </p>
-          <div className="c-input-row">
-            <input type="text" placeholder="Temp" value={weather.temp} onChange={(e) => setWeather({ ...weather, temp: e.target.value })} />
-            <input
-              type="text"
-              placeholder="Condition"
-              value={weather.condition}
-              onChange={(e) => setWeather({ ...weather, condition: e.target.value })}
-            />
-          </div>
-          <div className="stat-row">
-            <span>Today</span>
-            <span style={{ display: 'flex', gap: 6 }}>
-              ↑
-              <input
-                type="text"
-                placeholder="24°"
-                value={weather.todayHigh}
-                onChange={(e) => setWeather({ ...weather, todayHigh: e.target.value })}
-                style={{ width: 36, border: 'none', background: 'transparent', font: 'inherit', color: 'inherit' }}
-              />
-              ↓
-              <input
-                type="text"
-                placeholder="14°"
-                value={weather.todayLow}
-                onChange={(e) => setWeather({ ...weather, todayLow: e.target.value })}
-                style={{ width: 36, border: 'none', background: 'transparent', font: 'inherit', color: 'inherit' }}
-              />
-            </span>
-          </div>
-          <div className="stat-row">
-            <span>Tonight</span>
-            <span style={{ display: 'flex', gap: 6 }}>
-              ↑
-              <input
-                type="text"
-                placeholder="17°"
-                value={weather.tonightHigh}
-                onChange={(e) => setWeather({ ...weather, tonightHigh: e.target.value })}
-                style={{ width: 36, border: 'none', background: 'transparent', font: 'inherit', color: 'inherit' }}
-              />
-              ↓
-              <input
-                type="text"
-                placeholder="12°"
-                value={weather.tonightLow}
-                onChange={(e) => setWeather({ ...weather, tonightLow: e.target.value })}
-                style={{ width: 36, border: 'none', background: 'transparent', font: 'inherit', color: 'inherit' }}
-              />
-            </span>
-          </div>
-          <div className="c-input-row">
-            <input type="text" placeholder="Moon phase (e.g. Waning Crescent)" value={weather.moonPhase} onChange={(e) => setWeather({ ...weather, moonPhase: e.target.value })} />
-            <input
-              type="text"
-              placeholder="18%"
-              value={weather.moonPct}
-              onChange={(e) => setWeather({ ...weather, moonPct: e.target.value })}
-              style={{ maxWidth: 60 }}
-            />
-          </div>
-        </div>
+        <WeatherSection />
 
         <div className="subsection">
           <p className="section-label" style={{ marginTop: 0 }}>
@@ -155,18 +156,55 @@ export default function WorldFeed() {
             <input type="date" value={releaseDate} onChange={(e) => setReleaseDate(e.target.value)} />
             <button onClick={addKpop}>Add</button>
           </div>
-          <ul className="c-list">
-            {kpop.length === 0 && <li className="c-empty">No releases tracked yet</li>}
-            {kpop.map((k) => (
-              <li key={k.id} className="c-list-item">
-                <span>{k.artist}</span>
-                {k.date && <span className="sub">{k.date}</span>}
-                <button className="remove" onClick={() => removeKpop(k.id)} aria-label="Remove">
-                  ×
-                </button>
-              </li>
-            ))}
-          </ul>
+          {kpop.length === 0 && <p className="c-empty">No releases tracked yet</p>}
+          {thisMonthKpop.length > 0 && (
+            <>
+              <p className="sub" style={{ marginLeft: 0, fontWeight: 700 }}>
+                This month
+              </p>
+              <ul className="c-list">
+                {thisMonthKpop.map((k) => (
+                  <li key={k.id} className="c-list-item">
+                    <span>{k.artist}</span>
+                    <span className="sub">{k.date}</span>
+                    <button className="remove" onClick={() => removeKpop(k.id)} aria-label="Remove">
+                      ×
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+          {upcomingKpop.length > 0 && (
+            <>
+              <p className="sub" style={{ marginLeft: 0, fontWeight: 700 }}>
+                Upcoming
+              </p>
+              <ul className="c-list">
+                {upcomingKpop.map((k) => (
+                  <li key={k.id} className="c-list-item">
+                    <span>{k.artist}</span>
+                    <span className="sub">{k.date}</span>
+                    <button className="remove" onClick={() => removeKpop(k.id)} aria-label="Remove">
+                      ×
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+          {undatedKpop.length > 0 && (
+            <ul className="c-list">
+              {undatedKpop.map((k) => (
+                <li key={k.id} className="c-list-item">
+                  <span>{k.artist}</span>
+                  <button className="remove" onClick={() => removeKpop(k.id)} aria-label="Remove">
+                    ×
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
 
         <div className="subsection">
@@ -184,7 +222,7 @@ export default function WorldFeed() {
           </div>
           <ul className="c-list">
             {youtube.length === 0 && <li className="c-empty">No updates yet</li>}
-            {youtube.map((y) => (
+            {youtube.slice(0, 4).map((y) => (
               <li key={y.id} className="c-list-item" style={{ alignItems: 'flex-start' }}>
                 <div>
                   <strong style={{ fontSize: 12 }}>{y.channel}</strong>: {y.title}
@@ -196,6 +234,7 @@ export default function WorldFeed() {
               </li>
             ))}
           </ul>
+          {youtube.length > 4 && <p className="sub" style={{ marginLeft: 0 }}>+{youtube.length - 4} more saved</p>}
         </div>
       </div>
     </Card>

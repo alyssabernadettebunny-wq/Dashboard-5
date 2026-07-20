@@ -13,25 +13,11 @@ interface DogCare {
 }
 
 const DEFAULT_DOGS: DogCare[] = [
-  { id: 'd1', name: 'Frenchie', breakfast: false, dinner: false, tummyIssue: false, notes: '' },
-  { id: 'd2', name: 'Maltipoo', breakfast: false, dinner: false, tummyIssue: false, notes: '' },
+  { id: 'd1', name: 'Misa', breakfast: false, dinner: false, tummyIssue: false, notes: '' },
+  { id: 'd2', name: 'Coco', breakfast: false, dinner: false, tummyIssue: false, notes: '' },
 ]
 
-const FACTS = [
-  "French Bulldogs can't swim well due to their heavy heads and short snouts — always supervise water time.",
-  'Frenchies are prone to overheating because of their short snouts (brachycephalic) — keep them cool in summer.',
-  'French Bulldog "bat ears" are a breed hallmark and help with their expressive communication.',
-  'Maltipoos are a Maltese x Poodle mix, bred to be small, affectionate companion dogs.',
-  "Maltipoos often inherit the Poodle's low-shedding coat, making them popular with allergy-sensitive owners.",
-  'Both Frenchies and Maltipoos are prone to separation anxiety and do best with lots of companionship.',
-  "French Bulldogs are one of the only breeds that can't naturally give birth without assistance most of the time.",
-  'Maltipoos are highly food-motivated, which makes training easier but overfeeding easy too.',
-  'French Bulldogs snore, snort, and grunt more than most breeds because of their short airways — it’s normal, but worth mentioning to the vet if it gets worse.',
-  'Puppies like Misa need extra nap time — up to 18-20 hours a day is normal for young pups.',
-  'Maltipoos are quick learners and tend to pick up on their owner’s emotional state easily.',
-  'A Frenchie’s "bratty" streak often comes from being smart and stubborn — mental enrichment helps burn that energy.',
-  'Both breeds do best with consistent, gentle routines rather than big schedule changes.',
-]
+const NAME_MIGRATIONS: Record<string, string> = { Frenchie: 'Misa', Maltipoo: 'Coco' }
 
 interface DogsDayRecord {
   date: string
@@ -43,7 +29,7 @@ export default function DogsCare() {
   const [dogsDay, setDogsDay] = useLocalStorage('dashboard.dogscare.day', logicalDateKey())
   const [dogsHistory, setDogsHistory] = useLocalStorage<DogsDayRecord[]>('dashboard.dogscare.history', [])
   const archivedRef = useRef(false)
-  const [factIndex, setFactIndex] = useState(() => Math.floor(Math.random() * FACTS.length))
+  const migratedRef = useRef(false)
   const [showHistory, setShowHistory] = useState(false)
 
   useEffect(() => {
@@ -60,31 +46,21 @@ export default function DogsCare() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dogsDay])
 
+  useEffect(() => {
+    if (migratedRef.current) return
+    migratedRef.current = true
+    if (dogs.some((d) => NAME_MIGRATIONS[d.name])) {
+      setDogs((prev) => prev.map((d) => (NAME_MIGRATIONS[d.name] ? { ...d, name: NAME_MIGRATIONS[d.name] } : d)))
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   function updateDog(id: string, patch: Partial<DogCare>) {
     setDogs(dogs.map((d) => (d.id === id ? { ...d, ...patch } : d)))
   }
 
-  function newFact() {
-    setFactIndex((prev) => {
-      let next = Math.floor(Math.random() * FACTS.length)
-      while (next === prev && FACTS.length > 1) next = Math.floor(Math.random() * FACTS.length)
-      return next
-    })
-  }
-
   return (
-    <Card
-      icon="🐾"
-      title="Dogs"
-      footer={
-        <div className="subsection" style={{ marginTop: 4 }}>
-          <p style={{ fontSize: 11.5, color: 'var(--text-muted)' }}>🐚 {FACTS[factIndex]}</p>
-          <button className="card-footer-btn" onClick={newFact}>
-            New fact
-          </button>
-        </div>
-      }
-    >
+    <Card icon="🐾" title="Dogs">
       <div className="two-col">
         {dogs.map((dog) => (
           <div key={dog.id} className="mini-profile">

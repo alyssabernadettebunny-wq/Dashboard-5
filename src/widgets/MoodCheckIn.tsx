@@ -21,6 +21,20 @@ interface MoodLogEntry {
   id: string
   timestamp: string
   label: string
+  image: string | null
+}
+
+const WEEKDAY_SHORT = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+
+function last7Days() {
+  const days: { key: string; label: string }[] = []
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date()
+    d.setDate(d.getDate() - i)
+    const key = d.toISOString().slice(0, 10)
+    days.push({ key, label: `${WEEKDAY_SHORT[d.getDay()]} ${d.getDate()}` })
+  }
+  return days
 }
 
 function resizeImage(file: File): Promise<string> {
@@ -133,7 +147,7 @@ export default function MoodCheckIn() {
       setPath([...path, node.id])
     } else {
       setToday({ date: logicalDateKey(), label: node.label, image: node.image })
-      setMoodLog([{ id: crypto.randomUUID(), timestamp: new Date().toISOString(), label: node.label }, ...moodLog])
+      setMoodLog([{ id: crypto.randomUUID(), timestamp: new Date().toISOString(), label: node.label, image: node.image }, ...moodLog])
       markToday()
       setPath([])
     }
@@ -210,6 +224,23 @@ export default function MoodCheckIn() {
         <p className="mood2-today">
           Today: {today.image && <img className="mood2-today-img" src={today.image} alt="" />} {today.label}
         </p>
+      )}
+
+      {!editMode && (
+        <div className="mood-week-row">
+          {last7Days().map((day) => {
+            const dayEntries = moodLog.filter((m) => m.timestamp.slice(0, 10) === day.key)
+            const entry = dayEntries[0]
+            return (
+              <div key={day.key} className="mood-week-day">
+                <div className="mood-week-slot">
+                  {entry ? entry.image ? <img src={entry.image} alt={entry.label} /> : <span className="mood2-placeholder">?</span> : <span className="mood-week-empty" />}
+                </div>
+                <span className="mood-week-date">{day.label}</span>
+              </div>
+            )
+          })}
+        </div>
       )}
 
       {moodLog.length > 0 && !editMode && (

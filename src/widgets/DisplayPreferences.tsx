@@ -3,7 +3,6 @@ import Card from '../components/Card'
 
 export const TODAY_WIDGETS: { key: string; label: string }[] = [
   { key: 'topPriorities', label: 'Today at a Glance' },
-  { key: 'companion', label: 'Companion (Misa/Coco)' },
   { key: 'statusBoard', label: 'Household Status Board' },
   { key: 'miniCalendar', label: 'This Month' },
   { key: 'moodCheckIn', label: 'Mood Check-In' },
@@ -11,6 +10,7 @@ export const TODAY_WIDGETS: { key: string; label: string }[] = [
   { key: 'waterProtein', label: 'Water & Protein' },
   { key: 'medsTitration', label: 'Meds & Titration' },
   { key: 'dogsCare', label: 'Dogs' },
+  { key: 'dogFacts', label: 'Dog Facts' },
   { key: 'habitsToday', label: 'Habits Today' },
   { key: 'familyKids', label: 'Family & Kids' },
   { key: 'quickCapture', label: 'Quick Capture' },

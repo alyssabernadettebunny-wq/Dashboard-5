@@ -6,6 +6,7 @@ import Card from '../components/Card'
 interface FamilyMember {
   id: string
   name: string
+  emoji: string
   activity: string
   action: 'call' | 'star' | 'event'
 }
@@ -19,11 +20,12 @@ const ACTION_ICONS: Record<FamilyMember['action'], string> = {
 const ACTION_ORDER: FamilyMember['action'][] = ['call', 'star', 'event']
 
 const DEFAULT_MEMBERS: FamilyMember[] = [
-  { id: '1', name: 'Winnie', activity: "Today's activity...", action: 'star' },
-  { id: '2', name: 'Amy', activity: "Today's activity...", action: 'star' },
-  { id: '3', name: 'Holly', activity: "Today's activity...", action: 'star' },
-  { id: '4', name: 'Mom', activity: 'Call tonight', action: 'call' },
+  { id: '1', name: 'Winnie', emoji: '🐰', activity: "Today's activity...", action: 'star' },
+  { id: '2', name: 'Amy', emoji: '🌺', activity: "Today's activity...", action: 'star' },
+  { id: '3', name: 'Holly', emoji: '🌼', activity: "Today's activity...", action: 'star' },
 ]
+
+const EMOJI_MIGRATIONS: Record<string, string> = { Winnie: '🐰', Amy: '🌺', Holly: '🌼' }
 
 interface FamilyDayRecord {
   date: string
@@ -35,7 +37,20 @@ export default function FamilyKids() {
   const [familyDay, setFamilyDay] = useLocalStorage('dashboard.familykids.day', logicalDateKey())
   const [familyHistory, setFamilyHistory] = useLocalStorage<FamilyDayRecord[]>('dashboard.familykids.history', [])
   const archivedRef = useRef(false)
+  const migratedRef = useRef(false)
   const [showHistory, setShowHistory] = useState(false)
+
+  useEffect(() => {
+    if (migratedRef.current) return
+    migratedRef.current = true
+    const needsMigration = members.some((m) => m.name === 'Mom' || !m.emoji)
+    if (needsMigration) {
+      setMembers((prev) =>
+        prev.filter((m) => m.name !== 'Mom').map((m) => ({ ...m, emoji: EMOJI_MIGRATIONS[m.name] ?? m.emoji ?? '🙂' }))
+      )
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     const today = logicalDateKey()
@@ -65,14 +80,14 @@ export default function FamilyKids() {
   function addMember() {
     const name = window.prompt('Name?')
     if (!name) return
-    setMembers([...members, { id: crypto.randomUUID(), name, activity: '', action: 'star' }])
+    setMembers([...members, { id: crypto.randomUUID(), name, emoji: '🙂', activity: '', action: 'star' }])
   }
 
   return (
     <Card icon="👨‍👩‍👧‍👦" title="Family & Kids">
       {members.map((m) => (
         <div key={m.id} className="family-row">
-          <div className="family-avatar">🙂</div>
+          <div className="family-avatar">{m.emoji}</div>
           <div className="family-info">
             <input className="family-name" value={m.name} onChange={(e) => update(m.id, { name: e.target.value })} />
             <input className="family-activity" value={m.activity} onChange={(e) => update(m.id, { activity: e.target.value })} placeholder="Today's activity..." />

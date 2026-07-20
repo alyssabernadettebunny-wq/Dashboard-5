@@ -15,7 +15,7 @@ import GratefulFor from '../widgets/GratefulFor'
 import TarotPull from '../widgets/TarotPull'
 import TopPriorities from '../widgets/TopPriorities'
 import HabitsToday from '../widgets/HabitsToday'
-import CompanionCard from '../widgets/CompanionCard'
+import DogFacts from '../widgets/DogFacts'
 import { useTodayVisibility } from '../widgets/DisplayPreferences'
 
 export default function HomePage() {
@@ -25,7 +25,6 @@ export default function HomePage() {
   return (
     <div className="grid">
       {show('topPriorities') && <TopPriorities />}
-      {show('companion') && <CompanionCard />}
       {show('statusBoard') && <HouseholdStatusBoard />}
       {show('miniCalendar') && <MiniCalendar />}
       {show('moodCheckIn') && <MoodCheckIn />}
@@ -33,6 +32,7 @@ export default function HomePage() {
       {show('waterProtein') && <WaterProtein />}
       {show('medsTitration') && <MedsTitration />}
       {show('dogsCare') && <DogsCare />}
+      {show('dogFacts') && <DogFacts />}
       {show('habitsToday') && <HabitsToday />}
       {show('familyKids') && <FamilyKids />}
       {show('quickCapture') && <QuickCapture />}

@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import Card from '../components/Card'
 
@@ -11,9 +12,9 @@ interface Habit {
 const DEFAULT_HABITS: Habit[] = [
   { id: 'h1', icon: '🐾', name: 'Morning dog care', days: Array(7).fill(false) },
   { id: 'h2', icon: '💧', name: 'Drink water (100oz)', days: Array(7).fill(false) },
-  { id: 'h3', icon: '🌱', name: 'Move my body', days: Array(7).fill(false) },
-  { id: 'h4', icon: '🚫', name: 'No spend', days: Array(7).fill(false) },
 ]
+
+const REMOVED_HABITS = ['Move my body', 'No spend']
 
 function currentStreak(habits: Habit[]) {
   if (habits.length === 0) return 0
@@ -28,6 +29,16 @@ function currentStreak(habits: Habit[]) {
 
 export default function HabitsToday() {
   const [habits, setHabits] = useLocalStorage<Habit[]>('dashboard.habitstoday', DEFAULT_HABITS)
+  const cleanedRef = useRef(false)
+
+  useEffect(() => {
+    if (cleanedRef.current) return
+    cleanedRef.current = true
+    if (habits.some((h) => REMOVED_HABITS.includes(h.name))) {
+      setHabits((prev) => prev.filter((h) => !REMOVED_HABITS.includes(h.name)))
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   function toggleDay(id: string, dayIndex: number) {
     setHabits(

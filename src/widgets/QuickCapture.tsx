@@ -6,6 +6,7 @@ interface Note {
   id: string
   text: string
   time: string
+  date: string
 }
 
 export default function QuickCapture() {
@@ -15,8 +16,10 @@ export default function QuickCapture() {
   function addNote() {
     const trimmed = text.trim()
     if (!trimmed) return
-    const time = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
-    setNotes([{ id: crypto.randomUUID(), text: trimmed, time }, ...notes])
+    const now = new Date()
+    const time = now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
+    const date = now.toLocaleDateString([], { month: 'short', day: 'numeric' })
+    setNotes([{ id: crypto.randomUUID(), text: trimmed, time, date }, ...notes])
     setText('')
   }
 
@@ -41,7 +44,7 @@ export default function QuickCapture() {
         {notes.map((note) => (
           <li key={note.id} className="c-list-item">
             <span className="sub" style={{ marginLeft: 0 }}>
-              {note.time}
+              {note.date ?? ''} {note.time}
             </span>
             <span>{note.text}</span>
             <button className="remove" onClick={() => removeNote(note.id)} aria-label="Remove note">

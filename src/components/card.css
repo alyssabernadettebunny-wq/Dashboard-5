@@ -618,6 +618,54 @@
   gap: 4px;
 }
 
+.mood-week-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--border-hairline);
+}
+
+.mood-week-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.mood-week-slot {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1.5px dashed var(--pink-line);
+  background: var(--pink-pale);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.mood-week-slot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.mood-week-empty {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--border-hairline);
+}
+
+.mood-week-date {
+  font-size: 8.5px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
 .mood2-controls button {
   background: var(--card-bg);
   border: 1px solid var(--border-hairline);

@@ -396,6 +396,15 @@
   align-items: center;
   gap: 10px;
   box-shadow: var(--shadow-soft);
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+}
+
+.chip:hover {
+  box-shadow: var(--shadow-lift);
+  transform: translateY(-1px);
 }
 
 .chip .icon {
