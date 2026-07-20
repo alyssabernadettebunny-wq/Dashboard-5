@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { useWeather, useWeatherLocation } from '../hooks/useWeather'
 import { localDateKey } from '../lib/logicalDate'
@@ -15,6 +15,27 @@ interface YoutubeUpdate {
   channel: string
   title: string
   summary: string
+}
+
+interface AutoKpopRelease {
+  artist: string
+  date: string
+}
+
+interface AutoKpopData {
+  updatedAt: string
+  releases: AutoKpopRelease[]
+}
+
+function useAutoKpop() {
+  const [data, setData] = useState<AutoKpopData | null>(null)
+  useEffect(() => {
+    fetch('/Dashboard-5/data/kpop-releases.json')
+      .then((r) => (r.ok ? r.json() : null))
+      .then(setData)
+      .catch(() => setData(null))
+  }, [])
+  return data
 }
 
 async function geocodeCity(city: string) {
@@ -143,6 +164,13 @@ export default function WorldFeed() {
   const upcomingKpop = kpop.filter((k) => k.date && k.date > todayStr).sort((a, b) => a.date.localeCompare(b.date))
   const undatedKpop = kpop.filter((k) => !k.date)
 
+  const autoKpop = useAutoKpop()
+
+  function addAutoRelease(r: AutoKpopRelease) {
+    if (kpop.some((k) => k.artist === r.artist && k.date === r.date)) return
+    setKpop([...kpop, { id: crypto.randomUUID(), artist: r.artist, date: r.date }])
+  }
+
   return (
     <Card icon="🌐" title="World Feed" wide>
       <div className="status-cols">
@@ -152,6 +180,27 @@ export default function WorldFeed() {
           <p className="section-label" style={{ marginTop: 0 }}>
             K-pop Releases
           </p>
+          {autoKpop && autoKpop.releases.length > 0 && (
+            <div className="hsb-latest" style={{ marginBottom: 8 }}>
+              <p className="sub" style={{ marginLeft: 0, fontWeight: 700 }}>
+                Auto-updated via web search
+              </p>
+              <ul className="c-list">
+                {autoKpop.releases.map((r, i) => (
+                  <li key={i} className="c-list-item">
+                    <span>{r.artist}</span>
+                    {r.date && <span className="sub">{r.date}</span>}
+                    <button className="card-footer-btn" onClick={() => addAutoRelease(r)}>
+                      + Track
+                    </button>
+                  </li>
+                ))}
+              </ul>
+              <p style={{ fontSize: 10, color: 'var(--text-muted)', margin: '4px 0 0' }}>
+                Updated {new Date(autoKpop.updatedAt).toLocaleDateString([], { month: 'short', day: 'numeric' })}
+              </p>
+            </div>
+          )}
           <div className="c-input-row">
             <input type="text" placeholder="Artist / release" value={artist} onChange={(e) => setArtist(e.target.value)} />
             <input type="date" value={releaseDate} onChange={(e) => setReleaseDate(e.target.value)} />
