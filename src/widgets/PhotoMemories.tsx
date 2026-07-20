@@ -1,4 +1,5 @@
 import { useLocalStorage } from '../hooks/useLocalStorage'
+import { localDateKey } from '../lib/logicalDate'
 import Card from '../components/Card'
 
 interface Memory {
@@ -8,7 +9,7 @@ interface Memory {
 export default function PhotoMemories() {
   const [misaMemory, setMisaMemory] = useLocalStorage<Memory>('pets.misa.memory', { caption: 'Tug time! 🐾' })
   const [cocoMemory, setCocoMemory] = useLocalStorage<Memory>('pets.coco.memory', { caption: 'Sunshine girl ☀️' })
-  const [date, setDate] = useLocalStorage('pets.memory.date', new Date().toISOString().slice(0, 10))
+  const [date, setDate] = useLocalStorage('pets.memory.date', localDateKey())
 
   return (
     <Card icon="📷" title="Photo Moments / Memory">

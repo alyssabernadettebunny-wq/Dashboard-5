@@ -1,4 +1,5 @@
 import { useLocalStorage } from '../hooks/useLocalStorage'
+import { localDateKey } from '../lib/logicalDate'
 import Card from '../components/Card'
 
 interface Entry {
@@ -8,7 +9,7 @@ interface Entry {
 }
 
 function todayStr() {
-  return new Date().toISOString().slice(0, 10)
+  return localDateKey()
 }
 
 function dayLabel(dateStr: string, isToday: boolean) {

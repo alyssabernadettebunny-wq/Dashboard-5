@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { useStreak } from '../hooks/useStreak'
-import { isLogicalToday, logicalDateKey } from '../lib/logicalDate'
+import { isLogicalToday, localDateKey, logicalDateKey } from '../lib/logicalDate'
 import Card from '../components/Card'
 
 interface MoodNode {
@@ -31,7 +31,7 @@ function last7Days() {
   for (let i = 6; i >= 0; i--) {
     const d = new Date()
     d.setDate(d.getDate() - i)
-    const key = d.toISOString().slice(0, 10)
+    const key = localDateKey(d)
     days.push({ key, label: `${WEEKDAY_SHORT[d.getDay()]} ${d.getDate()}` })
   }
   return days
@@ -229,7 +229,7 @@ export default function MoodCheckIn() {
       {!editMode && (
         <div className="mood-week-row">
           {last7Days().map((day) => {
-            const dayEntries = moodLog.filter((m) => m.timestamp.slice(0, 10) === day.key)
+            const dayEntries = moodLog.filter((m) => localDateKey(new Date(m.timestamp)) === day.key)
             const entry = dayEntries[0]
             return (
               <div key={day.key} className="mood-week-day">

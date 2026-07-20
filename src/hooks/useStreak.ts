@@ -1,4 +1,5 @@
 import { useLocalStorage } from './useLocalStorage'
+import { localDateKey } from '../lib/logicalDate'
 
 interface StreakData {
   count: number
@@ -6,13 +7,13 @@ interface StreakData {
 }
 
 function todayKey() {
-  return new Date().toISOString().slice(0, 10)
+  return localDateKey()
 }
 
 function yesterdayKey() {
   const d = new Date()
   d.setDate(d.getDate() - 1)
-  return d.toISOString().slice(0, 10)
+  return localDateKey(d)
 }
 
 export function useStreak(storageKey: string) {

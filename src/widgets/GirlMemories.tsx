@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
+import { localDateKey } from '../lib/logicalDate'
 import Card from '../components/Card'
 
 interface Milestone {
@@ -25,7 +26,7 @@ export default function GirlMemories({ name, storageKey }: { name: string; stora
 
   function addMilestone() {
     if (!milestoneLabel.trim()) return
-    const entry = { id: crypto.randomUUID(), date: milestoneDate || new Date().toISOString().slice(0, 10), label: milestoneLabel.trim() }
+    const entry = { id: crypto.randomUUID(), date: milestoneDate || localDateKey(), label: milestoneLabel.trim() }
     setMilestones([entry, ...milestones].sort((a, b) => b.date.localeCompare(a.date)))
     setMilestoneDate('')
     setMilestoneLabel('')
@@ -37,7 +38,7 @@ export default function GirlMemories({ name, storageKey }: { name: string; stora
 
   function addNote() {
     if (!noteText.trim()) return
-    setNotes([{ id: crypto.randomUUID(), date: new Date().toISOString().slice(0, 10), text: noteText.trim() }, ...notes])
+    setNotes([{ id: crypto.randomUUID(), date: localDateKey(), text: noteText.trim() }, ...notes])
     setNoteText('')
   }
 

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { useWeather, useWeatherLocation } from '../hooks/useWeather'
+import { localDateKey } from '../lib/logicalDate'
 import Card from '../components/Card'
 
 interface KpopRelease {
@@ -136,7 +137,7 @@ export default function WorldFeed() {
     setYoutube(youtube.filter((y) => y.id !== id))
   }
 
-  const todayStr = new Date().toISOString().slice(0, 10)
+  const todayStr = localDateKey()
   const monthStart = todayStr.slice(0, 8) + '01'
   const thisMonthKpop = kpop.filter((k) => k.date && k.date >= monthStart && k.date <= todayStr).sort((a, b) => a.date.localeCompare(b.date))
   const upcomingKpop = kpop.filter((k) => k.date && k.date > todayStr).sort((a, b) => a.date.localeCompare(b.date))

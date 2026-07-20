@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
-import { logicalDateKey } from '../lib/logicalDate'
+import { localDateKey, logicalDateKey } from '../lib/logicalDate'
 import Card from '../components/Card'
 
 interface Med {
@@ -25,7 +25,7 @@ interface TitrationMed {
 }
 
 function todayStr() {
-  return new Date().toISOString().slice(0, 10)
+  return localDateKey()
 }
 
 interface MedsDayRecord {
@@ -208,6 +208,11 @@ export default function MedsTitration() {
           </p>
           <div className="c-input-row">
             <button onClick={() => logDoseChange(t.id)}>Log dose change</button>
+          </div>
+          <div className="c-input-row" style={{ marginTop: 4 }}>
+            <span className="sub" style={{ marginLeft: 0 }}>
+              Next review date
+            </span>
             <input type="date" value={t.nextReview} onChange={(e) => updateTitration(t.id, { nextReview: e.target.value })} />
           </div>
           {t.history.length > 0 && (

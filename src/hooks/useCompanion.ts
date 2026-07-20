@@ -1,4 +1,5 @@
 import { useLocalStorage } from './useLocalStorage'
+import { localDateKey } from '../lib/logicalDate'
 
 interface TodayMood {
   date: string
@@ -20,7 +21,7 @@ function dayOfYear() {
 }
 
 function todayStr() {
-  return new Date().toISOString().slice(0, 10)
+  return localDateKey()
 }
 
 function timeOfDayMessage(pet: Pet, hour: number) {

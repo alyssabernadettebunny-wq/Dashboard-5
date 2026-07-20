@@ -1,3 +1,4 @@
+import { localDateKey } from '../lib/logicalDate'
 import Card from '../components/Card'
 
 function downloadBackup() {
@@ -15,7 +16,7 @@ function downloadBackup() {
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
   a.href = url
-  a.download = `alyssa-dashboard-backup-${new Date().toISOString().slice(0, 10)}.json`
+  a.download = `alyssa-dashboard-backup-${localDateKey()}.json`
   a.click()
   URL.revokeObjectURL(url)
 }

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { useStreak } from '../hooks/useStreak'
+import { localDateKey } from '../lib/logicalDate'
 import Card from '../components/Card'
 
 interface Entry {
@@ -10,7 +11,7 @@ interface Entry {
 }
 
 function todayKey() {
-  return new Date().toISOString().slice(0, 10)
+  return localDateKey()
 }
 
 function formatDate(dateKey: string) {
