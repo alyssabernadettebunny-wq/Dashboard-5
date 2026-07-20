@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
+import { isLogicalToday } from '../lib/logicalDate'
 import Card from '../components/Card'
 
 interface Entry {
@@ -13,16 +14,24 @@ interface Entry {
   mainPressure: string
   boundaryNote: string
   opportunity: string
+  daysVibe: string
 }
 
 const HOUSEHOLD_MEMBERS = ['Alyssa', 'Winnie', 'Amy', 'Holly', 'Mom / Angela', 'Dad', 'Nick', 'Vincent']
-const HOUSEHOLD_STATUS_OPTIONS = ['Home', 'Out', 'In room', 'Sleeping']
+const HOUSEHOLD_STATUS_OPTIONS = ['Home', 'Out', 'Away', 'In room', 'Sleeping']
 
 const VISITOR_CHIPS = ['Nina', "Nina's kids", 'Alysson', "Alysson's kids", 'Grandma', 'Santi / Daycare', 'Other visitors']
 
-const DOG_STATUS_OPTIONS = ['Quiet & settled with owner', 'Put away inside', 'Put outside', 'Walking around / out and about']
+const DOG_STATUS_OPTIONS = ['Quiet and settled', 'Put away inside', 'Put outside', 'Walking around / out and about']
 const OWN_DOGS = ['Misa', 'Coco']
-const OTHER_DOGS = ['Juno', 'Abby']
+const OTHER_DOGS = [
+  { name: 'Juno', owner: "Dad's" },
+  { name: 'Hades', owner: "Mom's" },
+  { name: 'Zeno', owner: "Mom's" },
+  { name: 'Abby', owner: "Mom's" },
+  { name: 'Dottie', owner: "Vince's" },
+  { name: 'Brutus', owner: "Vince's" },
+]
 const OWN_DOG_STATUS_OPTIONS = [...DOG_STATUS_OPTIONS, 'Sleeping']
 
 const QUIET_WINDOW_OPTIONS = ['Yes', 'No', 'Maybe', 'Later', 'Unknown']
@@ -39,6 +48,12 @@ const MAIN_PRESSURE_OPTIONS = [
   'No clear private space',
   'Phone/video calls happening nearby',
   'Cooking smells triggering nausea',
+  'Multiple people talking at once',
+  'Someone hovering nearby',
+  'Unexpected guest arrival',
+  'Cleaning/organizing chaos',
+  'TV or screen noise',
+  'Too many requests at once',
 ]
 
 const BOUNDARY_OPTIONS = [
@@ -51,6 +66,10 @@ const BOUNDARY_OPTIONS = [
   'Handle dogs, then leave',
   "Say you'll be back later, no more explanation needed",
   'Redirect to another family member',
+  'Politely decline extra tasks right now',
+  'Text instead of talk',
+  "It's okay to not respond right away",
+  'One task at a time only',
 ]
 
 const OPPORTUNITY_OPTIONS = [
@@ -62,6 +81,26 @@ const OPPORTUNITY_OPTIONS = [
   'Good time to rest without being perceived',
   'Good time for a quick walk',
   'Good time to journal',
+  'Good time to nap',
+  'Good time to call a friend',
+  'Good time to tidy one small area',
+  'Good time to do nothing at all',
+]
+
+const DAYS_VIBE_OPTIONS = [
+  'Calm',
+  'Chaotic',
+  'Tense',
+  'Busy but manageable',
+  'Low energy',
+  'High energy',
+  'Recovery day',
+  'Celebratory',
+  'Unpredictable',
+  'Heavy',
+  'Light & easy',
+  'Overstimulating',
+  'Peaceful',
 ]
 
 const CUSTOM = 'Custom (type your own)...'
@@ -121,9 +160,9 @@ export default function HouseholdStatusBoard() {
   const [boundaryNoteCustom, setBoundaryNoteCustom] = useState('')
   const [opportunity, setOpportunity] = useState('')
   const [opportunityCustom, setOpportunityCustom] = useState('')
+  const [daysVibe, setDaysVibe] = useState('')
 
-  const today = new Date().toISOString().slice(0, 10)
-  const todaysEntries = log.filter((e) => e.timestamp.slice(0, 10) === today)
+  const todaysEntries = log.filter((e) => isLogicalToday(e.timestamp))
   const latest = todaysEntries[0]
 
   function setMemberStatus(name: string, status: string) {
@@ -160,6 +199,7 @@ export default function HouseholdStatusBoard() {
     setBoundaryNoteCustom('')
     setOpportunity('')
     setOpportunityCustom('')
+    setDaysVibe('')
   }
 
   function logStatus() {
@@ -174,6 +214,7 @@ export default function HouseholdStatusBoard() {
       mainPressure: mainPressure === CUSTOM ? mainPressureCustom.trim() : mainPressure,
       boundaryNote: boundaryNote === CUSTOM ? boundaryNoteCustom.trim() : boundaryNote,
       opportunity: opportunity === CUSTOM ? opportunityCustom.trim() : opportunity,
+      daysVibe,
     }
     setLog([entry, ...log])
     resetForm()
@@ -194,6 +235,11 @@ export default function HouseholdStatusBoard() {
                 </span>
                 {latest.quietWindow && <span>Quiet window: {latest.quietWindow}</span>}
               </div>
+              {latest.daysVibe && (
+                <p>
+                  <strong>Day's vibe:</strong> {latest.daysVibe}
+                </p>
+              )}
               {latest.mainPressure && (
                 <p>
                   <strong>Pressure:</strong> {latest.mainPressure}
@@ -252,7 +298,9 @@ export default function HouseholdStatusBoard() {
                       {new Date(e.timestamp).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}
                     </span>
                     <p style={{ fontSize: 11, color: 'var(--text-muted)', margin: '2px 0 0' }}>
-                      {[e.quietWindow && `Quiet: ${e.quietWindow}`, e.mainPressure, e.boundaryNote, e.opportunity].filter(Boolean).join(' · ')}
+                      {[e.daysVibe, e.quietWindow && `Quiet: ${e.quietWindow}`, e.mainPressure, e.boundaryNote, e.opportunity]
+                        .filter(Boolean)
+                        .join(' · ')}
                     </p>
                   </div>
                   <button className="remove" onClick={() => setLog(log.filter((x) => x.id !== e.id))} aria-label="Remove">
@@ -324,9 +372,11 @@ export default function HouseholdStatusBoard() {
                   </select>
                 </div>
               ))}
-              {OTHER_DOGS.map((dog) => (
+              {OTHER_DOGS.map(({ name: dog, owner }) => (
                 <div key={dog} className="hsb-dog-row">
-                  <span>{dog}</span>
+                  <span>
+                    {dog} <span className="sub" style={{ marginLeft: 3 }}>{owner}</span>
+                  </span>
                   <select value={dogStatuses[dog] ?? ''} onChange={(e) => setDogStatus(dog, e.target.value)}>
                     <option value="">—</option>
                     {DOG_STATUS_OPTIONS.map((o) => (
@@ -382,6 +432,18 @@ export default function HouseholdStatusBoard() {
             onChange={setOpportunity}
             onCustomChange={setOpportunityCustom}
           />
+
+          <div className="hsb-field">
+            <label>Day's vibe</label>
+            <select value={daysVibe} onChange={(e) => setDaysVibe(e.target.value)}>
+              <option value="">—</option>
+              {DAYS_VIBE_OPTIONS.map((o) => (
+                <option key={o} value={o}>
+                  {o}
+                </option>
+              ))}
+            </select>
+          </div>
 
           <div className="c-input-row">
             <button onClick={logStatus}>Log status</button>
