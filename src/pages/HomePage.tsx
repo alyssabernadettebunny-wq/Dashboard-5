@@ -15,6 +15,7 @@ import GratefulFor from '../widgets/GratefulFor'
 import TarotPull from '../widgets/TarotPull'
 import TopPriorities from '../widgets/TopPriorities'
 import HabitsToday from '../widgets/HabitsToday'
+import CompanionCard from '../widgets/CompanionCard'
 import { useTodayVisibility } from '../widgets/DisplayPreferences'
 
 export default function HomePage() {
@@ -24,6 +25,7 @@ export default function HomePage() {
   return (
     <div className="grid">
       {show('topPriorities') && <TopPriorities />}
+      {show('companion') && <CompanionCard />}
       {show('statusBoard') && <StatusBoard />}
       {show('miniCalendar') && <MiniCalendar />}
       {show('moodCheckIn') && <MoodCheckIn />}

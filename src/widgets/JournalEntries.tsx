@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
+import { useStreak } from '../hooks/useStreak'
 import Card from '../components/Card'
 
 interface Entry {
@@ -19,6 +20,7 @@ function formatDate(dateKey: string) {
 export default function JournalEntries() {
   const [entries, setEntries] = useLocalStorage<Entry[]>('notes.journal', [])
   const [draft, setDraft] = useState('')
+  const { streak, markToday } = useStreak('streak.journal')
 
   const today = todayKey()
   const todayEntry = entries.find((e) => e.date === today)
@@ -33,6 +35,7 @@ export default function JournalEntries() {
     } else {
       setEntries([...entries, { id: crypto.randomUUID(), date: today, text }])
     }
+    markToday()
     setDraft('')
   }
 
@@ -41,7 +44,7 @@ export default function JournalEntries() {
   }
 
   return (
-    <Card icon="📖" title="Journal" wide meta={formatDate(today)}>
+    <Card icon="📖" title="Journal" wide meta={`${formatDate(today)}${streak > 0 ? ` · 🔥 ${streak}d streak` : ''}`}>
       <textarea
         className="c-textarea"
         placeholder={todayEntry ? todayEntry.text : "What's on your mind today?"}

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
+import { useStreak } from '../hooks/useStreak'
 import Card from '../components/Card'
 
 interface Item {
@@ -29,6 +30,7 @@ export default function TodayHomeReset() {
   )
   const [text, setText] = useState('')
   const [zone, setZone] = useLocalStorage('house.today.zone', ZONES[0])
+  const { streak, markToday } = useStreak('streak.homereset')
 
   function addItem() {
     const trimmed = text.trim()
@@ -38,7 +40,9 @@ export default function TodayHomeReset() {
   }
 
   function toggleItem(id: string) {
-    setItems(items.map((i) => (i.id === id ? { ...i, done: !i.done } : i)))
+    const updated = items.map((i) => (i.id === id ? { ...i, done: !i.done } : i))
+    setItems(updated)
+    if (updated.length > 0 && updated.every((i) => i.done)) markToday()
   }
 
   function removeItem(id: string) {
@@ -51,7 +55,11 @@ export default function TodayHomeReset() {
   const colB = items.slice(mid)
 
   return (
-    <Card icon="✨" title="1. Today's Home Reset" meta={items.length ? `${doneCount} / ${items.length} done` : undefined}>
+    <Card
+      icon="✨"
+      title="1. Today's Home Reset"
+      meta={items.length ? `${doneCount} / ${items.length} done${streak > 0 ? ` · 🔥 ${streak}d` : ''}` : undefined}
+    >
       <hr className="card-divider" />
       <div className="two-col-list">
         {[colA, colB].map((col, ci) => (

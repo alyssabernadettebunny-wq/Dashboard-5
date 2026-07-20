@@ -3,6 +3,7 @@ import Card from '../components/Card'
 
 export const TODAY_WIDGETS: { key: string; label: string }[] = [
   { key: 'topPriorities', label: 'Today at a Glance' },
+  { key: 'companion', label: 'Companion (Misa/Coco)' },
   { key: 'statusBoard', label: "Today's Status Board" },
   { key: 'miniCalendar', label: 'This Month' },
   { key: 'moodCheckIn', label: 'Mood Check-In' },

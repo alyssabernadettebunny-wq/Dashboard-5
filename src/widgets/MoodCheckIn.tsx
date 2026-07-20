@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
+import { useStreak } from '../hooks/useStreak'
 import Card from '../components/Card'
 
 interface MoodNode {
@@ -66,6 +67,7 @@ export default function MoodCheckIn() {
   const [path, setPath] = useState<string[]>([])
   const [editMode, setEditMode] = useState(false)
   const [today, setToday] = useLocalStorage<TodayMood | null>('dashboard.moodToday', null)
+  const { streak, markToday } = useStreak('streak.mood')
   const fileInputRef = useRef<HTMLInputElement>(null)
   const pendingUpload = useRef<{ path: string[]; nodeId: string | null } | null>(null)
 
@@ -124,12 +126,13 @@ export default function MoodCheckIn() {
       setPath([...path, node.id])
     } else {
       setToday({ date: todayStr(), label: node.label, image: node.image })
+      markToday()
       setPath([])
     }
   }
 
   return (
-    <Card icon="💗" title="Mood Check-In">
+    <Card icon="💗" title="Mood Check-In" meta={streak > 0 ? `🔥 ${streak}d streak` : undefined}>
       <div className="mood2-header-row">
         <p className="waiting-subtitle" style={{ margin: 0 }}>
           How are you feeling?

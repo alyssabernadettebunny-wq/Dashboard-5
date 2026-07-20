@@ -11,6 +11,8 @@ import NotesPage from './pages/NotesPage'
 import SparkPage from './pages/SparkPage'
 import MorePage from './pages/MorePage'
 import { useLocalStorage } from './hooks/useLocalStorage'
+import { useStreak } from './hooks/useStreak'
+import { useCompanion } from './hooks/useCompanion'
 import './App.css'
 
 const NAV_ITEMS = [
@@ -74,10 +76,17 @@ function App() {
   const [page, setPage] = useState('home')
   const [clock, setClock] = useState(() => new Date())
   const [weather] = useLocalStorage('dashboard.worldfeed.weather', { temp: '', condition: '' })
+  const { streak: overallStreak, markToday: markOverallToday } = useStreak('streak.overall')
+  const companion = useCompanion()
 
   useEffect(() => {
     const id = setInterval(() => setClock(new Date()), 30000)
     return () => clearInterval(id)
+  }, [])
+
+  useEffect(() => {
+    markOverallToday()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const today = formatDate(clock)
@@ -121,6 +130,7 @@ function App() {
                 <div className="greeting-block">
                   <img className="greeting-banner" src="/Dashboard-5/images/greeting-banner.png" alt="Good morning, Alyssa!" />
                   <span className="affirmation-pill">{todaysAffirmation()}</span>
+                  {overallStreak > 0 && <span className="streak-pill">🔥 {overallStreak} day{overallStreak !== 1 ? 's' : ''}</span>}
                 </div>
               </div>
 
@@ -130,8 +140,10 @@ function App() {
               </div>
 
               <div className="header-right">
-                <div className="illustration-slot mascot-slot">mascot illust.</div>
-                <div className="speech-bubble">be kind to your future self.</div>
+                <div className="illustration-slot mascot-slot" title={companion.pet.name}>
+                  {companion.pet.emoji}
+                </div>
+                <div className="speech-bubble">{companion.message}</div>
                 <div className="datetime-card">
                   <div className="time">
                     {timeValue}
