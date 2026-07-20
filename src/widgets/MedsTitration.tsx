@@ -198,8 +198,13 @@ export default function MedsTitration() {
               ×
             </button>
           </div>
-          <p style={{ fontSize: 12, color: 'var(--text-muted)' }}>
+          <p style={{ fontSize: 12, color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: 6 }}>
             {t.currentDose ? `${t.currentDose} since ${t.sinceDate}` : 'No dose logged yet'}
+            {t.currentDose && (
+              <button className="remove" onClick={() => updateTitration(t.id, { currentDose: '', sinceDate: '' })} aria-label="Clear current dose">
+                ×
+              </button>
+            )}
           </p>
           <div className="c-input-row">
             <button onClick={() => logDoseChange(t.id)}>Log dose change</button>
@@ -213,7 +218,16 @@ export default function MedsTitration() {
               <ul className="c-list" style={{ marginTop: 6 }}>
                 {t.history.map((h, i) => (
                   <li key={i} className="c-list-item">
-                    {h.dose} — {h.date}
+                    <span>
+                      {h.dose} — {h.date}
+                    </span>
+                    <button
+                      className="remove"
+                      onClick={() => updateTitration(t.id, { history: t.history.filter((_, idx) => idx !== i) })}
+                      aria-label="Remove dose history entry"
+                    >
+                      ×
+                    </button>
                   </li>
                 ))}
               </ul>
