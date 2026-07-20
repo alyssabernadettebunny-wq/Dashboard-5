@@ -2352,7 +2352,7 @@
 
 .mini-cal-charm {
   display: block;
-  height: 64px;
+  height: 100px;
   width: auto;
-  margin: 0 auto;
+  margin: 4px auto 0;
 }
