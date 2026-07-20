@@ -36,6 +36,7 @@ const NAME_MIGRATIONS: Record<string, string> = { Frenchie: 'Misa', Maltipoo: 'C
 
 const PORTRAITS: Record<string, string> = {
   Misa: '/Dashboard-5/images/misa-portrait.png',
+  Coco: '/Dashboard-5/images/coco-portrait.png',
   Juno: '/Dashboard-5/images/juno-portrait.png',
 }
 

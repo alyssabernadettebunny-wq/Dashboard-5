@@ -83,7 +83,7 @@ export default function PetOverview() {
     <Card icon="🐾" title="Pet Overview" wide>
       <div className="pet-cols">
         <PetProfile pet={misa} setPet={setMisa} image="/Dashboard-5/images/misa-portrait.png" />
-        <PetProfile pet={coco} setPet={setCoco} />
+        <PetProfile pet={coco} setPet={setCoco} image="/Dashboard-5/images/coco-portrait.png" />
       </div>
       <label className="card-aphorism" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, cursor: 'pointer' }}>
         <input type="checkbox" checked={vaccines} onChange={(e) => setVaccines(e.target.checked)} />
