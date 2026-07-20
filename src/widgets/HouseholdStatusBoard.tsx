@@ -144,6 +144,10 @@ function timeAgo(iso: string) {
   return new Date(iso).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
 }
 
+function statusClass(status: string) {
+  return `status-${status.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`
+}
+
 export default function HouseholdStatusBoard() {
   const [log, setLog] = useLocalStorage<Entry[]>('dashboard.householdstatus.log', [])
   const [open, setOpen] = useState(false)
@@ -256,26 +260,41 @@ export default function HouseholdStatusBoard() {
                 </p>
               )}
               {Object.keys(latest.householdStatus ?? {}).length > 0 && (
-                <p>
-                  <strong>Household:</strong>{' '}
-                  {Object.entries(latest.householdStatus)
-                    .map(([name, status]) => `${name}: ${status}`)
-                    .join(', ')}
-                </p>
+                <div className="hsb-summary-block">
+                  <strong>Household</strong>
+                  <div className="hsb-summary-chips">
+                    {Object.entries(latest.householdStatus).map(([name, status]) => (
+                      <span key={name} className={`hsb-summary-chip ${statusClass(status)}`}>
+                        {name} <span className="hsb-summary-chip-status">{status}</span>
+                      </span>
+                    ))}
+                  </div>
+                </div>
               )}
               {(latest.visitorsHere?.length > 0 || latest.visitorsExtra) && (
-                <p>
-                  <strong>Here from outside:</strong> {latest.visitorsHere.join(', ')}
-                  {latest.visitorsExtra && `${latest.visitorsHere.length > 0 ? ', ' : ''}${latest.visitorsExtra}`}
-                </p>
+                <div className="hsb-summary-block">
+                  <strong>Here from outside</strong>
+                  <div className="hsb-summary-chips">
+                    {latest.visitorsHere.map((name) => (
+                      <span key={name} className="hsb-summary-chip">
+                        {name}
+                      </span>
+                    ))}
+                    {latest.visitorsExtra && <span className="hsb-summary-chip">{latest.visitorsExtra}</span>}
+                  </div>
+                </div>
               )}
               {Object.keys(latest.dogStatuses ?? {}).length > 0 && (
-                <p>
-                  <strong>Dogs:</strong>{' '}
-                  {Object.entries(latest.dogStatuses)
-                    .map(([dog, status]) => `${dog}: ${status}`)
-                    .join(', ')}
-                </p>
+                <div className="hsb-summary-block">
+                  <strong>Dogs</strong>
+                  <div className="hsb-summary-chips">
+                    {Object.entries(latest.dogStatuses).map(([dog, status]) => (
+                      <span key={dog} className={`hsb-summary-chip ${statusClass(status)}`}>
+                        {dog} <span className="hsb-summary-chip-status">{status}</span>
+                      </span>
+                    ))}
+                  </div>
+                </div>
               )}
             </div>
           ) : (

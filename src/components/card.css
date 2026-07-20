@@ -2268,3 +2268,67 @@
   font-weight: 600;
   color: var(--text-body);
 }
+
+.hsb-summary-block {
+  margin-top: 4px;
+}
+
+.hsb-summary-block > strong {
+  display: block;
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--purple-heading);
+  margin-bottom: 5px;
+}
+
+.hsb-summary-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.hsb-summary-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--card-bg-tint);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-pill);
+  padding: 4px 10px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-body);
+}
+
+.hsb-summary-chip-status {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 7px;
+  border-radius: var(--radius-pill);
+  background: var(--purple-pill);
+  color: var(--purple-deep);
+}
+
+.hsb-summary-chip.status-home .hsb-summary-chip-status,
+.hsb-summary-chip.status-quiet-and-settled .hsb-summary-chip-status {
+  background: var(--success-green);
+  color: #fff;
+}
+
+.hsb-summary-chip.status-out .hsb-summary-chip-status,
+.hsb-summary-chip.status-walking-around-out-and-about .hsb-summary-chip-status {
+  background: var(--warn-yellow);
+  color: #fff;
+}
+
+.hsb-summary-chip.status-away .hsb-summary-chip-status,
+.hsb-summary-chip.status-put-outside .hsb-summary-chip-status {
+  background: var(--pink-accent);
+  color: #fff;
+}
+
+.hsb-summary-chip.status-sleeping .hsb-summary-chip-status {
+  background: var(--purple-deep);
+  color: #fff;
+}
