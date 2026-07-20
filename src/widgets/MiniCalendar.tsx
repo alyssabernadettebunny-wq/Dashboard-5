@@ -110,7 +110,7 @@ export default function MiniCalendar() {
         })}
       </div>
       <hr className="mini-cal-divider" />
-      <div className="card-illustration mini-cal-charm">seasonal sticker</div>
+      <img className="mini-cal-charm" src="/Dashboard-5/images/pressed-purple-flower.png" alt="" />
     </Card>
   )
 }

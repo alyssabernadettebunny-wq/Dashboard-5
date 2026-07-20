@@ -2351,7 +2351,8 @@
 }
 
 .mini-cal-charm {
-  width: 100%;
-  height: 56px;
-  margin: 0;
+  display: block;
+  height: 64px;
+  width: auto;
+  margin: 0 auto;
 }
