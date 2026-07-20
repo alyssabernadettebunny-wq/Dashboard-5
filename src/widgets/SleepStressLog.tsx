@@ -35,15 +35,12 @@ export default function SleepStressLog() {
 
   return (
     <Card icon="🌙" title="Sleep & Stress">
-      <div className="sleep-header-row">
-        {last7.length > 0 && (
-          <svg className="trend-chart-wrap" viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none">
-            <polyline points={pointsFor('sleep', 12)} fill="none" stroke="var(--purple-heading)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-            <polyline points={pointsFor('stress', 10)} fill="none" stroke="var(--pink-accent)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        )}
-        <img className="sleep-mask-charm" src="/Dashboard-5/images/sleep-mask.png" alt="" />
-      </div>
+      {last7.length > 0 && (
+        <svg className="trend-chart-wrap" viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none">
+          <polyline points={pointsFor('sleep', 12)} fill="none" stroke="var(--purple-heading)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+          <polyline points={pointsFor('stress', 10)} fill="none" stroke="var(--pink-accent)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      )}
       <div className="trend-legend">
         <span>
           <span className="dot" style={{ background: 'var(--purple-heading)' }} /> Sleep (hrs)
