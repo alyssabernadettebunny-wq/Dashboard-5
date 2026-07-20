@@ -26,6 +26,12 @@ const DECK: TarotCard[] = [
   { roman: 'XI', name: 'Justice', meaning: 'A fair, honest look at where you stand.', affirmation: 'I see clearly and act fairly.' },
   { roman: 'XVIII', name: 'The Moon', meaning: 'Trust your intuition even when things feel unclear.', affirmation: 'I honor what I feel, even unexplained.' },
   { roman: 'XXI', name: 'The World', meaning: 'A cycle completing. Give yourself credit.', affirmation: 'I have come so far.' },
+  { roman: 'I', name: 'The Magician', meaning: 'You have everything you need to start right now.', affirmation: 'I have what it takes.' },
+  { roman: 'II', name: 'The High Priestess', meaning: 'Sit with the quiet knowing before you speak or act.', affirmation: 'I trust my inner voice.' },
+  { roman: 'VII', name: 'The Chariot', meaning: 'Steady focus will carry you through today.', affirmation: 'I move forward with purpose.' },
+  { roman: 'VIII', name: 'Strength', meaning: 'Gentleness is its own kind of powerful today.', affirmation: 'I am soft and strong at once.' },
+  { roman: 'XII', name: 'The Hanged Man', meaning: 'A pause is not a setback — let yourself wait.', affirmation: 'I am at peace with pausing.' },
+  { roman: 'ACE', name: 'Ace of Cups', meaning: 'A fresh wave of feeling or connection is opening up.', affirmation: 'I welcome new tenderness.' },
 ]
 
 function todayIndex() {

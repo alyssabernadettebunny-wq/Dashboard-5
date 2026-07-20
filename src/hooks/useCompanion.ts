@@ -38,11 +38,16 @@ function timeOfDayMessage(pet: Pet, hour: number) {
   return { mood: 'sleepy', message: 'already curled up. goodnight.' }
 }
 
+export function useCompanionMode() {
+  return useLocalStorage<'alternate' | 'misa' | 'coco'>('settings.companion.mode', 'alternate')
+}
+
 export function useCompanion() {
   const [mood] = useLocalStorage<TodayMood | null>('dashboard.moodToday', null)
   const [streakData] = useLocalStorage('streak.overall', { count: 0, lastDate: '' })
+  const [mode] = useCompanionMode()
 
-  const pet = dayOfYear() % 2 === 0 ? MISA : COCO
+  const pet = mode === 'misa' ? MISA : mode === 'coco' ? COCO : dayOfYear() % 2 === 0 ? MISA : COCO
   const streak = streakData.lastDate === todayStr() ? streakData.count : 0
   const hour = new Date().getHours()
 

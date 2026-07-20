@@ -20,6 +20,16 @@ const PROMPTS: Prompt[] = [
   { type: 'fact', text: 'Sea otters hold hands while sleeping so they don’t drift apart.' },
   { type: 'reflect', text: 'What does your ideal cozy evening look like?' },
   { type: 'fact', text: 'A day on Venus is longer than a year on Venus.' },
+  { type: 'reflect', text: "What's a small comfort that always helps?" },
+  { type: 'fact', text: 'Wombats poop in cubes so it doesn’t roll away.' },
+  { type: 'reflect', text: 'What would make today feel like a win?' },
+  { type: 'fact', text: 'A shrimp’s heart is located in its head.' },
+  { type: 'reflect', text: 'What’s something you used to worry about that doesn’t bother you anymore?' },
+  { type: 'fact', text: 'Butterflies taste with their feet.' },
+  { type: 'reflect', text: 'Who do you want to check in on this week?' },
+  { type: 'fact', text: 'Cows have best friends and get stressed when separated from them.' },
+  { type: 'reflect', text: 'What’s a tiny luxury you could give yourself today?' },
+  { type: 'fact', text: 'It rains diamonds on Neptune and Uranus.' },
 ]
 
 function todayIndex() {

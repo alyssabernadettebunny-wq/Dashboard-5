@@ -1,6 +1,8 @@
 import DataExport from '../widgets/DataExport'
 import DisplayPreferences from '../widgets/DisplayPreferences'
 import ReferenceInfo from '../widgets/ReferenceInfo'
+import ThemePicker from '../widgets/ThemePicker'
+import CompanionSettings from '../widgets/CompanionSettings'
 import SubTabs from '../components/SubTabs'
 
 export default function MorePage() {
@@ -16,6 +18,8 @@ export default function MorePage() {
             icon: '⚙️',
             content: (
               <div className="grid">
+                <ThemePicker />
+                <CompanionSettings />
                 <DisplayPreferences />
                 <DataExport />
               </div>

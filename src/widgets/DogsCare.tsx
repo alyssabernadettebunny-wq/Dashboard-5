@@ -25,6 +25,11 @@ const FACTS = [
   'Both Frenchies and Maltipoos are prone to separation anxiety and do best with lots of companionship.',
   "French Bulldogs are one of the only breeds that can't naturally give birth without assistance most of the time.",
   'Maltipoos are highly food-motivated, which makes training easier but overfeeding easy too.',
+  'French Bulldogs snore, snort, and grunt more than most breeds because of their short airways — it’s normal, but worth mentioning to the vet if it gets worse.',
+  'Puppies like Misa need extra nap time — up to 18-20 hours a day is normal for young pups.',
+  'Maltipoos are quick learners and tend to pick up on their owner’s emotional state easily.',
+  'A Frenchie’s "bratty" streak often comes from being smart and stubborn — mental enrichment helps burn that energy.',
+  'Both breeds do best with consistent, gentle routines rather than big schedule changes.',
 ]
 
 export default function DogsCare() {

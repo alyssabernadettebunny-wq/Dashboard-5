@@ -50,6 +50,38 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+:root[data-theme='mint'] {
+  --bg-gradient-start: #eafaf5;
+  --bg-gradient-end: #e3f0fb;
+  --card-bg-tint: #f2fbf8;
+  --sidebar-bg: #f5fdfb;
+  --titlebar-bg: #dff3ee;
+  --purple-heading: #4a8f82;
+  --purple-deep: #3d7a6e;
+  --purple-pill: #cdeee6;
+  --pink-accent: #7fc9c1;
+  --pink-soft: #9ddcd3;
+  --pink-pale: #e3f5f0;
+  --pink-line: #bfe8e0;
+  --border-hairline: #d9f0ea;
+}
+
+:root[data-theme='peach'] {
+  --bg-gradient-start: #fff3e9;
+  --bg-gradient-end: #ffe8ef;
+  --card-bg-tint: #fff8f2;
+  --sidebar-bg: #fffaf5;
+  --titlebar-bg: #ffe9d9;
+  --purple-heading: #c96b4a;
+  --purple-deep: #b5573a;
+  --purple-pill: #ffe0cc;
+  --pink-accent: #f2977a;
+  --pink-soft: #f7ab8f;
+  --pink-pale: #ffe9dd;
+  --pink-line: #f8c9b0;
+  --border-hairline: #ffe1cf;
+}
+
 * {
   box-sizing: border-box;
 }

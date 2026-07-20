@@ -13,6 +13,7 @@ import MorePage from './pages/MorePage'
 import { useLocalStorage } from './hooks/useLocalStorage'
 import { useStreak } from './hooks/useStreak'
 import { useCompanion } from './hooks/useCompanion'
+import { useAppTheme } from './widgets/ThemePicker'
 import './App.css'
 
 const NAV_ITEMS = [
@@ -36,11 +37,38 @@ const AFFIRMATIONS = [
   "you don't have to have it all figured out",
   'one step at a time, you got this',
   'proud of you for showing up today',
+  'rest is productive too',
+  "you're doing better than you think",
+  'small wins still count',
+  'be gentle with yourself today',
+  "it's okay to go slow",
+  'you get to change your mind',
+  'today can be simple',
+  "you're allowed to ask for help",
+  'progress, not perfection ♡',
 ]
 
 function todaysAffirmation() {
   const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000)
   return AFFIRMATIONS[dayOfYear % AFFIRMATIONS.length]
+}
+
+const SPARKLES = [
+  'today’s color is soft lavender ♡',
+  'plant a tiny treat for yourself somewhere in today',
+  'you’re allowed to do the bare minimum today, and that’s enough',
+  'today is a good day for a favorite song on repeat',
+  'somewhere today, a small good thing is waiting for you',
+  'today’s mood: main character energy, but cozy',
+  'a little sparkle for you: you’re doing great',
+  'today, let something be easy',
+  'bonus points today for drinking water and being kind to yourself',
+  'today’s vibe: soft, slow, and a little sparkly',
+]
+
+function todaysSparkle() {
+  const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000)
+  return SPARKLES[dayOfYear % SPARKLES.length]
 }
 
 const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
@@ -78,6 +106,7 @@ function App() {
   const [weather] = useLocalStorage('dashboard.worldfeed.weather', { temp: '', condition: '' })
   const { streak: overallStreak, markToday: markOverallToday } = useStreak('streak.overall')
   const companion = useCompanion()
+  const [theme] = useAppTheme()
 
   useEffect(() => {
     const id = setInterval(() => setClock(new Date()), 30000)
@@ -88,6 +117,11 @@ function App() {
     markOverallToday()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    if (theme === 'default') document.documentElement.removeAttribute('data-theme')
+    else document.documentElement.setAttribute('data-theme', theme)
+  }, [theme])
 
   const today = formatDate(clock)
   const { value: timeValue, meridiem } = formatTime(clock)
@@ -137,6 +171,7 @@ function App() {
               <div className="header-center">
                 <img className="title-banner" src="/Dashboard-5/images/title-banner.png" alt="Alyssa Daily Dashboard" />
                 <div className="tagline">plan softly, live kindly, chase little joys ♡</div>
+                <div className="sparkle-of-day">✨ {todaysSparkle()}</div>
               </div>
 
               <div className="header-right">
