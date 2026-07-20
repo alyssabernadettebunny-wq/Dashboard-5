@@ -5,7 +5,8 @@ import Card from '../components/Card'
 interface Entry {
   id: string
   timestamp: string
-  peopleAway: string[]
+  householdStatus: Record<string, string>
+  visitorsHere: string[]
   visitorsExtra: string
   dogStatuses: Record<string, string>
   quietWindow: string
@@ -14,12 +15,10 @@ interface Entry {
   opportunity: string
 }
 
-const PEOPLE_CHIPS = [
-  'Alyssa', 'Winnie', 'Amy', 'Holly',
-  'Mom / Angela', 'Dad', 'Nick', 'Vincent',
-  'Nina', "Nina's kids", 'Alysson', "Alysson's kids",
-  'Santi / Daycare', 'Grandma-related pressure', 'Other visitors',
-]
+const HOUSEHOLD_MEMBERS = ['Alyssa', 'Winnie', 'Amy', 'Holly', 'Mom / Angela', 'Dad', 'Nick', 'Vincent']
+const HOUSEHOLD_STATUS_OPTIONS = ['Home', 'Out', 'In room', 'Sleeping']
+
+const VISITOR_CHIPS = ['Nina', "Nina's kids", 'Alysson', "Alysson's kids", 'Grandma', 'Santi / Daycare', 'Other visitors']
 
 const DOG_STATUS_OPTIONS = ['Quiet & settled with owner', 'Put away inside', 'Put outside', 'Walking around / out and about']
 const OWN_DOGS = ['Misa', 'Coco']
@@ -111,7 +110,8 @@ export default function HouseholdStatusBoard() {
   const [open, setOpen] = useState(false)
   const [showHistory, setShowHistory] = useState(false)
 
-  const [peopleAway, setPeopleAway] = useState<string[]>([])
+  const [householdStatus, setHouseholdStatus] = useState<Record<string, string>>({})
+  const [visitorsHere, setVisitorsHere] = useState<string[]>([])
   const [visitorsExtra, setVisitorsExtra] = useState('')
   const [dogStatuses, setDogStatuses] = useState<Record<string, string>>({})
   const [quietWindow, setQuietWindow] = useState('')
@@ -126,8 +126,17 @@ export default function HouseholdStatusBoard() {
   const todaysEntries = log.filter((e) => e.timestamp.slice(0, 10) === today)
   const latest = todaysEntries[0]
 
-  function togglePerson(name: string) {
-    setPeopleAway((prev) => (prev.includes(name) ? prev.filter((p) => p !== name) : [...prev, name]))
+  function setMemberStatus(name: string, status: string) {
+    setHouseholdStatus((prev) => {
+      const next = { ...prev }
+      if (status) next[name] = status
+      else delete next[name]
+      return next
+    })
+  }
+
+  function toggleVisitor(name: string) {
+    setVisitorsHere((prev) => (prev.includes(name) ? prev.filter((p) => p !== name) : [...prev, name]))
   }
 
   function setDogStatus(dog: string, status: string) {
@@ -140,7 +149,8 @@ export default function HouseholdStatusBoard() {
   }
 
   function resetForm() {
-    setPeopleAway([])
+    setHouseholdStatus({})
+    setVisitorsHere([])
     setVisitorsExtra('')
     setDogStatuses({})
     setQuietWindow('')
@@ -156,7 +166,8 @@ export default function HouseholdStatusBoard() {
     const entry: Entry = {
       id: crypto.randomUUID(),
       timestamp: new Date().toISOString(),
-      peopleAway,
+      householdStatus,
+      visitorsHere,
       visitorsExtra: visitorsExtra.trim(),
       dogStatuses,
       quietWindow,
@@ -198,10 +209,18 @@ export default function HouseholdStatusBoard() {
                   <strong>Opportunity:</strong> {latest.opportunity}
                 </p>
               )}
-              {latest.peopleAway.length > 0 && (
+              {Object.keys(latest.householdStatus ?? {}).length > 0 && (
                 <p>
-                  <strong>People away:</strong> {latest.peopleAway.join(', ')}
-                  {latest.visitorsExtra && `, ${latest.visitorsExtra}`}
+                  <strong>Household:</strong>{' '}
+                  {Object.entries(latest.householdStatus)
+                    .map(([name, status]) => `${name}: ${status}`)
+                    .join(', ')}
+                </p>
+              )}
+              {(latest.visitorsHere?.length > 0 || latest.visitorsExtra) && (
+                <p>
+                  <strong>Here from outside:</strong> {latest.visitorsHere.join(', ')}
+                  {latest.visitorsExtra && `${latest.visitorsHere.length > 0 ? ', ' : ''}${latest.visitorsExtra}`}
                 </p>
               )}
               {Object.keys(latest.dogStatuses ?? {}).length > 0 && (
@@ -249,13 +268,32 @@ export default function HouseholdStatusBoard() {
       {open && (
         <div className="hsb-form">
           <div className="hsb-field">
-            <label>People away (household + extended family)</label>
+            <label>Household</label>
+            <div className="hsb-dog-grid">
+              {HOUSEHOLD_MEMBERS.map((name) => (
+                <div key={name} className="hsb-dog-row">
+                  <span>{name}</span>
+                  <select value={householdStatus[name] ?? ''} onChange={(e) => setMemberStatus(name, e.target.value)}>
+                    <option value="">—</option>
+                    {HOUSEHOLD_STATUS_OPTIONS.map((o) => (
+                      <option key={o} value={o}>
+                        {o}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="hsb-field">
+            <label>Here from outside the house</label>
             <div className="hsb-chip-row">
-              {PEOPLE_CHIPS.map((name) => (
+              {VISITOR_CHIPS.map((name) => (
                 <button
                   key={name}
-                  className={`hsb-chip ${peopleAway.includes(name) ? 'active' : ''}`}
-                  onClick={() => togglePerson(name)}
+                  className={`hsb-chip ${visitorsHere.includes(name) ? 'active' : ''}`}
+                  onClick={() => toggleVisitor(name)}
                   type="button"
                 >
                   {name}
