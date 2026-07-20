@@ -35,7 +35,6 @@ const DEFAULT_DOGS: DogCare[] = [
 const NAME_MIGRATIONS: Record<string, string> = { Frenchie: 'Misa', Maltipoo: 'Coco' }
 
 const PORTRAITS: Record<string, string> = { Misa: '/Dashboard-5/images/misa-portrait.png' }
-const MIN_PORTRAIT_SLOTS = 5
 
 interface DogsDayRecord {
   date: string
@@ -98,8 +97,6 @@ export default function DogsCare() {
     setDogs(dogs.filter((d) => d.id !== id))
   }
 
-  const portraitSlots = Math.max(MIN_PORTRAIT_SLOTS, dogs.length + 1)
-
   return (
     <Card icon="🐾" title="Dogs" variant="gingham">
       <div className="dog-portrait-row">
@@ -108,9 +105,6 @@ export default function DogsCare() {
             {PORTRAITS[dog.name] ? <img src={PORTRAITS[dog.name]} alt={dog.name} /> : <span className="dog-portrait-placeholder">🐾</span>}
             <span className="dog-portrait-name">{dog.name}</span>
           </div>
-        ))}
-        {Array.from({ length: Math.max(0, portraitSlots - dogs.length) }).map((_, i) => (
-          <div key={i} className="dog-portrait-empty" aria-hidden="true" />
         ))}
       </div>
       <div className="two-col">
