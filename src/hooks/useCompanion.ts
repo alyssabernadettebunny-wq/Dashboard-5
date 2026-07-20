@@ -10,10 +10,11 @@ interface TodayMood {
 interface Pet {
   name: 'Misa' | 'Coco'
   emoji: string
+  image?: string
   personality: string
 }
 
-const MISA: Pet = { name: 'Misa', emoji: '🐶', personality: 'bratty, funny, observant, a bit of a crybaby' }
+const MISA: Pet = { name: 'Misa', emoji: '🐶', image: '/Dashboard-5/images/misa-portrait.png', personality: 'bratty, funny, observant, a bit of a crybaby' }
 const COCO: Pet = { name: 'Coco', emoji: '🐩', personality: 'calm, cautious, well-behaved, a little lazy' }
 
 function dayOfYear() {

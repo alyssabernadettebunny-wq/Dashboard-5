@@ -195,7 +195,11 @@ function App() {
 
               <div className="header-right">
                 <div className="illustration-slot mascot-slot" title={companion.pet.name}>
-                  {companion.pet.emoji}
+                  {companion.pet.image ? (
+                    <img className="mascot-portrait" src={companion.pet.image} alt={companion.pet.name} />
+                  ) : (
+                    companion.pet.emoji
+                  )}
                 </div>
                 <div className="speech-bubble">{companion.message}</div>
                 <div className="datetime-card">
