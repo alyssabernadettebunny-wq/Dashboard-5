@@ -29,6 +29,7 @@ export default function QuickCapture() {
 
   return (
     <Card icon="📝" title="Quick Capture">
+      <img className="quick-capture-laptop" src="/Dashboard-5/images/mini-laptop.png" alt="" />
       <div className="c-input-row">
         <input
           type="text"

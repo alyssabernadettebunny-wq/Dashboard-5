@@ -1863,6 +1863,39 @@
   border-bottom-color: var(--pink-accent);
 }
 
+.grateful-heart-icon {
+  width: 14px;
+  height: auto;
+  flex-shrink: 0;
+}
+
+.protein-apple-icon {
+  width: 14px;
+  height: auto;
+  vertical-align: -2px;
+  margin-right: 2px;
+}
+
+.quick-capture-laptop {
+  width: 40px;
+  height: auto;
+  display: block;
+  margin: 0 0 6px auto;
+  transform: rotate(4deg);
+}
+
+.tarot-sparkle-icon {
+  width: 22px;
+  height: auto;
+}
+
+.family-flower-icon {
+  width: 30px;
+  height: auto;
+  display: block;
+  margin: 0 0 6px auto;
+}
+
 /* tarot pull */
 .tarot-card {
   display: flex;

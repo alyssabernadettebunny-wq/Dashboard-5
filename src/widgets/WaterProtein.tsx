@@ -37,7 +37,9 @@ export default function WaterProtein() {
       </div>
       <div style={{ marginTop: 10 }}>
         <div className="stat-row">
-          <span>Protein</span>
+          <span>
+            <img className="protein-apple-icon" src="/Dashboard-5/images/mini-apple.png" alt="" /> Protein
+          </span>
           <span>
             {protein} / {proteinGoal}g
           </span>

@@ -19,7 +19,7 @@ export default function GratefulFor() {
       <div className="grateful-list">
         {lines.map((line, i) => (
           <div key={i} className="grateful-line">
-            <span>♡</span>
+            <img className="grateful-heart-icon" src="/Dashboard-5/images/stitched-heart.png" alt="" />
             <input value={line} onChange={(e) => updateLine(i, e.target.value)} placeholder="something you're grateful for..." />
           </div>
         ))}

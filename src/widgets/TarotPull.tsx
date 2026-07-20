@@ -83,7 +83,7 @@ export default function TarotPull() {
         <>
           <div className="tarot-card">
             <div className="tarot-visual tarot-visual-facedown">
-              <span className="star">✦</span>
+              <img className="tarot-sparkle-icon" src="/Dashboard-5/images/pink-sparkle-star.png" alt="" />
             </div>
             <div className="tarot-details">
               <p className="tarot-name">You haven't pulled today's card yet.</p>
