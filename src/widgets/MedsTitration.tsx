@@ -47,21 +47,22 @@ function TitrationCard({
 }) {
   const [newDate, setNewDate] = useState(todayStr())
   const [newDose, setNewDose] = useState('')
-  const sorted = sortEntries(med.entries)
+  const medEntries = med.entries ?? []
+  const sorted = sortEntries(medEntries)
   const current = sorted[0]
 
   function logDose() {
     if (!newDose.trim()) return
-    onUpdate({ entries: [...med.entries, { id: crypto.randomUUID(), date: newDate, dose: newDose.trim() }] })
+    onUpdate({ entries: [...medEntries, { id: crypto.randomUUID(), date: newDate, dose: newDose.trim() }] })
     setNewDose('')
   }
 
   function updateEntry(id: string, patch: Partial<DoseEntry>) {
-    onUpdate({ entries: med.entries.map((e) => (e.id === id ? { ...e, ...patch } : e)) })
+    onUpdate({ entries: medEntries.map((e) => (e.id === id ? { ...e, ...patch } : e)) })
   }
 
   function removeEntry(id: string) {
-    onUpdate({ entries: med.entries.filter((e) => e.id !== id) })
+    onUpdate({ entries: medEntries.filter((e) => e.id !== id) })
   }
 
   return (
