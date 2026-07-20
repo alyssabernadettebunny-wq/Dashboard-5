@@ -181,3 +181,30 @@ input[type='checkbox']:checked::after {
   font-size: 10px;
   font-weight: 700;
 }
+
+@keyframes checkbox-sparkle-pop {
+  0% {
+    transform: scale(0.2) rotate(-8deg);
+    opacity: 0;
+  }
+  35% {
+    transform: scale(1.25) rotate(10deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.85) translateY(-9px) rotate(18deg);
+    opacity: 0;
+  }
+}
+
+input[type='checkbox']:checked::before {
+  content: '✦';
+  position: absolute;
+  top: -10px;
+  left: 1px;
+  font-size: 12px;
+  line-height: 1;
+  color: var(--pink-accent);
+  animation: checkbox-sparkle-pop 0.55s ease-out;
+  pointer-events: none;
+}
