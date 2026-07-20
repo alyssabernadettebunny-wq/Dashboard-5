@@ -174,6 +174,10 @@ function App() {
                 <span className="badge">{item.icon}</span> {item.label}
               </button>
             ))}
+            <div className="sidebar-charm">
+              <img src="/Dashboard-5/images/stitched-heart.png" alt="" />
+              <span>be soft with yourself</span>
+            </div>
           </nav>
 
           <main className="main">
@@ -188,7 +192,11 @@ function App() {
               </div>
 
               <div className="header-center">
+                <span className="header-motif motif-star-left" aria-hidden="true">✦</span>
+                <span className="header-motif motif-heart-left" aria-hidden="true">♡</span>
                 <img className="title-banner" src="/Dashboard-5/images/title-banner.png" alt="Alyssa Daily Dashboard" />
+                <span className="header-motif motif-butterfly-right" aria-hidden="true">🦋</span>
+                <span className="header-motif motif-star-right" aria-hidden="true">✧</span>
                 <div className="tagline">plan softly, live kindly, chase little joys ♡</div>
                 <div className="sparkle-of-day">✨ {todaysSparkle()}</div>
               </div>

@@ -25,7 +25,7 @@ export default function WaitingMode() {
   }
 
   return (
-    <Card icon="☁️" title="Waiting Mode (Parking Lot)">
+    <Card icon="☁️" title="Waiting Mode (Parking Lot)" variant="tapedPaper" surface="lilac">
       <p className="waiting-subtitle">For now, not the focus.</p>
       <ul className="waiting-list">
         {items.length === 0 && <li className="c-empty">Nothing parked right now</li>}

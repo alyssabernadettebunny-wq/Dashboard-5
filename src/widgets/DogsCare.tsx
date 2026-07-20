@@ -86,7 +86,12 @@ export default function DogsCare() {
   }
 
   return (
-    <Card icon="🐾" title="Dogs">
+    <Card
+      icon="🐾"
+      title="Dogs"
+      variant="gingham"
+      anchor={<img src="/Dashboard-5/images/misa-portrait.png" alt="" style={{ borderRadius: '50%' }} />}
+    >
       <div className="two-col">
         {dogs.map((dog) => (
           <div key={dog.id} className="mini-profile">

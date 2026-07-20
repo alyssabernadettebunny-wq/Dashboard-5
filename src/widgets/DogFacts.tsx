@@ -88,7 +88,7 @@ export default function DogFacts() {
   const maltipooFacts = todaysSet(MALTIPOO_FACTS)
 
   return (
-    <Card icon="🐚" title="Breed Facts">
+    <Card icon="🐚" title="Breed Facts" surface="mint">
       <div className="two-col">
         <div className="mini-profile">
           <div className="name">Frenchie Facts</div>

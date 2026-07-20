@@ -226,7 +226,7 @@ export default function HouseholdStatusBoard() {
   }
 
   return (
-    <Card icon="🏠" title="Household Status Board" wide>
+    <Card icon="🏠" title="Household Status Board" wide variant="miniWindow" surface="lilac">
       <p style={{ fontSize: 11.5, color: 'var(--text-muted)' }}>House pressure is context, not a character flaw.</p>
 
       {!open && (

@@ -25,7 +25,13 @@ export default function TopPriorities() {
   }
 
   return (
-    <Card icon="🎀" title="Today at a Glance">
+    <Card
+      icon="🎀"
+      title="Today at a Glance"
+      variant="tapedPaper"
+      surface="cream"
+      anchor={<img src="/Dashboard-5/images/pink-star.png" alt="" />}
+    >
       <p className="section-label" style={{ marginTop: 0 }}>
         Top 3 Priorities
       </p>

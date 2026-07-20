@@ -90,7 +90,7 @@ export default function FamilyKids() {
   }
 
   return (
-    <Card icon="👨‍👩‍👧‍👦" title="Family & Kids">
+    <Card icon="👨‍👩‍👧‍👦" title="Family & Kids" surface="peach">
       {members.map((m) => (
         <div key={m.id} className="family-row">
           <div className="family-avatar">{m.emoji}</div>

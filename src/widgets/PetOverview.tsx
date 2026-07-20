@@ -45,10 +45,10 @@ function ageFromBirthdate(birthdate: string) {
   return parts.join(' ')
 }
 
-function PetProfile({ pet, setPet }: { pet: Pet; setPet: (p: Pet) => void }) {
+function PetProfile({ pet, setPet, image }: { pet: Pet; setPet: (p: Pet) => void; image?: string }) {
   return (
     <div className="pet-profile">
-      <div className="card-illustration">illustration</div>
+      {image ? <img className="pet-portrait" src={image} alt={pet.name} /> : <div className="card-illustration">illustration</div>}
       <input className="pet-name-input" value={pet.name} onChange={(e) => setPet({ ...pet, name: e.target.value })} /> ♡
       <input
         className="pet-nickname-input"
@@ -82,7 +82,7 @@ export default function PetOverview() {
   return (
     <Card icon="🐾" title="Pet Overview" wide>
       <div className="pet-cols">
-        <PetProfile pet={misa} setPet={setMisa} />
+        <PetProfile pet={misa} setPet={setMisa} image="/Dashboard-5/images/misa-portrait.png" />
         <PetProfile pet={coco} setPet={setCoco} />
       </div>
       <label className="card-aphorism" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, cursor: 'pointer' }}>

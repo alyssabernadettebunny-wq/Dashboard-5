@@ -40,7 +40,7 @@ export default function ChecklistCard({
   const doneCount = items.filter((i) => i.done).length
 
   return (
-    <Card icon={icon} title={title} meta={items.length ? `${doneCount} / ${items.length}` : undefined}>
+    <Card icon={icon} title={title} meta={items.length ? `${doneCount} / ${items.length}` : undefined} variant="linedPaper">
       <div className="c-input-row">
         <input
           type="text"

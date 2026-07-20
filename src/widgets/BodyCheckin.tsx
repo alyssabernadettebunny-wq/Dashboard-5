@@ -143,7 +143,12 @@ export default function BodyCheckin() {
   }
 
   return (
-    <Card icon="🌤️" title="Body Check-In">
+    <Card
+      icon="🌤️"
+      title="Body Check-In"
+      surface="peach"
+      anchor={<img src="/Dashboard-5/images/self-illustration-avatar.png" alt="" style={{ borderRadius: '50%' }} />}
+    >
       {!open && (
         <>
           {latest ? (

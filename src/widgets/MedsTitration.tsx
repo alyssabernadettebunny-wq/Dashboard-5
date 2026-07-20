@@ -185,7 +185,7 @@ export default function MedsTitration() {
   const takenCount = meds.filter((m) => m.takenToday).length
 
   return (
-    <Card icon="💊" title="Meds & Titration" meta={meds.length ? `${takenCount} / ${meds.length}` : undefined}>
+    <Card icon="💊" title="Meds & Titration" meta={meds.length ? `${takenCount} / ${meds.length}` : undefined} variant="memo" surface="cream">
       <div className="med-section-header">
         <span className="section-label" style={{ margin: 0 }}>
           💊 Medication (Daily Check)

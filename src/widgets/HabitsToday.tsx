@@ -51,7 +51,7 @@ export default function HabitsToday() {
   const streak = currentStreak(habits)
 
   return (
-    <Card icon="🐣" title="Habits Today">
+    <Card icon="🐣" title="Habits Today" variant="gingham" surface="mint">
       <div className="habit-rows">
         {habits.map((habit) => (
           <div key={habit.id} className="habit-row">

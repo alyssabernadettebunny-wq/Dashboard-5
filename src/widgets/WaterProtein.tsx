@@ -21,7 +21,14 @@ export default function WaterProtein() {
   }
 
   return (
-    <Card icon="💧" title="Water & Protein" meta={`${water} / ${WATER_GOAL} oz`}>
+    <Card
+      icon="💧"
+      title="Water & Protein"
+      meta={`${water} / ${WATER_GOAL} oz`}
+      variant="linedPaper"
+      surface="blue"
+      anchor={<img src="/Dashboard-5/images/mini-apple.png" alt="" />}
+    >
       <div className="progress-track">
         <div className="progress-fill" style={{ width: `${Math.min(100, (water / WATER_GOAL) * 100)}%` }} />
       </div>

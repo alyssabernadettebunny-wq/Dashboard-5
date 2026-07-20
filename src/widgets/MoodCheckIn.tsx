@@ -154,7 +154,7 @@ export default function MoodCheckIn() {
   }
 
   return (
-    <Card icon="💗" title="Mood Check-In" meta={streak > 0 ? `🔥 ${streak}d streak` : undefined}>
+    <Card icon="💗" title="Mood Check-In" meta={streak > 0 ? `🔥 ${streak}d streak` : undefined} variant="stickyNote">
       <div className="mood2-header-row">
         <p className="waiting-subtitle" style={{ margin: 0 }}>
           How are you feeling?

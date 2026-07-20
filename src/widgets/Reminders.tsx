@@ -32,7 +32,7 @@ export default function Reminders() {
   }
 
   return (
-    <Card icon="🔔" title="Reminders">
+    <Card icon="🔔" title="Reminders" surface="cream">
       <div className="c-input-row">
         <input
           type="text"

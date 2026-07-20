@@ -55,7 +55,7 @@ export default function MiniCalendar() {
     .slice(0, 4)
 
   return (
-    <Card icon="📅" title="This Month">
+    <Card icon="📅" title="This Month" variant="scrapbook" surface="pink">
       {upcoming.length > 0 && (
         <div className="coming-up">
           <p className="section-label" style={{ marginTop: 0 }}>

@@ -59,7 +59,7 @@ export default function TarotPull() {
   }
 
   return (
-    <Card icon="🔮" title="Tarot Pull / Intuition">
+    <Card icon="🔮" title="Tarot Pull / Intuition" surface="lilac">
       {card ? (
         <>
           <div className="tarot-card">
