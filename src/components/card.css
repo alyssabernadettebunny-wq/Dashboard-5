@@ -1,16 +1,98 @@
 .card {
+  position: relative;
   background: var(--card-bg);
   border: 1px solid var(--border-hairline);
   border-radius: var(--radius-card);
-  padding: 16px 17px;
-  box-shadow: var(--shadow-soft);
+  padding: var(--card-padding);
+  box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255, 255, 255, 0.85);
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .card-wide {
   grid-column: 1 / -1;
+}
+
+/* pages that render <Card> directly into .grid (without a span-N wrapper) get a sane default width */
+.grid > .card:not(.card-wide) {
+  grid-column: span 4;
+}
+
+@media (max-width: 1100px) {
+  .grid > .card:not(.card-wide) {
+    grid-column: span 6;
+  }
+}
+
+@media (max-width: 720px) {
+  .grid > .card:not(.card-wide) {
+    grid-column: 1 / -1;
+  }
+}
+
+.card-tint-pink {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.6), var(--panel-pink));
+}
+.card-tint-lilac {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.6), var(--panel-lilac));
+}
+.card-tint-cream {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.6), var(--panel-cream));
+}
+.card-tint-mint {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.6), var(--panel-mint));
+}
+.card-tint-blue {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.6), var(--panel-blue));
+}
+
+/* grid span utilities (12-col grid) */
+.span-3 {
+  grid-column: span 3;
+}
+.span-4 {
+  grid-column: span 4;
+}
+.span-5 {
+  grid-column: span 5;
+}
+.span-6 {
+  grid-column: span 6;
+}
+.span-7 {
+  grid-column: span 7;
+}
+.span-8 {
+  grid-column: span 8;
+}
+.span-12 {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 1100px) {
+  .span-3,
+  .span-4 {
+    grid-column: span 3;
+  }
+  .span-5,
+  .span-6,
+  .span-7,
+  .span-8 {
+    grid-column: span 6;
+  }
+}
+
+@media (max-width: 720px) {
+  .span-3,
+  .span-4,
+  .span-5,
+  .span-6,
+  .span-7,
+  .span-8,
+  .span-12 {
+    grid-column: 1 / -1;
+  }
 }
 
 .card-header {
@@ -24,9 +106,10 @@
   display: flex;
   align-items: center;
   gap: 7px;
-  font-size: 13.5px;
+  font-family: var(--font-numeral);
+  font-size: 14px;
   font-weight: 700;
-  color: var(--purple-heading);
+  color: var(--purple-deep);
 }
 
 .card-meta {
@@ -39,14 +122,15 @@
 .card-footer-btn {
   align-self: flex-start;
   margin-top: 2px;
-  background: var(--pink-pale);
+  background: linear-gradient(180deg, #fffafd, var(--pink-pale));
   color: var(--purple-heading);
   font-size: 11.5px;
   font-weight: 700;
-  border: none;
-  padding: 7px 16px;
+  border: 1px solid var(--border-hairline);
+  padding: 6px 15px;
   border-radius: var(--radius-pill);
   cursor: pointer;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
   transition: box-shadow 0.15s ease, transform 0.15s ease;
 }
 
@@ -129,14 +213,15 @@
 .c-input-row button {
   padding: 7px 14px;
   border-radius: var(--radius-pill);
-  border: none;
-  background: var(--pink-pale);
+  border: 1px solid var(--border-hairline);
+  background: linear-gradient(180deg, #fffafd, var(--pink-pale));
   color: var(--purple-heading);
   font: inherit;
   font-size: 11.5px;
   font-weight: 700;
   cursor: pointer;
   white-space: nowrap;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
   transition: box-shadow 0.15s ease, transform 0.15s ease;
 }
 

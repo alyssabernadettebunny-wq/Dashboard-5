@@ -272,7 +272,9 @@ function App() {
               </div>
             )}
 
-            <div className="charm-strand">illustration charm strand</div>
+            <div className="charm-strand" aria-hidden="true">
+              ⋆ ˚｡⋆
+            </div>
           </main>
         </div>
 

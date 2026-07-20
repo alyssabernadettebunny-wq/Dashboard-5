@@ -1,15 +1,19 @@
 .page-wrap {
   display: flex;
   justify-content: center;
-  padding: 28px 16px;
+  padding: var(--outer-gutter);
 }
 
 .window {
   width: 100%;
-  max-width: 1460px;
+  max-width: 1500px;
   background: var(--card-bg-tint);
-  border-radius: 26px;
-  box-shadow: var(--shadow-lift);
+  border-radius: 22px;
+  border: 1.5px solid var(--border-accent, #d9c2e8);
+  box-shadow:
+    var(--shadow-lift),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.4);
   overflow: hidden;
   position: relative;
 }
@@ -115,27 +119,30 @@
 }
 
 .sidebar {
-  width: 186px;
+  width: var(--sidebar-width);
   flex-shrink: 0;
-  background: var(--sidebar-bg);
-  padding: 22px 14px;
+  background:
+    radial-gradient(circle, rgba(123, 95, 166, 0.05) 1px, transparent 1.4px) 0 0 / 18px 18px,
+    var(--sidebar-bg);
+  padding: 14px 10px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
   border-right: 1px solid var(--border-hairline);
 }
 
 .nav-item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 9px 12px;
-  border-radius: var(--radius-pill);
-  font-size: 13.5px;
+  gap: 8px;
+  min-height: 38px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  font-size: 12.5px;
   font-weight: 600;
   color: var(--text-heading);
   cursor: pointer;
-  transition: background 0.15s ease;
+  transition: background 0.15s ease, box-shadow 0.15s ease;
   border: none;
   background: none;
   text-align: left;
@@ -143,20 +150,21 @@
 }
 
 .nav-item .badge {
-  width: 30px;
-  height: 30px;
-  border-radius: 10px;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 15px;
+  font-size: 13px;
   background: var(--pink-pale);
   flex-shrink: 0;
 }
 
 .nav-item.active {
-  background: var(--purple-pill);
+  background: linear-gradient(180deg, #f3e0fb, var(--purple-pill));
   color: var(--purple-deep);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 1px 3px rgba(107, 78, 150, 0.15);
 }
 
 .nav-item.active .badge {
@@ -174,31 +182,32 @@
 
 .main {
   flex: 1;
-  padding: 24px 26px 20px;
+  padding: 14px 16px 16px;
   min-width: 0;
   position: relative;
 }
 
 .header {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
-  gap: 18px;
-  margin-bottom: 26px;
+  gap: 14px;
+  margin-bottom: 12px;
   flex-wrap: wrap;
+  min-height: var(--header-height);
 }
 
 .header-left {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
 }
 
 .greeting-block {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 8px;
+  gap: 6px;
 }
 
 .illustration-slot {
@@ -216,8 +225,8 @@
 }
 
 .avatar-slot {
-  width: 104px;
-  height: 104px;
+  width: 82px;
+  height: 82px;
   border: 3px solid var(--pink-line);
   border-radius: 50%;
   object-fit: cover;
@@ -225,7 +234,7 @@
 }
 
 .greeting-banner {
-  height: 56px;
+  height: 42px;
   width: auto;
   display: block;
 }
@@ -261,39 +270,39 @@
 .title-banner {
   max-width: 100%;
   height: auto;
-  width: 480px;
+  width: 380px;
 }
 
 .header-center .tagline {
-  font-size: 12.5px;
+  font-size: 11.5px;
   font-style: italic;
   color: var(--text-muted);
-  margin-top: 6px;
+  margin-top: 3px;
   letter-spacing: 0.2px;
 }
 
 .sparkle-of-day {
   display: inline-block;
-  margin-top: 8px;
-  font-size: 11px;
+  margin-top: 5px;
+  font-size: 10.5px;
   font-weight: 600;
   color: var(--purple-heading);
   background: var(--pink-pale);
-  padding: 4px 12px;
+  padding: 3px 11px;
   border-radius: var(--radius-pill);
 }
 
 .header-right {
   display: flex;
-  align-items: flex-start;
-  gap: 14px;
+  align-items: center;
+  gap: 10px;
 }
 
 .mascot-slot {
-  width: 88px;
-  height: 88px;
+  width: 68px;
+  height: 68px;
   border-width: 3px;
-  font-size: 40px;
+  font-size: 32px;
   overflow: hidden;
 }
 
@@ -306,14 +315,13 @@
 
 .speech-bubble {
   background: var(--card-bg);
-  border-radius: 16px;
-  padding: 8px 12px;
-  font-size: 11px;
+  border-radius: 14px;
+  padding: 7px 11px;
+  font-size: 10.5px;
   color: var(--text-muted);
   box-shadow: var(--shadow-soft);
-  max-width: 120px;
+  max-width: 116px;
   position: relative;
-  top: 6px;
 }
 
 .datetime-card {
@@ -321,17 +329,16 @@
   background: linear-gradient(160deg, var(--pink-pale) 0%, var(--card-bg) 70%);
   border: 1.5px solid var(--border-hairline);
   border-radius: var(--radius-card);
-  padding: 12px 20px 14px;
+  padding: 10px 16px 24px;
   text-align: right;
   color: var(--purple-deep);
-  min-width: 160px;
-  padding-bottom: 34px;
+  min-width: 138px;
   box-shadow: var(--shadow-soft);
 }
 
 .datetime-card .time {
   font-family: var(--font-numeral);
-  font-size: 28px;
+  font-size: 22px;
   font-weight: 700;
   color: #d6698c;
   letter-spacing: 0.2px;
@@ -369,7 +376,7 @@
   position: absolute;
   bottom: 4px;
   right: 8px;
-  font-size: 26px;
+  font-size: 20px;
   opacity: 0.5;
   transform: rotate(12deg);
   pointer-events: none;
@@ -377,21 +384,23 @@
 
 .page-title {
   font-family: var(--font-script);
-  font-size: 40px;
+  font-size: 34px;
   color: var(--purple-deep);
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 18px;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--grid-gap);
+  align-items: start;
 }
 
 .bottom-strip {
-  margin-top: 20px;
+  margin-top: 14px;
+  margin-left: 76px;
   display: flex;
-  gap: 12px;
+  gap: 10px;
   overflow-x: auto;
   padding-bottom: 4px;
 }
@@ -435,27 +444,28 @@
 
 .charm-strand {
   position: absolute;
-  left: -6px;
-  bottom: -6px;
-  width: 70px;
-  height: 220px;
+  left: 0;
+  bottom: 4px;
+  width: 60px;
+  height: 66px;
+  overflow: hidden;
   border: 1.5px dashed var(--pink-line);
-  border-radius: 20px;
+  border-radius: 14px;
   background: var(--pink-pale);
-  color: var(--pink-line);
-  font-size: 10px;
+  color: var(--pink-accent);
+  font-size: 13px;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
-  writing-mode: vertical-rl;
-  opacity: 0.7;
+  opacity: 0.8;
+  pointer-events: none;
 }
 
 @media (max-width: 1100px) {
   .grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(6, 1fr);
   }
 }
 

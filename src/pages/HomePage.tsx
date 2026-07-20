@@ -17,6 +17,11 @@ import TopPriorities from '../widgets/TopPriorities'
 import HabitsToday from '../widgets/HabitsToday'
 import DogFacts from '../widgets/DogFacts'
 import { useTodayVisibility } from '../widgets/DisplayPreferences'
+import type { ReactNode } from 'react'
+
+function Span({ n, children }: { n: number; children: ReactNode }) {
+  return <div className={`span-${n}`}>{children}</div>
+}
 
 export default function HomePage() {
   const [visibility] = useTodayVisibility()
@@ -24,27 +29,101 @@ export default function HomePage() {
 
   return (
     <div className="grid">
-      {show('topPriorities') && <TopPriorities />}
-      {show('statusBoard') && <HouseholdStatusBoard />}
-      {show('miniCalendar') && <MiniCalendar />}
-      {show('moodCheckIn') && <MoodCheckIn />}
-      {show('bodyCheckin') && <BodyCheckin />}
-      {show('waterProtein') && <WaterProtein />}
-      {show('medsTitration') && <MedsTitration />}
-      {show('dogsCare') && <DogsCare />}
-      {show('dogFacts') && <DogFacts />}
-      {show('habitsToday') && <HabitsToday />}
-      {show('familyKids') && <FamilyKids />}
-      {show('quickCapture') && <QuickCapture />}
-      {show('gratefulFor') && <GratefulFor />}
-      {show('tarotPull') && <TarotPull />}
-      {show('myTasks') && <ChecklistCard icon="⭐" title="My Tasks" storageKey="dashboard.tasks.me" placeholder="Add a task..." />}
-      {show('girlsTodos') && (
-        <ChecklistCard icon="🎀" title="Girls' To-Dos" storageKey="dashboard.tasks.girls" placeholder="Add something for the girls..." />
+      {show('topPriorities') && (
+        <Span n={5}>
+          <TopPriorities />
+        </Span>
       )}
-      {show('reminders') && <Reminders />}
-      {show('waitingMode') && <WaitingMode />}
-      {show('worldFeed') && <WorldFeed />}
+      {show('statusBoard') && (
+        <Span n={7}>
+          <HouseholdStatusBoard />
+        </Span>
+      )}
+      {show('miniCalendar') && (
+        <Span n={4}>
+          <MiniCalendar />
+        </Span>
+      )}
+      {show('moodCheckIn') && (
+        <Span n={4}>
+          <MoodCheckIn />
+        </Span>
+      )}
+      {show('bodyCheckin') && (
+        <Span n={4}>
+          <BodyCheckin />
+        </Span>
+      )}
+      {show('waterProtein') && (
+        <Span n={4}>
+          <WaterProtein />
+        </Span>
+      )}
+      {show('medsTitration') && (
+        <Span n={5}>
+          <MedsTitration />
+        </Span>
+      )}
+      {show('dogsCare') && (
+        <Span n={3}>
+          <DogsCare />
+        </Span>
+      )}
+      {show('dogFacts') && (
+        <Span n={6}>
+          <DogFacts />
+        </Span>
+      )}
+      {show('habitsToday') && (
+        <Span n={3}>
+          <HabitsToday />
+        </Span>
+      )}
+      {show('familyKids') && (
+        <Span n={3}>
+          <FamilyKids />
+        </Span>
+      )}
+      {show('quickCapture') && (
+        <Span n={4}>
+          <QuickCapture />
+        </Span>
+      )}
+      {show('gratefulFor') && (
+        <Span n={4}>
+          <GratefulFor />
+        </Span>
+      )}
+      {show('tarotPull') && (
+        <Span n={4}>
+          <TarotPull />
+        </Span>
+      )}
+      {show('myTasks') && (
+        <Span n={4}>
+          <ChecklistCard icon="⭐" title="My Tasks" storageKey="dashboard.tasks.me" placeholder="Add a task..." />
+        </Span>
+      )}
+      {show('girlsTodos') && (
+        <Span n={4}>
+          <ChecklistCard icon="🎀" title="Girls' To-Dos" storageKey="dashboard.tasks.girls" placeholder="Add something for the girls..." />
+        </Span>
+      )}
+      {show('reminders') && (
+        <Span n={4}>
+          <Reminders />
+        </Span>
+      )}
+      {show('waitingMode') && (
+        <Span n={6}>
+          <WaitingMode />
+        </Span>
+      )}
+      {show('worldFeed') && (
+        <Span n={12}>
+          <WorldFeed />
+        </Span>
+      )}
     </div>
   )
 }
