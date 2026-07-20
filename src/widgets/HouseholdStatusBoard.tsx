@@ -7,6 +7,7 @@ interface Entry {
   timestamp: string
   peopleAway: string[]
   visitorsExtra: string
+  dogStatuses: Record<string, string>
   quietWindow: string
   mainPressure: string
   boundaryNote: string
@@ -18,8 +19,12 @@ const PEOPLE_CHIPS = [
   'Mom / Angela', 'Dad', 'Nick', 'Vincent',
   'Nina', "Nina's kids", 'Alysson', "Alysson's kids",
   'Santi / Daycare', 'Grandma-related pressure', 'Other visitors',
-  'Misa', 'Coco', 'Juno', 'Abby',
 ]
+
+const DOG_STATUS_OPTIONS = ['Quiet & settled with owner', 'Put away inside', 'Put outside', 'Walking around / out and about']
+const OWN_DOGS = ['Misa', 'Coco']
+const OTHER_DOGS = ['Juno', 'Abby']
+const OWN_DOG_STATUS_OPTIONS = [...DOG_STATUS_OPTIONS, 'Sleeping']
 
 const QUIET_WINDOW_OPTIONS = ['Yes', 'No', 'Maybe', 'Later', 'Unknown']
 
@@ -108,6 +113,7 @@ export default function HouseholdStatusBoard() {
 
   const [peopleAway, setPeopleAway] = useState<string[]>([])
   const [visitorsExtra, setVisitorsExtra] = useState('')
+  const [dogStatuses, setDogStatuses] = useState<Record<string, string>>({})
   const [quietWindow, setQuietWindow] = useState('')
   const [mainPressure, setMainPressure] = useState('')
   const [mainPressureCustom, setMainPressureCustom] = useState('')
@@ -124,9 +130,19 @@ export default function HouseholdStatusBoard() {
     setPeopleAway((prev) => (prev.includes(name) ? prev.filter((p) => p !== name) : [...prev, name]))
   }
 
+  function setDogStatus(dog: string, status: string) {
+    setDogStatuses((prev) => {
+      const next = { ...prev }
+      if (status) next[dog] = status
+      else delete next[dog]
+      return next
+    })
+  }
+
   function resetForm() {
     setPeopleAway([])
     setVisitorsExtra('')
+    setDogStatuses({})
     setQuietWindow('')
     setMainPressure('')
     setMainPressureCustom('')
@@ -142,6 +158,7 @@ export default function HouseholdStatusBoard() {
       timestamp: new Date().toISOString(),
       peopleAway,
       visitorsExtra: visitorsExtra.trim(),
+      dogStatuses,
       quietWindow,
       mainPressure: mainPressure === CUSTOM ? mainPressureCustom.trim() : mainPressure,
       boundaryNote: boundaryNote === CUSTOM ? boundaryNoteCustom.trim() : boundaryNote,
@@ -183,8 +200,16 @@ export default function HouseholdStatusBoard() {
               )}
               {latest.peopleAway.length > 0 && (
                 <p>
-                  <strong>People/pets flagged:</strong> {latest.peopleAway.join(', ')}
+                  <strong>People away:</strong> {latest.peopleAway.join(', ')}
                   {latest.visitorsExtra && `, ${latest.visitorsExtra}`}
+                </p>
+              )}
+              {Object.keys(latest.dogStatuses ?? {}).length > 0 && (
+                <p>
+                  <strong>Dogs:</strong>{' '}
+                  {Object.entries(latest.dogStatuses)
+                    .map(([dog, status]) => `${dog}: ${status}`)
+                    .join(', ')}
                 </p>
               )}
             </div>
@@ -224,7 +249,7 @@ export default function HouseholdStatusBoard() {
       {open && (
         <div className="hsb-form">
           <div className="hsb-field">
-            <label>People away</label>
+            <label>People away (household + extended family)</label>
             <div className="hsb-chip-row">
               {PEOPLE_CHIPS.map((name) => (
                 <button
@@ -243,6 +268,38 @@ export default function HouseholdStatusBoard() {
               value={visitorsExtra}
               onChange={(e) => setVisitorsExtra(e.target.value)}
             />
+          </div>
+
+          <div className="hsb-field">
+            <label>Dogs</label>
+            <div className="hsb-dog-grid">
+              {OWN_DOGS.map((dog) => (
+                <div key={dog} className="hsb-dog-row">
+                  <span>{dog}</span>
+                  <select value={dogStatuses[dog] ?? ''} onChange={(e) => setDogStatus(dog, e.target.value)}>
+                    <option value="">—</option>
+                    {OWN_DOG_STATUS_OPTIONS.map((o) => (
+                      <option key={o} value={o}>
+                        {o}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              ))}
+              {OTHER_DOGS.map((dog) => (
+                <div key={dog} className="hsb-dog-row">
+                  <span>{dog}</span>
+                  <select value={dogStatuses[dog] ?? ''} onChange={(e) => setDogStatus(dog, e.target.value)}>
+                    <option value="">—</option>
+                    {DOG_STATUS_OPTIONS.map((o) => (
+                      <option key={o} value={o}>
+                        {o}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              ))}
+            </div>
           </div>
 
           <div className="hsb-field">

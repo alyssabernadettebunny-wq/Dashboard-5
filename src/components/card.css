@@ -2201,3 +2201,22 @@
   border-color: transparent;
   color: var(--purple-deep);
 }
+
+.hsb-dog-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.hsb-dog-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--card-bg-tint);
+  border: 1px solid var(--border-hairline);
+  border-radius: 10px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-body);
+}
