@@ -1,5 +1,5 @@
-import { useState } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
+import { isLogicalToday, logicalDateKey } from '../lib/logicalDate'
 import Card from '../components/Card'
 
 interface TarotCard {
@@ -13,6 +13,11 @@ interface QuickNote {
   id: string
   text: string
   time: string
+}
+
+interface PulledCard {
+  date: string
+  index: number
 }
 
 const DECK: TarotCard[] = [
@@ -34,47 +39,62 @@ const DECK: TarotCard[] = [
   { roman: 'ACE', name: 'Ace of Cups', meaning: 'A fresh wave of feeling or connection is opening up.', affirmation: 'I welcome new tenderness.' },
 ]
 
-function todayIndex() {
-  const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000)
-  return dayOfYear % DECK.length
-}
-
 export default function TarotPull() {
-  const [index, setIndex] = useState(todayIndex())
+  const [pulled, setPulled] = useLocalStorage<PulledCard | null>('dashboard.tarot.pulled', null)
   const [notes, setNotes] = useLocalStorage<QuickNote[]>('dashboard.quickcapture', [])
-  const card = DECK[index]
 
-  function pullNew() {
-    setIndex((prev) => {
-      let next = Math.floor(Math.random() * DECK.length)
-      while (next === prev && DECK.length > 1) next = Math.floor(Math.random() * DECK.length)
-      return next
-    })
+  const pulledToday = pulled && isLogicalToday(pulled.date + 'T12:00:00') ? pulled : null
+  const card = pulledToday ? DECK[pulledToday.index] : null
+
+  function pullToday() {
+    if (pulledToday) return
+    const index = Math.floor(Math.random() * DECK.length)
+    setPulled({ date: logicalDateKey(), index })
   }
 
   function journalAboutIt() {
+    if (!card) return
     const time = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
     setNotes([{ id: crypto.randomUUID(), text: `Tarot pull: ${card.name} — `, time }, ...notes])
   }
 
   return (
     <Card icon="🔮" title="Tarot Pull / Intuition">
-      <div className="tarot-card">
-        <div className="tarot-visual">
-          <span className="roman">{card.roman}</span>
-          <span className="star">✦</span>
-          <span>{card.name.toUpperCase()}</span>
-        </div>
-        <div className="tarot-details">
-          <p className="tarot-name">Today's Pull: {card.name}</p>
-          <p className="tarot-meaning">{card.meaning}</p>
-          <p className="tarot-affirmation">Affirmation: {card.affirmation}</p>
-        </div>
-      </div>
-      <div className="c-input-row">
-        <button onClick={pullNew}>Pull a new card 🔮</button>
-        <button onClick={journalAboutIt}>Journal about it ♡</button>
-      </div>
+      {card ? (
+        <>
+          <div className="tarot-card">
+            <div className="tarot-visual">
+              <span className="roman">{card.roman}</span>
+              <span className="star">✦</span>
+              <span>{card.name.toUpperCase()}</span>
+            </div>
+            <div className="tarot-details">
+              <p className="tarot-name">Today's Pull: {card.name}</p>
+              <p className="tarot-meaning">{card.meaning}</p>
+              <p className="tarot-affirmation">Affirmation: {card.affirmation}</p>
+            </div>
+          </div>
+          <div className="c-input-row">
+            <button onClick={journalAboutIt}>Journal about it ♡</button>
+          </div>
+          <p style={{ fontSize: 10.5, color: 'var(--text-muted)', marginTop: 4 }}>Come back tomorrow for a new pull.</p>
+        </>
+      ) : (
+        <>
+          <div className="tarot-card">
+            <div className="tarot-visual tarot-visual-facedown">
+              <span className="star">✦</span>
+            </div>
+            <div className="tarot-details">
+              <p className="tarot-name">You haven't pulled today's card yet.</p>
+              <p className="tarot-meaning">One pull a day — make it count.</p>
+            </div>
+          </div>
+          <div className="c-input-row">
+            <button onClick={pullToday}>Pull today's card 🔮</button>
+          </div>
+        </>
+      )}
     </Card>
   )
 }
