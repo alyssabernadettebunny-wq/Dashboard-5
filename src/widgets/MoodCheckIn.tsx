@@ -227,16 +227,27 @@ export default function MoodCheckIn() {
       )}
 
       {!editMode && (
-        <div className="mood-week-row">
+        <div className="mood-week-list">
           {last7Days().map((day) => {
-            const dayEntries = moodLog.filter((m) => localDateKey(new Date(m.timestamp)) === day.key)
-            const entry = dayEntries[0]
+            const dayEntries = moodLog
+              .filter((m) => localDateKey(new Date(m.timestamp)) === day.key)
+              .slice()
+              .reverse() // chronological, oldest to newest
             return (
-              <div key={day.key} className="mood-week-day">
-                <div className="mood-week-slot">
-                  {entry ? entry.image ? <img src={entry.image} alt={entry.label} /> : <span className="mood2-placeholder">?</span> : <span className="mood-week-empty" />}
-                </div>
+              <div key={day.key} className="mood-week-day-row">
                 <span className="mood-week-date">{day.label}</span>
+                <div className="mood-week-strip">
+                  {dayEntries.length === 0 && <span className="mood-week-empty" />}
+                  {dayEntries.map((entry) => (
+                    <div
+                      key={entry.id}
+                      className="mood-week-slot"
+                      title={`${entry.label} — ${new Date(entry.timestamp).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`}
+                    >
+                      {entry.image ? <img src={entry.image} alt={entry.label} /> : <span className="mood2-placeholder">?</span>}
+                    </div>
+                  ))}
+                </div>
               </div>
             )
           })}

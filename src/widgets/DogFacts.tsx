@@ -88,10 +88,10 @@ export default function DogFacts() {
   const maltipooFacts = todaysSet(MALTIPOO_FACTS)
 
   return (
-    <Card icon="🐚" title="Dog Facts" meta="New facts every day">
+    <Card icon="🐚" title="Breed Facts">
       <div className="two-col">
         <div className="mini-profile">
-          <div className="name">Misa (Frenchie)</div>
+          <div className="name">Frenchie Facts</div>
           <ul className="c-list">
             {frenchieFacts.map((f, i) => (
               <li key={i} className="c-list-item" style={{ alignItems: 'flex-start' }}>
@@ -101,7 +101,7 @@ export default function DogFacts() {
           </ul>
         </div>
         <div className="mini-profile">
-          <div className="name">Coco (Maltipoo)</div>
+          <div className="name">Maltipoo Facts</div>
           <ul className="c-list">
             {maltipooFacts.map((f, i) => (
               <li key={i} className="c-list-item" style={{ alignItems: 'flex-start' }}>

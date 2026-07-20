@@ -10,27 +10,100 @@ interface Med {
   refillNeeded: boolean
 }
 
-interface DoseChange {
-  dose: string
+interface DoseEntry {
+  id: string
   date: string
+  dose: string
 }
 
 interface TitrationMed {
   id: string
   name: string
-  currentDose: string
-  sinceDate: string
   nextReview: string
-  history: DoseChange[]
+  entries: DoseEntry[]
 }
 
 function todayStr() {
   return localDateKey()
 }
 
+function sortEntries(entries: DoseEntry[]) {
+  return [...entries].sort((a, b) => b.date.localeCompare(a.date))
+}
+
 interface MedsDayRecord {
   date: string
   taken: string[]
+}
+
+function TitrationCard({
+  med,
+  onUpdate,
+  onRemove,
+}: {
+  med: TitrationMed
+  onUpdate: (patch: Partial<TitrationMed>) => void
+  onRemove: () => void
+}) {
+  const [newDate, setNewDate] = useState(todayStr())
+  const [newDose, setNewDose] = useState('')
+  const sorted = sortEntries(med.entries)
+  const current = sorted[0]
+
+  function logDose() {
+    if (!newDose.trim()) return
+    onUpdate({ entries: [...med.entries, { id: crypto.randomUUID(), date: newDate, dose: newDose.trim() }] })
+    setNewDose('')
+  }
+
+  function updateEntry(id: string, patch: Partial<DoseEntry>) {
+    onUpdate({ entries: med.entries.map((e) => (e.id === id ? { ...e, ...patch } : e)) })
+  }
+
+  function removeEntry(id: string) {
+    onUpdate({ entries: med.entries.filter((e) => e.id !== id) })
+  }
+
+  return (
+    <div className="subsection">
+      <div className="card-header">
+        <strong style={{ fontSize: 12.5, color: 'var(--text-heading)' }}>{med.name}</strong>
+        <button className="remove" onClick={onRemove} aria-label="Remove">
+          ×
+        </button>
+      </div>
+      <p style={{ fontSize: 12, color: 'var(--text-muted)' }}>
+        {current ? `Current: ${current.dose} (since ${current.date})` : 'No dose logged yet'}
+      </p>
+
+      <div className="c-input-row">
+        <input type="date" value={newDate} onChange={(e) => setNewDate(e.target.value)} />
+        <input type="text" placeholder="Dose (e.g. 10mg)" value={newDose} onChange={(e) => setNewDose(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && logDose()} />
+        <button onClick={logDose}>Log</button>
+      </div>
+
+      <div className="c-input-row" style={{ marginTop: 6 }}>
+        <span className="sub" style={{ marginLeft: 0 }}>
+          Next review date
+        </span>
+        <input type="date" value={med.nextReview} onChange={(e) => onUpdate({ nextReview: e.target.value })} />
+      </div>
+
+      {sorted.length > 0 && (
+        <ul className="c-list" style={{ marginTop: 8 }}>
+          {sorted.map((e) => (
+            <li key={e.id} className="c-list-item">
+              <input type="date" value={e.date} onChange={(ev) => updateEntry(e.id, { date: ev.target.value })} style={{ maxWidth: 130 }} />
+              <input type="text" value={e.dose} onChange={(ev) => updateEntry(e.id, { dose: ev.target.value })} />
+              <button className="remove" onClick={() => removeEntry(e.id)} aria-label="Remove dose entry">
+                ×
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  )
 }
 
 export default function MedsTitration() {
@@ -53,11 +126,29 @@ export default function MedsTitration() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [medsDay])
 
-  const [titrationMeds, setTitrationMeds] = useLocalStorage<TitrationMed[]>(
-    'dashboard.titration',
-    [],
-  )
+  const [titrationMeds, setTitrationMeds] = useLocalStorage<TitrationMed[]>('dashboard.titration', [])
   const [titrationName, setTitrationName] = useState('')
+  const migratedRef = useRef(false)
+
+  // One-time migration from the old currentDose/sinceDate/history shape to entries[]
+  useEffect(() => {
+    if (migratedRef.current) return
+    migratedRef.current = true
+    const needsMigration = titrationMeds.some((t) => !Array.isArray(t.entries))
+    if (!needsMigration) return
+    setTitrationMeds((prev) =>
+      prev.map((t) => {
+        const anyT = t as unknown as { currentDose?: string; sinceDate?: string; history?: { dose: string; date: string }[]; entries?: DoseEntry[] }
+        if (Array.isArray(anyT.entries)) return t
+        const entries: DoseEntry[] = [
+          ...(anyT.history ?? []).map((h) => ({ id: crypto.randomUUID(), date: h.date, dose: h.dose })),
+          ...(anyT.currentDose ? [{ id: crypto.randomUUID(), date: anyT.sinceDate || todayStr(), dose: anyT.currentDose }] : []),
+        ]
+        return { id: t.id, name: t.name, nextReview: t.nextReview ?? '', entries }
+      }),
+    )
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   function addMed() {
     const trimmed = medName.trim()
@@ -78,23 +169,8 @@ export default function MedsTitration() {
   function addTitrationMed() {
     const trimmed = titrationName.trim()
     if (!trimmed) return
-    setTitrationMeds([
-      ...titrationMeds,
-      { id: crypto.randomUUID(), name: trimmed, currentDose: '', sinceDate: todayStr(), nextReview: '', history: [] },
-    ])
+    setTitrationMeds([...titrationMeds, { id: crypto.randomUUID(), name: trimmed, nextReview: '', entries: [] }])
     setTitrationName('')
-  }
-
-  function logDoseChange(id: string) {
-    const newDose = window.prompt('New dose (e.g. "10mg")')
-    if (!newDose) return
-    setTitrationMeds(
-      titrationMeds.map((t) => {
-        if (t.id !== id) return t
-        const history = t.currentDose ? [...t.history, { dose: t.currentDose, date: t.sinceDate }] : t.history
-        return { ...t, currentDose: newDose, sinceDate: todayStr(), history }
-      }),
-    )
   }
 
   function updateTitration(id: string, patch: Partial<TitrationMed>) {
@@ -191,54 +267,12 @@ export default function MedsTitration() {
       </div>
       {titrationMeds.length === 0 && <p className="c-empty">Nothing being titrated right now</p>}
       {titrationMeds.map((t) => (
-        <div key={t.id} className="subsection">
-          <div className="card-header">
-            <strong style={{ fontSize: 12.5, color: 'var(--text-heading)' }}>{t.name}</strong>
-            <button className="remove" onClick={() => removeTitration(t.id)} aria-label="Remove">
-              ×
-            </button>
-          </div>
-          <p style={{ fontSize: 12, color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: 6 }}>
-            {t.currentDose ? `${t.currentDose} since ${t.sinceDate}` : 'No dose logged yet'}
-            {t.currentDose && (
-              <button className="remove" onClick={() => updateTitration(t.id, { currentDose: '', sinceDate: '' })} aria-label="Clear current dose">
-                ×
-              </button>
-            )}
-          </p>
-          <div className="c-input-row">
-            <button onClick={() => logDoseChange(t.id)}>Log dose change</button>
-          </div>
-          <div className="c-input-row" style={{ marginTop: 4 }}>
-            <span className="sub" style={{ marginLeft: 0 }}>
-              Next review date
-            </span>
-            <input type="date" value={t.nextReview} onChange={(e) => updateTitration(t.id, { nextReview: e.target.value })} />
-          </div>
-          {t.history.length > 0 && (
-            <details>
-              <summary style={{ fontSize: 11, color: 'var(--purple-heading)', cursor: 'pointer' }}>
-                Dose history ({t.history.length})
-              </summary>
-              <ul className="c-list" style={{ marginTop: 6 }}>
-                {t.history.map((h, i) => (
-                  <li key={i} className="c-list-item">
-                    <span>
-                      {h.dose} — {h.date}
-                    </span>
-                    <button
-                      className="remove"
-                      onClick={() => updateTitration(t.id, { history: t.history.filter((_, idx) => idx !== i) })}
-                      aria-label="Remove dose history entry"
-                    >
-                      ×
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </details>
-          )}
-        </div>
+        <TitrationCard
+          key={t.id}
+          med={t}
+          onUpdate={(patch) => updateTitration(t.id, patch)}
+          onRemove={() => removeTitration(t.id)}
+        />
       ))}
     </Card>
   )

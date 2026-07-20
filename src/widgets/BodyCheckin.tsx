@@ -14,23 +14,61 @@ interface Entry {
   notes: string
 }
 
-const OVERALL_OPTIONS = ['Great', 'Good', 'Okay', 'Rough', 'Struggling']
-const ENERGY_OPTIONS = ['Very low', 'Low', 'Moderate', 'Good', 'High']
-const SENSORY_LOAD_OPTIONS = ['Calm', 'Mild', 'Noticeable', 'High', 'Overwhelmed']
-const PAIN_OPTIONS = ['None', 'Mild', 'Moderate', 'Severe']
-const NAUSEA_OPTIONS = ['None', 'Mild', 'Moderate', 'Severe']
+const OVERALL_OPTIONS = [
+  'Feeling great, full of energy',
+  'Pretty good, no real complaints',
+  'Okay, just getting through it',
+  'Rough, running on low reserves',
+  'Struggling, need extra care today',
+  'Running on empty',
+]
+const ENERGY_OPTIONS = [
+  'Wired and ready to go',
+  'Steady and capable',
+  'A little drained, but managing',
+  'Running low, need to pace myself',
+  'Completely depleted',
+]
+const SENSORY_LOAD_OPTIONS = [
+  'Calm, easy to be in my body',
+  'A little noisy, but tolerable',
+  'Getting overstimulated',
+  'Sensory overload building up',
+  'Fully overwhelmed, need to shut it down',
+]
+const PAIN_OPTIONS = [
+  'No pain today',
+  'Mild ache, easy to ignore',
+  'Noticeable discomfort',
+  'Significant pain, hard to focus through',
+  'Severe, need to stop and rest',
+]
+const NAUSEA_OPTIONS = [
+  'No nausea',
+  'Slight queasiness',
+  'Noticeable nausea',
+  'Strong nausea, hard to eat',
+  "Severe, can't keep anything down",
+]
+
+const CUSTOM = 'Custom (type your own)...'
 
 function Field({
   label,
   options,
   value,
+  customValue,
   onChange,
+  onCustomChange,
 }: {
   label: string
   options: string[]
   value: string
+  customValue: string
   onChange: (v: string) => void
+  onCustomChange: (v: string) => void
 }) {
+  const isCustom = value === CUSTOM
   return (
     <div className="hsb-field">
       <label>{label}</label>
@@ -41,7 +79,11 @@ function Field({
             {o}
           </option>
         ))}
+        <option value={CUSTOM}>{CUSTOM}</option>
       </select>
+      {isCustom && (
+        <input type="text" placeholder="Type your own..." value={customValue} onChange={(e) => onCustomChange(e.target.value)} />
+      )}
     </div>
   )
 }
@@ -56,10 +98,15 @@ export default function BodyCheckin() {
   const [showHistory, setShowHistory] = useState(false)
 
   const [overall, setOverall] = useState('')
+  const [overallCustom, setOverallCustom] = useState('')
   const [energy, setEnergy] = useState('')
+  const [energyCustom, setEnergyCustom] = useState('')
   const [sensoryLoad, setSensoryLoad] = useState('')
+  const [sensoryLoadCustom, setSensoryLoadCustom] = useState('')
   const [painDiscomfort, setPainDiscomfort] = useState('')
+  const [painDiscomfortCustom, setPainDiscomfortCustom] = useState('')
   const [nausea, setNausea] = useState('')
+  const [nauseaCustom, setNauseaCustom] = useState('')
   const [notes, setNotes] = useState('')
 
   const todaysEntries = log.filter((e) => isLogicalToday(e.timestamp))
@@ -67,10 +114,15 @@ export default function BodyCheckin() {
 
   function resetForm() {
     setOverall('')
+    setOverallCustom('')
     setEnergy('')
+    setEnergyCustom('')
     setSensoryLoad('')
+    setSensoryLoadCustom('')
     setPainDiscomfort('')
+    setPainDiscomfortCustom('')
     setNausea('')
+    setNauseaCustom('')
     setNotes('')
   }
 
@@ -78,11 +130,11 @@ export default function BodyCheckin() {
     const entry: Entry = {
       id: crypto.randomUUID(),
       timestamp: new Date().toISOString(),
-      overall,
-      energy,
-      sensoryLoad,
-      painDiscomfort,
-      nausea,
+      overall: overall === CUSTOM ? overallCustom.trim() : overall,
+      energy: energy === CUSTOM ? energyCustom.trim() : energy,
+      sensoryLoad: sensoryLoad === CUSTOM ? sensoryLoadCustom.trim() : sensoryLoad,
+      painDiscomfort: painDiscomfort === CUSTOM ? painDiscomfortCustom.trim() : painDiscomfort,
+      nausea: nausea === CUSTOM ? nauseaCustom.trim() : nausea,
       notes: notes.trim(),
     }
     setLog([entry, ...log])
@@ -161,11 +213,25 @@ export default function BodyCheckin() {
 
       {open && (
         <div className="hsb-form">
-          <Field label="Overall" options={OVERALL_OPTIONS} value={overall} onChange={setOverall} />
-          <Field label="Energy" options={ENERGY_OPTIONS} value={energy} onChange={setEnergy} />
-          <Field label="Sensory load" options={SENSORY_LOAD_OPTIONS} value={sensoryLoad} onChange={setSensoryLoad} />
-          <Field label="Pain / discomfort" options={PAIN_OPTIONS} value={painDiscomfort} onChange={setPainDiscomfort} />
-          <Field label="Nausea" options={NAUSEA_OPTIONS} value={nausea} onChange={setNausea} />
+          <Field label="Overall" options={OVERALL_OPTIONS} value={overall} customValue={overallCustom} onChange={setOverall} onCustomChange={setOverallCustom} />
+          <Field label="Energy" options={ENERGY_OPTIONS} value={energy} customValue={energyCustom} onChange={setEnergy} onCustomChange={setEnergyCustom} />
+          <Field
+            label="Sensory load"
+            options={SENSORY_LOAD_OPTIONS}
+            value={sensoryLoad}
+            customValue={sensoryLoadCustom}
+            onChange={setSensoryLoad}
+            onCustomChange={setSensoryLoadCustom}
+          />
+          <Field
+            label="Pain / discomfort"
+            options={PAIN_OPTIONS}
+            value={painDiscomfort}
+            customValue={painDiscomfortCustom}
+            onChange={setPainDiscomfort}
+            onCustomChange={setPainDiscomfortCustom}
+          />
+          <Field label="Nausea" options={NAUSEA_OPTIONS} value={nausea} customValue={nauseaCustom} onChange={setNausea} onCustomChange={setNauseaCustom} />
           <div className="hsb-field">
             <label>Notes</label>
             <textarea className="c-textarea" placeholder="Anything else..." value={notes} onChange={(e) => setNotes(e.target.value)} />

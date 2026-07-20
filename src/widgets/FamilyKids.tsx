@@ -20,9 +20,9 @@ const ACTION_ICONS: Record<FamilyMember['action'], string> = {
 const ACTION_ORDER: FamilyMember['action'][] = ['call', 'star', 'event']
 
 const DEFAULT_MEMBERS: FamilyMember[] = [
-  { id: '1', name: 'Winnie', emoji: '🐰', activity: "Today's activity...", action: 'star' },
-  { id: '2', name: 'Amy', emoji: '🌺', activity: "Today's activity...", action: 'star' },
-  { id: '3', name: 'Holly', emoji: '🌼', activity: "Today's activity...", action: 'star' },
+  { id: '1', name: 'Winnie', emoji: '🐰', activity: '', action: 'star' },
+  { id: '2', name: 'Amy', emoji: '🌺', activity: '', action: 'star' },
+  { id: '3', name: 'Holly', emoji: '🌼', activity: '', action: 'star' },
 ]
 
 const EMOJI_MIGRATIONS: Record<string, string> = { Winnie: '🐰', Amy: '🌺', Holly: '🌼' }
@@ -43,10 +43,16 @@ export default function FamilyKids() {
   useEffect(() => {
     if (migratedRef.current) return
     migratedRef.current = true
-    const needsMigration = members.some((m) => m.name === 'Mom' || !m.emoji)
+    const needsMigration = members.some((m) => m.name === 'Mom' || !m.emoji || m.activity === "Today's activity...")
     if (needsMigration) {
       setMembers((prev) =>
-        prev.filter((m) => m.name !== 'Mom').map((m) => ({ ...m, emoji: EMOJI_MIGRATIONS[m.name] ?? m.emoji ?? '🙂' }))
+        prev
+          .filter((m) => m.name !== 'Mom')
+          .map((m) => ({
+            ...m,
+            emoji: EMOJI_MIGRATIONS[m.name] ?? m.emoji ?? '🙂',
+            activity: m.activity === "Today's activity..." ? '' : m.activity,
+          }))
       )
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
