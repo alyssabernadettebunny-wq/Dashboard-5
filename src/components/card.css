@@ -2133,3 +2133,71 @@
 .theme-swatch-colors span:first-child {
   margin-left: 0;
 }
+
+/* Household Status Board */
+.hsb-latest {
+  background: var(--card-bg-tint);
+  border: 1px solid var(--border-hairline);
+  border-radius: 14px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.hsb-latest-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11.5px;
+  color: var(--purple-heading);
+  font-weight: 700;
+}
+
+.hsb-latest p {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-body);
+}
+
+.hsb-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.hsb-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.hsb-field > label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--purple-heading);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.hsb-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.hsb-chip {
+  border: 1px solid var(--border-hairline);
+  background: var(--card-bg-tint);
+  color: var(--text-body);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+}
+
+.hsb-chip.active {
+  background: var(--purple-pill);
+  border-color: transparent;
+  color: var(--purple-deep);
+}

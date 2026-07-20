@@ -1,4 +1,4 @@
-import StatusBoard from '../widgets/StatusBoard'
+import HouseholdStatusBoard from '../widgets/HouseholdStatusBoard'
 import BodyCheckin from '../widgets/BodyCheckin'
 import WaterProtein from '../widgets/WaterProtein'
 import MedsTitration from '../widgets/MedsTitration'
@@ -26,7 +26,7 @@ export default function HomePage() {
     <div className="grid">
       {show('topPriorities') && <TopPriorities />}
       {show('companion') && <CompanionCard />}
-      {show('statusBoard') && <StatusBoard />}
+      {show('statusBoard') && <HouseholdStatusBoard />}
       {show('miniCalendar') && <MiniCalendar />}
       {show('moodCheckIn') && <MoodCheckIn />}
       {show('bodyCheckin') && <BodyCheckin />}
