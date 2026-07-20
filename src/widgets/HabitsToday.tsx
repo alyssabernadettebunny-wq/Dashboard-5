@@ -1,19 +1,29 @@
 import { useEffect, useRef, useState } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
+import { localDateKey } from '../lib/logicalDate'
 import Card from '../components/Card'
 
-const WEEKDAY_LETTERS = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
+const WEEKDAY_LETTERS = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
 
-function last7DayLetters() {
-  const today = new Date().getDay()
-  return Array.from({ length: 7 }, (_, i) => WEEKDAY_LETTERS[(today - 6 + i + 70) % 7])
+function mondayIndex(d: Date) {
+  return (d.getDay() + 6) % 7 // 0 = Monday ... 6 = Sunday
+}
+
+function mondayOf(d: Date) {
+  const monday = new Date(d)
+  monday.setDate(monday.getDate() - mondayIndex(d))
+  return monday
+}
+
+function currentWeekKey() {
+  return localDateKey(mondayOf(new Date()))
 }
 
 interface Habit {
   id: string
   icon: string
   name: string
-  days: boolean[] // 7 entries, index 6 = today, index 0 = 6 days ago
+  days: boolean[] // 7 entries, index 0 = Monday, index 6 = Sunday
 }
 
 const DEFAULT_HABITS: Habit[] = [
@@ -23,10 +33,10 @@ const DEFAULT_HABITS: Habit[] = [
 
 const REMOVED_HABITS = ['Move my body', 'No spend']
 
-function currentStreak(habits: Habit[]) {
+function currentStreak(habits: Habit[], todayIndex: number) {
   if (habits.length === 0) return 0
   let streak = 0
-  for (let i = 6; i >= 0; i--) {
+  for (let i = todayIndex; i >= 0; i--) {
     const allDone = habits.every((h) => h.days[i])
     if (!allDone) break
     streak++
@@ -36,9 +46,11 @@ function currentStreak(habits: Habit[]) {
 
 export default function HabitsToday() {
   const [habits, setHabits] = useLocalStorage<Habit[]>('dashboard.habitstoday', DEFAULT_HABITS)
+  const [weekKey, setWeekKey] = useLocalStorage('dashboard.habitstoday.weekKey', currentWeekKey())
   const cleanedRef = useRef(false)
+  const weekResetRef = useRef(false)
   const [newHabit, setNewHabit] = useState('')
-  const dayLetters = last7DayLetters()
+  const todayIndex = mondayIndex(new Date())
 
   useEffect(() => {
     if (cleanedRef.current) return
@@ -48,6 +60,16 @@ export default function HabitsToday() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    const thisWeek = currentWeekKey()
+    if (weekKey !== thisWeek && !weekResetRef.current) {
+      weekResetRef.current = true
+      setHabits((prev) => prev.map((h) => ({ ...h, days: Array(7).fill(false) })))
+      setWeekKey(thisWeek)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [weekKey])
 
   function toggleDay(id: string, dayIndex: number) {
     setHabits(
@@ -68,17 +90,17 @@ export default function HabitsToday() {
     setHabits(habits.filter((h) => h.id !== id))
   }
 
-  const streak = currentStreak(habits)
+  const streak = currentStreak(habits, todayIndex)
 
   return (
-    <Card icon="🐣" title="Habits Today" variant="gingham" surface="mint">
+    <Card icon="🐣" title="Habits Today" variant="linedPaper" surface="mint">
       <p className="section-label" style={{ marginTop: 0 }}>
-        Tap a star for each day you kept it up
+        Tap a star for each day you kept it up this week
       </p>
       {habits.length > 0 && (
         <div className="habit-day-letters">
           <span className="habit-day-letters-spacer" />
-          {dayLetters.map((letter, i) => (
+          {WEEKDAY_LETTERS.map((letter, i) => (
             <span key={i}>{letter}</span>
           ))}
         </div>
@@ -95,8 +117,8 @@ export default function HabitsToday() {
                   key={i}
                   className={`habit-star ${done ? 'active' : ''}`}
                   onClick={() => toggleDay(habit.id, i)}
-                  aria-label={`Toggle ${dayLetters[i]}`}
-                  title={i === 6 ? 'Today' : undefined}
+                  aria-label={`Toggle ${WEEKDAY_LETTERS[i]}`}
+                  title={i === todayIndex ? 'Today' : undefined}
                 >
                   {done ? '★' : '☆'}
                 </button>
