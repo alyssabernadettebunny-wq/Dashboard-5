@@ -1,4 +1,7 @@
 import MoodEnergyTrend from '../widgets/MoodEnergyTrend'
+import SleepOverview from '../widgets/SleepOverview'
+import SleepDetails from '../widgets/SleepDetails'
+import WeeklySleepTrend from '../widgets/WeeklySleepTrend'
 import CycleTracker from '../widgets/CycleTracker'
 import SymptomsCheck from '../widgets/SymptomsCheck'
 import MovementStretch from '../widgets/MovementStretch'
@@ -22,6 +25,9 @@ export default function BodyWeatherPage() {
             icon: '☁️',
             content: (
               <div className="grid">
+                <SleepOverview />
+                <SleepDetails />
+                <WeeklySleepTrend />
                 <MoodEnergyTrend />
               </div>
             ),
