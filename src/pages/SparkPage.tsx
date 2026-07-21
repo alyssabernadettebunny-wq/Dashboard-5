@@ -6,7 +6,7 @@ import SubTabs from '../components/SubTabs'
 export default function SparkPage() {
   return (
     <>
-      <h2 className="page-title">Spark</h2>
+      <img className="page-title-img" src="/Dashboard-5/images/tab-titles/spark.png" alt="Spark" />
       <SubTabs
         storageKey="spark.subtab"
         tabs={[

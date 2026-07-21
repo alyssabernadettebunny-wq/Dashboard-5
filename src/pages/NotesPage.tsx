@@ -6,7 +6,7 @@ import SubTabs from '../components/SubTabs'
 export default function NotesPage() {
   return (
     <>
-      <h2 className="page-title">Notes</h2>
+      <img className="page-title-img" src="/Dashboard-5/images/tab-titles/notes.png" alt="Notes" />
       <SubTabs
         storageKey="notes.subtab"
         tabs={[

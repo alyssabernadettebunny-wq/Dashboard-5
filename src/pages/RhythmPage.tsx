@@ -6,7 +6,7 @@ import AnchorTasks from '../widgets/AnchorTasks'
 export default function RhythmPage() {
   return (
     <>
-      <h2 className="page-title">Rhythm</h2>
+      <img className="page-title-img" src="/Dashboard-5/images/tab-titles/rhythm.png" alt="Rhythm" />
       <div className="grid">
         <TodaysRhythm />
         <AnchorTasks />

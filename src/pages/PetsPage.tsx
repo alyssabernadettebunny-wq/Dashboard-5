@@ -9,7 +9,7 @@ import SubTabs from '../components/SubTabs'
 export default function PetsPage() {
   return (
     <>
-      <h2 className="page-title">Pets</h2>
+      <img className="page-title-img" src="/Dashboard-5/images/tab-titles/pets.png" alt="Pets" />
       <SubTabs
         storageKey="pets.subtab"
         tabs={[

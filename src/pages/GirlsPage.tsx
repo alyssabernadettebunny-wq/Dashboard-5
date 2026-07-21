@@ -12,7 +12,7 @@ const DAUGHTERS = [
 export default function GirlsPage() {
   return (
     <>
-      <h2 className="page-title">Girls</h2>
+      <img className="page-title-img" src="/Dashboard-5/images/tab-titles/girls.png" alt="Girls" />
       <SubTabs
         storageKey="girls.subtab"
         tabs={DAUGHTERS.map((d) => ({

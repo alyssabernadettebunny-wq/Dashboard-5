@@ -18,7 +18,7 @@ import SubTabs from '../components/SubTabs'
 export default function BodyWeatherPage() {
   return (
     <>
-      <h2 className="page-title">Body Weather</h2>
+      <img className="page-title-img" src="/Dashboard-5/images/tab-titles/body-weather.png" alt="Body Weather" />
       <SubTabs
         storageKey="bodyweather.subtab"
         tabs={[

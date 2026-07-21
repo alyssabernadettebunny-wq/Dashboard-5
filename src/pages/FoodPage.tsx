@@ -8,7 +8,7 @@ import TakeoutFavorites from '../widgets/TakeoutFavorites'
 export default function FoodPage() {
   return (
     <>
-      <h2 className="page-title">Food</h2>
+      <img className="page-title-img" src="/Dashboard-5/images/tab-titles/food.png" alt="Food" />
       <div className="grid">
         <TodaysMeals />
         <WeeklyMealPlan />

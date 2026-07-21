@@ -460,6 +460,13 @@
   margin-bottom: 12px;
 }
 
+.page-title-img {
+  display: block;
+  height: 40px;
+  width: auto;
+  margin-bottom: 12px;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));

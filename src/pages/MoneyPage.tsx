@@ -6,7 +6,7 @@ import SubTabs from '../components/SubTabs'
 export default function MoneyPage() {
   return (
     <>
-      <h2 className="page-title">Money</h2>
+      <img className="page-title-img" src="/Dashboard-5/images/tab-titles/money.png" alt="Money" />
       <SubTabs
         storageKey="money.subtab"
         tabs={[
