@@ -2,8 +2,11 @@ import MoodEnergyTrend from '../widgets/MoodEnergyTrend'
 import SleepOverview from '../widgets/SleepOverview'
 import SleepDetails from '../widgets/SleepDetails'
 import WeeklySleepTrend from '../widgets/WeeklySleepTrend'
-import CycleTracker from '../widgets/CycleTracker'
-import SymptomsCheck from '../widgets/SymptomsCheck'
+import CycleCalendar from '../widgets/CycleCalendar'
+import CurrentPhase from '../widgets/CurrentPhase'
+import PMDDWindow from '../widgets/PMDDWindow'
+import CycleSignalsToday from '../widgets/CycleSignalsToday'
+import SymptomsByPhase from '../widgets/SymptomsByPhase'
 import MovementStretch from '../widgets/MovementStretch'
 import NourishmentHydration from '../widgets/NourishmentHydration'
 import RegulationTools from '../widgets/RegulationTools'
@@ -38,8 +41,11 @@ export default function BodyWeatherPage() {
             icon: '🌙',
             content: (
               <div className="grid">
-                <CycleTracker />
-                <SymptomsCheck />
+                <CycleCalendar />
+                <CurrentPhase />
+                <PMDDWindow />
+                <CycleSignalsToday />
+                <SymptomsByPhase />
               </div>
             ),
           },
