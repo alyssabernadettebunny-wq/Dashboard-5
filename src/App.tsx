@@ -101,7 +101,7 @@ function weatherIcon(condition: string) {
 }
 
 function App() {
-  const [page, setPage] = useState('home')
+  const [page, setPage] = useLocalStorage('app.currentPage', 'home')
   const [clock, setClock] = useState(() => new Date())
   const [weather] = useLocalStorage('dashboard.worldfeed.weather', { temp: '', condition: '' })
   const { streak: overallStreak, markToday: markOverallToday } = useStreak('streak.overall')
