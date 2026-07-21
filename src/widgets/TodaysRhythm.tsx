@@ -79,7 +79,7 @@ export default function TodaysRhythm() {
   }
 
   return (
-    <Card icon="🎀" title="Today's Rhythm" wide meta="A gentle flow for today ♡">
+    <Card icon="🎀" title="Today's Rhythm" meta="A gentle flow for today ♡">
       <div className="rhythm-timeline">
         {blocks.map((b) => (
           <div key={b.id} className="rhythm-row">
