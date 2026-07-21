@@ -224,6 +224,25 @@
   position: relative;
 }
 
+.main.annotation-mode {
+  cursor: crosshair;
+}
+
+.annotation-pin {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  filter: drop-shadow(0 2px 3px rgba(122, 78, 130, 0.35));
+  z-index: 20;
+}
+
+.annotation-pin:hover {
+  transform: translate(-50%, -50%) scale(1.15);
+}
+
 .header {
   display: flex;
   align-items: center;

@@ -3423,3 +3423,139 @@
   height: 56px;
   margin: 0;
 }
+
+/* App Guide / What's New / Feedback */
+.guide-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.guide-item {
+  border-bottom: 1px dashed var(--border-hairline);
+}
+
+.guide-item:last-child {
+  border-bottom: none;
+}
+
+.guide-item-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-body);
+  padding: 7px 2px;
+  text-align: left;
+}
+
+.guide-item-row:hover {
+  color: var(--purple-heading);
+}
+
+.guide-chevron {
+  color: var(--pink-accent);
+  font-weight: 700;
+}
+
+.guide-body {
+  padding: 0 2px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.guide-body p {
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.whatsnew-item {
+  padding: 6px 2px;
+  border-bottom: 1px dashed var(--border-hairline);
+}
+
+.whatsnew-item:last-child {
+  border-bottom: none;
+}
+
+.whatsnew-version {
+  font-family: var(--font-numeral);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--purple-deep);
+  margin: 0 0 3px;
+}
+
+.whatsnew-sublist {
+  margin: 0;
+  padding-left: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.whatsnew-sublist li {
+  font-size: 11px;
+  color: var(--text-body);
+  line-height: 1.4;
+}
+
+.annotation-toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-body);
+  margin-top: 4px;
+}
+
+.toggle-switch {
+  width: 34px;
+  height: 18px;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--outline-soft);
+  background: var(--pink-pale);
+  position: relative;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.15s ease;
+}
+
+.toggle-switch.on {
+  background: var(--active-purple);
+  border-color: var(--active-purple);
+}
+
+.toggle-switch-knob {
+  position: absolute;
+  top: 1.5px;
+  left: 1.5px;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  transition: left 0.15s ease;
+}
+
+.toggle-switch.on .toggle-switch-knob {
+  left: 17.5px;
+}
+
+.toggle-switch-label {
+  font-size: 11px;
+  color: var(--text-muted);
+}

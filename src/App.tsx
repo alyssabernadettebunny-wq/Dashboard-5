@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import HomePage from './pages/HomePage'
 import HousePage from './pages/HousePage'
 import BodyWeatherPage from './pages/BodyWeatherPage'
@@ -14,7 +14,17 @@ import { useLocalStorage } from './hooks/useLocalStorage'
 import { useStreak } from './hooks/useStreak'
 import { useCompanion } from './hooks/useCompanion'
 import { useAppTheme } from './widgets/ThemePicker'
+import { useAnnotationMode } from './widgets/FeedbackAnnotation'
 import './App.css'
+
+interface Annotation {
+  id: string
+  page: string
+  xPct: number
+  yPct: number
+  text: string
+  date: string
+}
 
 const NAV_ITEMS = [
   { key: 'home', label: 'Today', icon: '🏠', enabled: true },
@@ -111,6 +121,30 @@ function App() {
   const [currentBook, setCurrentBook] = useLocalStorage('dashboard.currentBook', 'Currently reading')
   const [dogsCare] = useLocalStorage('dashboard.dogscare', [] as { breakfast: boolean; dinner: boolean }[])
   const dogsStatus = dogsCare.length > 0 && dogsCare.every((d) => d.breakfast && d.dinner) ? 'Good pups today ♡' : 'Care needed today'
+  const [annotationMode] = useAnnotationMode()
+  const [annotations, setAnnotations] = useLocalStorage<Annotation[]>('dashboard.annotations', [])
+  const mainRef = useRef<HTMLElement>(null)
+
+  function handleMainClick(e: React.MouseEvent<HTMLElement>) {
+    if (!annotationMode) return
+    const target = e.target as HTMLElement
+    if (target.closest('button, input, select, textarea, a, .annotation-pin')) return
+    const rect = mainRef.current!.getBoundingClientRect()
+    const xPct = ((e.clientX - rect.left) / rect.width) * 100
+    const yPct = ((e.clientY - rect.top) / rect.height) * 100
+    const noteText = window.prompt('Add a note about this spot:')
+    if (!noteText || !noteText.trim()) return
+    setAnnotations([
+      ...annotations,
+      { id: crypto.randomUUID(), page, xPct, yPct, text: noteText.trim(), date: new Date().toLocaleDateString([], { month: 'short', day: 'numeric' }) },
+    ])
+  }
+
+  function removeAnnotation(id: string) {
+    setAnnotations(annotations.filter((a) => a.id !== id))
+  }
+
+  const pagesAnnotations = annotations.filter((a) => a.page === page)
 
   function editCoffee() {
     const next = window.prompt('What are you drinking today?', coffeeOrder)
@@ -180,7 +214,7 @@ function App() {
             </div>
           </nav>
 
-          <main className="main">
+          <main className={`main ${annotationMode ? 'annotation-mode' : ''}`} ref={mainRef} onClick={handleMainClick}>
             <div className="header">
               <div className="header-left">
                 <img className="avatar-slot" src="/Dashboard-5/images/self-illustration-avatar.png" alt="Alyssa" />
@@ -283,6 +317,21 @@ function App() {
             <div className="charm-strand" aria-hidden="true">
               ⋆ ˚｡⋆
             </div>
+
+            {pagesAnnotations.map((a) => (
+              <button
+                key={a.id}
+                className="annotation-pin"
+                style={{ left: `${a.xPct}%`, top: `${a.yPct}%` }}
+                title={`${a.date}: ${a.text}`}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  if (window.confirm(`${a.date}\n\n${a.text}\n\nRemove this note?`)) removeAnnotation(a.id)
+                }}
+              >
+                📍
+              </button>
+            ))}
           </main>
         </div>
 
