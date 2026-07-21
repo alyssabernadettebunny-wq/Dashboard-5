@@ -1433,13 +1433,14 @@
 /* trend v2 (Trend This Week) */
 .trend2-body {
   display: flex;
-  gap: 10px;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .trend2-legend {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  flex-direction: row;
+  gap: 16px;
   justify-content: center;
   font-size: 11px;
   font-weight: 700;
@@ -1484,6 +1485,50 @@
 .trend2-daylabels .today {
   font-weight: 700;
   color: var(--purple-heading);
+}
+
+.mood-face-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 6px 0 2px;
+}
+
+.mood-face-tile {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  cursor: pointer;
+  transition: transform 0.12s ease, border-color 0.12s ease;
+}
+
+.mood-face-tile:hover {
+  transform: translateY(-2px);
+}
+
+.mood-face-tile.active {
+  border-color: var(--active-purple);
+}
+
+.mood-face-gold {
+  background: var(--surface-cream);
+}
+.mood-face-peach {
+  background: var(--surface-peach);
+}
+.mood-face-pink {
+  background: var(--surface-pink);
+}
+.mood-face-indigo {
+  background: #e3e0f7;
+}
+.mood-face-blue {
+  background: var(--surface-blue);
 }
 
 /* status pill (appetite) reuse of status-pill but standalone trigger */
