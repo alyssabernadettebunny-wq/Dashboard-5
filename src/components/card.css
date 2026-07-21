@@ -2560,6 +2560,113 @@
   margin: 4px 0 0;
 }
 
+/* Weekly Rhythm */
+.week-cols {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+.week-day-col {
+  border: 1.5px solid var(--outline-soft);
+  border-radius: 12px;
+  padding: 8px 10px;
+  background: var(--card-bg-tint);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.week-day-col.today {
+  background: var(--purple-pill);
+  border-color: var(--active-purple);
+}
+
+.week-day-head {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--purple-heading);
+}
+
+.week-day-tasks {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  min-height: 4px;
+}
+
+.week-task {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+  color: var(--text-body);
+}
+
+.week-task.done span {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+
+.week-task .remove {
+  margin-left: auto;
+  font-size: 12px;
+}
+
+.week-task-input {
+  border: none;
+  border-bottom: 1px dotted var(--border-hairline);
+  background: transparent;
+  font: inherit;
+  font-size: 11px;
+  color: var(--text-body);
+  padding: 2px 0;
+}
+
+.week-day-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-top: 4px;
+  padding-top: 6px;
+  border-top: 1px dashed var(--outline-soft);
+  font-size: 10px;
+  color: var(--text-secondary);
+}
+
+.week-mood-btn {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font: inherit;
+  font-size: 10px;
+  color: var(--text-secondary);
+  padding: 0;
+  text-align: left;
+}
+
+.week-energy-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1.5px solid var(--pink-line);
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  margin-right: 2px;
+}
+
+.week-energy-dot.filled {
+  background: var(--pink-accent);
+  border-color: var(--pink-accent);
+}
+
 /* Companion card */
 .companion-row {
   display: flex;
