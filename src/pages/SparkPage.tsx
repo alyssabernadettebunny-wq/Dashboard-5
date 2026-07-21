@@ -1,6 +1,7 @@
 import CreativeProjects from '../widgets/CreativeProjects'
 import GoalsDreams from '../widgets/GoalsDreams'
 import FunPrompts from '../widgets/FunPrompts'
+import TinyCollections from '../widgets/TinyCollections'
 import SubTabs from '../components/SubTabs'
 
 export default function SparkPage() {
@@ -37,6 +38,16 @@ export default function SparkPage() {
             content: (
               <div className="grid">
                 <FunPrompts />
+              </div>
+            ),
+          },
+          {
+            key: 'collections',
+            label: 'Collections',
+            icon: '🎁',
+            content: (
+              <div className="grid">
+                <TinyCollections />
               </div>
             ),
           },
