@@ -10,13 +10,6 @@ interface KpopRelease {
   date: string
 }
 
-interface YoutubeUpdate {
-  id: string
-  channel: string
-  title: string
-  summary: string
-}
-
 interface AutoKpopRelease {
   artist: string
   date: string
@@ -131,11 +124,6 @@ export default function WorldFeed() {
   const [artist, setArtist] = useState('')
   const [releaseDate, setReleaseDate] = useState('')
 
-  const [youtube, setYoutube] = useLocalStorage<YoutubeUpdate[]>('dashboard.worldfeed.youtube', [])
-  const [channel, setChannel] = useState('Dhar Mann')
-  const [ytTitle, setYtTitle] = useState('')
-  const [ytSummary, setYtSummary] = useState('')
-
   function addKpop() {
     if (!artist.trim()) return
     setKpop([...kpop, { id: crypto.randomUUID(), artist: artist.trim(), date: releaseDate }])
@@ -145,17 +133,6 @@ export default function WorldFeed() {
 
   function removeKpop(id: string) {
     setKpop(kpop.filter((k) => k.id !== id))
-  }
-
-  function addYoutube() {
-    if (!ytTitle.trim()) return
-    setYoutube([{ id: crypto.randomUUID(), channel, title: ytTitle.trim(), summary: ytSummary.trim() }, ...youtube])
-    setYtTitle('')
-    setYtSummary('')
-  }
-
-  function removeYoutube(id: string) {
-    setYoutube(youtube.filter((y) => y.id !== id))
   }
 
   const todayStr = localDateKey()
@@ -255,36 +232,6 @@ export default function WorldFeed() {
               ))}
             </ul>
           )}
-        </div>
-
-        <div className="subsection">
-          <p className="section-label" style={{ marginTop: 0 }}>
-            YouTube Updates
-          </p>
-          <div className="c-input-row" style={{ flexDirection: 'column' }}>
-            <select value={channel} onChange={(e) => setChannel(e.target.value)}>
-              <option>Dhar Mann</option>
-              <option>Dhar Mann Bonus</option>
-            </select>
-            <input type="text" placeholder="Video title" value={ytTitle} onChange={(e) => setYtTitle(e.target.value)} />
-            <input type="text" placeholder="1-2 line summary" value={ytSummary} onChange={(e) => setYtSummary(e.target.value)} />
-            <button onClick={addYoutube}>Add</button>
-          </div>
-          <ul className="c-list">
-            {youtube.length === 0 && <li className="c-empty">No updates yet</li>}
-            {youtube.slice(0, 4).map((y) => (
-              <li key={y.id} className="c-list-item" style={{ alignItems: 'flex-start' }}>
-                <div>
-                  <strong style={{ fontSize: 12 }}>{y.channel}</strong>: {y.title}
-                  {y.summary && <p style={{ fontSize: 11, color: 'var(--text-muted)', margin: '2px 0 0' }}>{y.summary}</p>}
-                </div>
-                <button className="remove" onClick={() => removeYoutube(y.id)} aria-label="Remove">
-                  ×
-                </button>
-              </li>
-            ))}
-          </ul>
-          {youtube.length > 4 && <p className="sub" style={{ marginLeft: 0 }}>+{youtube.length - 4} more saved</p>}
         </div>
       </div>
     </Card>
