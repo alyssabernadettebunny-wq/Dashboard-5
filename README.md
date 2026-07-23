@@ -40,6 +40,18 @@ npm start
 
 Then scan the QR code with Expo Go on your phone, or press `w` for web.
 
+## Desktop
+
+Cherry Brain runs as one shared codebase across iOS, Android, and web — the
+web build (React Native Web) is the desktop experience, with a responsive
+layout that switches from a bottom tab bar to a left sidebar and a two-column
+Home digest above ~900px wide. It's not a separate Electron app; it's the
+same app in a browser window.
+
+**Windows:** double-click `scripts/windows/CherryBrain.bat`, or run
+`scripts/windows/Create-Desktop-Shortcut.ps1` once to add a "Cherry Brain"
+desktop shortcut. See `scripts/windows/README.md` for details.
+
 ## Development seed data
 
 Settings → Development Seed Data lets you add a set of sample journal

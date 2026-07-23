@@ -1,15 +1,20 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
+import { useResponsive } from '@/hooks/useResponsive';
 import { colors } from '@/theme';
 
 export default function TabsLayout() {
+  const { isDesktop } = useResponsive();
+
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: colors.darkCherry,
         tabBarInactiveTintColor: colors.mauve,
-        tabBarStyle: { backgroundColor: colors.cream, borderTopColor: colors.hairline },
+        tabBarStyle: isDesktop
+          ? { display: 'none' }
+          : { backgroundColor: colors.cream, borderTopColor: colors.hairline },
         tabBarLabelStyle: { fontSize: 11 },
       }}
     >
