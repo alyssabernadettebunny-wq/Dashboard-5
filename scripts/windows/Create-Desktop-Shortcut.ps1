@@ -9,7 +9,7 @@
 
 $ErrorActionPreference = "Stop"
 
-$repoRoot = Resolve-Path (Join-Path $PSScriptRoot "..\..")
+$repoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..\..")).Path
 $batPath = Join-Path $repoRoot "scripts\windows\CherryBrain.bat"
 $iconPath = Join-Path $repoRoot "scripts\windows\cherry-brain.ico"
 $desktop = [Environment]::GetFolderPath("Desktop")
