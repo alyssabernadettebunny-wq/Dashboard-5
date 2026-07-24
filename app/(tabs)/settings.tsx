@@ -1,12 +1,42 @@
+import { useFocusEffect, useRouter } from 'expo-router';
+import { useCallback, useState } from 'react';
 import { Platform, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 import { Card } from '@/components/Card';
 import { Chip } from '@/components/Chip';
-import { SecondaryButton } from '@/components/Buttons';
+import { PrimaryButton, SecondaryButton } from '@/components/Buttons';
 import { ScreenBackground } from '@/components/ScreenBackground';
+import { contextReviewService } from '@/contextEngine';
 import { ContextEngineDevPanel } from '@/contextEngine/DevPanel';
 import { ANALYSIS_CATEGORIES, ANALYSIS_CATEGORY_LABELS } from '@/models';
 import { useAppData } from '@/state';
 import { colors, spacing, typography } from '@/theme';
+
+function ContextReviewEntryPoint() {
+  const router = useRouter();
+  const [pendingCount, setPendingCount] = useState(0);
+
+  useFocusEffect(
+    useCallback(() => {
+      contextReviewService.getInboxGroups().then((groups) => {
+        setPendingCount(groups.reduce((sum, g) => sum + g.pendingCount, 0));
+      });
+    }, []),
+  );
+
+  return (
+    <Card style={styles.card}>
+      <Text style={typography.label}>CONTEXT REVIEW</Text>
+      <Text style={typography.bodySoft}>
+        {pendingCount === 0
+          ? "Nothing needs your attention right now."
+          : `${pendingCount} ${pendingCount === 1 ? 'detail' : 'details'} to review, whenever you'd like.`}
+      </Text>
+      <PrimaryButton onPress={() => router.push('/review')} style={styles.reviewEntryButton}>
+        Open Context Review
+      </PrimaryButton>
+    </Card>
+  );
+}
 
 const PRODUCT_RULES = [
   'Never infer or assign a diagnosis',
@@ -85,6 +115,8 @@ export default function SettingsScreen() {
           </View>
         </Card>
 
+        <ContextReviewEntryPoint />
+
         <Card style={styles.card}>
           <Text style={typography.label}>CONTEXT ENGINE (DEV TEST)</Text>
           <ContextEngineDevPanel />
@@ -97,6 +129,7 @@ export default function SettingsScreen() {
 const styles = StyleSheet.create({
   content: { padding: spacing.lg, paddingBottom: spacing.xxl, gap: spacing.md },
   card: { gap: spacing.sm },
+  reviewEntryButton: { alignSelf: 'flex-start' },
   boundaryRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   boundaryLabel: { flex: 1, paddingRight: spacing.md },
   ruleLine: {},

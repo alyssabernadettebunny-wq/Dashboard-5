@@ -23,10 +23,19 @@ export const extractedEventSchema = z.object({
   needsClarification: z.boolean(),
 });
 
+const clarificationOptionSchema = z.object({
+  id: z.string().min(1),
+  label: z.string().min(1),
+  value: z.unknown(),
+});
+
 export const clarificationQuestionSchema = z.object({
   eventSequenceIndex: z.number().int().nonnegative(),
   question: z.string().min(1),
   reason: z.string().min(1),
+  category: z.enum(['participant', 'action', 'outcome', 'time', 'sequence']),
+  targetField: z.enum(['participants', 'summary', 'statedTime', 'resolvedTime', 'sequenceIndex']),
+  options: z.array(clarificationOptionSchema).nullable(),
 });
 
 export const contextExtractionProviderResultSchema = z.object({

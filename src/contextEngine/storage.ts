@@ -3,6 +3,8 @@ import type {
   ClarificationQuestion,
   ClarificationReviewRepository,
   ExtractionRecord,
+  FactCorrection,
+  FactCorrectionRepository,
   JournalEntry,
   ReconstructedEvent,
 } from './types';
@@ -18,6 +20,7 @@ const CONTEXT_ENGINE_KEYS = {
   events: '@cherry-brain/context-engine/events',
   clarifications: '@cherry-brain/context-engine/clarifications',
   extractionRecords: '@cherry-brain/context-engine/extraction-records',
+  factCorrections: '@cherry-brain/context-engine/fact-corrections',
 } as const;
 
 export class JournalEntryStore {
@@ -56,10 +59,24 @@ export class ReconstructedEventStore {
     return all.filter((e) => e.journalEntryId === journalEntryId);
   }
 
+  async getById(id: string): Promise<ReconstructedEvent | null> {
+    const all = await this.getAll();
+    return all.find((e) => e.id === id) ?? null;
+  }
+
   async saveMany(events: ReconstructedEvent[]): Promise<void> {
     if (events.length === 0) return;
     const all = await this.getAll();
     await this.store.setJSON(CONTEXT_ENGINE_KEYS.events, [...all, ...events]);
+  }
+
+  /** Persists a batch of already-updated events in one write (e.g. a sequence swap touching two events). */
+  async updateMany(updated: ReconstructedEvent[]): Promise<void> {
+    if (updated.length === 0) return;
+    const all = await this.getAll();
+    const byId = new Map(updated.map((e) => [e.id, e]));
+    const next = all.map((e) => byId.get(e.id) ?? e);
+    await this.store.setJSON(CONTEXT_ENGINE_KEYS.events, next);
   }
 }
 
@@ -169,5 +186,37 @@ export class ExtractionRecordStore {
       completedAt: null,
       error,
     });
+  }
+}
+
+/**
+ * A question may produce no more than one accepted correction — `create`
+ * enforces that by clarificationQuestionId, so even if a caller forgets to
+ * check first, storage itself won't silently double-apply.
+ */
+export class FactCorrectionRecordStore implements FactCorrectionRepository {
+  constructor(private store: DataStore) {}
+
+  async getAll(): Promise<FactCorrection[]> {
+    return (await this.store.getJSON<FactCorrection[]>(CONTEXT_ENGINE_KEYS.factCorrections)) ?? [];
+  }
+
+  async create(correction: FactCorrection): Promise<FactCorrection> {
+    const all = await this.getAll();
+    const existing = all.find((c) => c.clarificationQuestionId === correction.clarificationQuestionId);
+    if (existing) return existing;
+    all.push(correction);
+    await this.store.setJSON(CONTEXT_ENGINE_KEYS.factCorrections, all);
+    return correction;
+  }
+
+  async getByEventId(eventId: string): Promise<FactCorrection[]> {
+    const all = await this.getAll();
+    return all.filter((c) => c.eventId === eventId);
+  }
+
+  async getByQuestionId(clarificationQuestionId: string): Promise<FactCorrection | null> {
+    const all = await this.getAll();
+    return all.find((c) => c.clarificationQuestionId === clarificationQuestionId) ?? null;
   }
 }

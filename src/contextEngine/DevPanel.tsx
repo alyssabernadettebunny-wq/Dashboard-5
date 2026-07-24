@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 import { Chip } from '@/components/Chip';
 import { PrimaryButton, SecondaryButton } from '@/components/Buttons';
+import { generateId } from '@/models/ids';
 import { colors, spacing, typography } from '@/theme';
 import { contextEngine } from './index';
 import { clarificationQuestionStore } from './defaultStores';
@@ -56,6 +57,39 @@ export function ContextEngineDevPanel() {
     [refreshPending],
   );
 
+  /**
+   * Manual QA aid only: the local provider doesn't yet detect sequence
+   * ambiguity on its own (out of scope for this sprint), so this manufactures
+   * one sequence-category clarification question — using two real events
+   * from the last extraction — purely so the Context Review sequence-options
+   * UI can be exercised against real Context Engine data.
+   */
+  const addDemoSequenceQuestion = useCallback(async () => {
+    if (!lastResult || lastResult.events.length < 2) return;
+    const [first, second] = lastResult.events;
+    const now = new Date().toISOString();
+    const question: ClarificationQuestion = {
+      id: generateId('clarification'),
+      journalEntryId: first.journalEntryId,
+      eventId: first.id,
+      question: 'Which happened first?',
+      reason: 'Demo sequence-ambiguity question for manual QA of the Context Review sequence-options UI.',
+      category: 'sequence',
+      targetField: 'sequenceIndex',
+      options: [
+        { id: generateId('option'), label: `"${second.summary}" first`, value: second.sequenceIndex },
+        { id: generateId('option'), label: `"${first.summary}" first`, value: first.sequenceIndex },
+      ],
+      status: 'pending',
+      answer: null,
+      createdAt: now,
+      answeredAt: null,
+      dismissedAt: null,
+    };
+    await clarificationQuestionStore.saveMany([question]);
+    await refreshPending();
+  }, [lastResult, refreshPending]);
+
   return (
     <View style={{ gap: spacing.sm }}>
       <Text style={typography.bodySoft}>
@@ -92,6 +126,11 @@ export function ContextEngineDevPanel() {
               {event.needsClarification && <Chip label="Needs clarification" tone="cherry" />}
             </View>
           ))}
+          {lastResult.events.length >= 2 && (
+            <SecondaryButton onPress={addDemoSequenceQuestion} style={styles.button}>
+              Add demo sequence question (QA only)
+            </SecondaryButton>
+          )}
         </View>
       )}
 

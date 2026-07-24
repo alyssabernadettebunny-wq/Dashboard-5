@@ -37,6 +37,26 @@ function RootShell() {
               presentation: 'card',
             }}
           />
+          <Stack.Screen
+            name="review/index"
+            options={{
+              headerShown: true,
+              title: 'Context Review',
+              headerStyle: { backgroundColor: colors.cream },
+              headerTintColor: colors.darkCherry,
+              presentation: 'card',
+            }}
+          />
+          <Stack.Screen
+            name="review/[journalEntryId]"
+            options={{
+              headerShown: true,
+              title: '',
+              headerStyle: { backgroundColor: colors.cream },
+              headerTintColor: colors.darkCherry,
+              presentation: 'card',
+            }}
+          />
         </Stack>
       </View>
     </View>

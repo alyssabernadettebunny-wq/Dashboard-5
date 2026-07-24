@@ -68,6 +68,24 @@ export interface ReconstructedEvent {
   updatedAt: string;
 }
 
+/** The structured event field a correction targets. */
+export type CorrectableEventField = 'participants' | 'summary' | 'statedTime' | 'resolvedTime' | 'sequenceIndex';
+
+/**
+ * The kind of fact a clarification question is narrowing — always a fact,
+ * never meaning: no emotional interpretation, motive, personality, or
+ * identity-claim categories exist here by design.
+ */
+export type CorrectionCategory = 'participant' | 'action' | 'outcome' | 'time' | 'sequence';
+
+/** A single selectable alternative for a choice-style (e.g. sequence) clarification. */
+export interface ClarificationOption {
+  id: string;
+  label: string;
+  /** Value applied to the event's targetField when this option is selected. */
+  value: unknown;
+}
+
 export interface ClarificationQuestion {
   id: string;
   journalEntryId: string;
@@ -78,6 +96,12 @@ export interface ClarificationQuestion {
 
   /** Brief internal explanation of why the missing answer matters. May be dev-visible only. */
   reason: string;
+
+  category: CorrectionCategory;
+  targetField: CorrectableEventField;
+
+  /** Only set for choice-style corrections (e.g. sequence); null means guided free text. */
+  options: ClarificationOption[] | null;
 
   status: ClarificationStatus;
   answer: string | null;
@@ -140,6 +164,9 @@ export interface ExtractedClarificationRaw {
   eventSequenceIndex: number;
   question: string;
   reason: string;
+  category: CorrectionCategory;
+  targetField: CorrectableEventField;
+  options: ClarificationOption[] | null;
 }
 
 export interface ContextExtractionProviderResultRaw {
@@ -169,4 +196,77 @@ export interface ExtractionRecord {
   attemptedAt: string;
   completedAt: string | null;
   error: string | null;
+}
+
+/**
+ * Sprint 002 — Context Review.
+ *
+ * A FactCorrection is an audit record of one accepted answer: what the
+ * targeted event field held before, and what it holds after. It never
+ * touches JournalEntry.originalText — only structured ReconstructedEvent
+ * fields are ever corrected.
+ */
+export interface FactCorrection {
+  id: string;
+  journalEntryId: string;
+  eventId: string;
+  clarificationQuestionId: string;
+
+  category: CorrectionCategory;
+  field: CorrectableEventField;
+
+  previousValue: unknown;
+  correctedValue: unknown;
+
+  source: 'user';
+  createdAt: string;
+}
+
+export interface FactCorrectionRepository {
+  create(correction: FactCorrection): Promise<FactCorrection>;
+  getByEventId(eventId: string): Promise<FactCorrection[]>;
+  getByQuestionId(clarificationQuestionId: string): Promise<FactCorrection | null>;
+}
+
+/** Narrow read-only bridge to the app's real journal entry text — the Context Engine never stores its own copy. */
+export interface OriginalEntryLookup {
+  getOriginalEntry(journalEntryId: string): Promise<{ text: string; createdAt: string } | null>;
+}
+
+export interface ContextReviewItem {
+  question: ClarificationQuestion;
+  event: ReconstructedEvent;
+  sourcePassage: SourcePassage;
+  originalEntryText: string;
+}
+
+export interface ContextReviewGroup {
+  journalEntryId: string;
+  journalCreatedAt: string;
+  journalExcerpt: string;
+  pendingCount: number;
+  questions: ContextReviewItem[];
+}
+
+export interface AnswerQuestionResult {
+  updatedEvent: ReconstructedEvent;
+  answeredQuestion: ClarificationQuestion;
+  correction: FactCorrection;
+}
+
+export interface DismissQuestionResult {
+  dismissedQuestion: ClarificationQuestion;
+}
+
+export interface AnswerQuestionInput {
+  questionId: string;
+  answer: string;
+  selectedOptionId?: string;
+}
+
+export interface ContextReviewService {
+  getInboxGroups(): Promise<ContextReviewGroup[]>;
+  getReviewGroup(journalEntryId: string): Promise<ContextReviewGroup | null>;
+  answerQuestion(input: AnswerQuestionInput): Promise<AnswerQuestionResult>;
+  dismissQuestion(questionId: string): Promise<DismissQuestionResult>;
 }

@@ -74,7 +74,16 @@ describe('validateProviderResult', () => {
   it('rejects a clarification question that references a nonexistent event', () => {
     const raw: ContextExtractionProviderResultRaw = {
       events: [baseEvent()],
-      clarificationQuestions: [{ eventSequenceIndex: 7, question: 'Who is "she"?', reason: 'Unnamed participant.' }],
+      clarificationQuestions: [
+        {
+          eventSequenceIndex: 7,
+          question: 'Who is "she"?',
+          reason: 'Unnamed participant.',
+          category: 'participant',
+          targetField: 'participants',
+          options: null,
+        },
+      ],
     };
 
     const result = validateProviderResult(raw, original);

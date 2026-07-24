@@ -56,8 +56,11 @@ export class LocalContextExtractionProvider implements ContextExtractionProvider
         const pronoun = pronounMatch[1].toLowerCase();
         clarificationQuestions.push({
           eventSequenceIndex: sequenceIndex,
-          question: `Which person does "${pronoun}" refer to?`,
+          question: `Who did "${pronoun}" refer to?`,
           reason: `The participant referred to as "${pronoun}" is not named in the entry, and identifying them matters for understanding who this event involves.`,
+          category: 'participant',
+          targetField: 'participants',
+          options: null,
         });
       }
     }
