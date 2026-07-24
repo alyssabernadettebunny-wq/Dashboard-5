@@ -1,5 +1,11 @@
 import type { DataStore } from '@/storage/DataStore';
-import type { ClarificationQuestion, ClarificationReviewRepository, JournalEntry, ReconstructedEvent } from './types';
+import type {
+  ClarificationQuestion,
+  ClarificationReviewRepository,
+  ExtractionRecord,
+  JournalEntry,
+  ReconstructedEvent,
+} from './types';
 
 /**
  * Independent persistence for the Context Engine's own records — separate
@@ -11,6 +17,7 @@ const CONTEXT_ENGINE_KEYS = {
   journalEntries: '@cherry-brain/context-engine/journal-entries',
   events: '@cherry-brain/context-engine/events',
   clarifications: '@cherry-brain/context-engine/clarifications',
+  extractionRecords: '@cherry-brain/context-engine/extraction-records',
 } as const;
 
 export class JournalEntryStore {
@@ -102,5 +109,65 @@ export class ClarificationQuestionStore implements ClarificationReviewRepository
     all[index] = updated;
     await this.store.setJSON(CONTEXT_ENGINE_KEYS.clarifications, all);
     return updated;
+  }
+}
+
+/** Persisted idempotency ledger — one record per (journalEntryId, engineVersion). */
+export class ExtractionRecordStore {
+  constructor(private store: DataStore) {}
+
+  async getAll(): Promise<ExtractionRecord[]> {
+    return (await this.store.getJSON<ExtractionRecord[]>(CONTEXT_ENGINE_KEYS.extractionRecords)) ?? [];
+  }
+
+  async getForEntry(journalEntryId: string, engineVersion: string): Promise<ExtractionRecord | null> {
+    const all = await this.getAll();
+    return all.find((r) => r.journalEntryId === journalEntryId && r.engineVersion === engineVersion) ?? null;
+  }
+
+  private async upsert(record: ExtractionRecord): Promise<void> {
+    const all = await this.getAll();
+    const index = all.findIndex((r) => r.journalEntryId === record.journalEntryId && r.engineVersion === record.engineVersion);
+    if (index >= 0) {
+      all[index] = record;
+    } else {
+      all.push(record);
+    }
+    await this.store.setJSON(CONTEXT_ENGINE_KEYS.extractionRecords, all);
+  }
+
+  async markPending(journalEntryId: string, engineVersion: string): Promise<void> {
+    await this.upsert({
+      journalEntryId,
+      engineVersion,
+      status: 'pending',
+      attemptedAt: new Date().toISOString(),
+      completedAt: null,
+      error: null,
+    });
+  }
+
+  async markCompleted(journalEntryId: string, engineVersion: string): Promise<void> {
+    const existing = await this.getForEntry(journalEntryId, engineVersion);
+    await this.upsert({
+      journalEntryId,
+      engineVersion,
+      status: 'completed',
+      attemptedAt: existing?.attemptedAt ?? new Date().toISOString(),
+      completedAt: new Date().toISOString(),
+      error: null,
+    });
+  }
+
+  async markFailed(journalEntryId: string, engineVersion: string, error: string): Promise<void> {
+    const existing = await this.getForEntry(journalEntryId, engineVersion);
+    await this.upsert({
+      journalEntryId,
+      engineVersion,
+      status: 'failed',
+      attemptedAt: existing?.attemptedAt ?? new Date().toISOString(),
+      completedAt: null,
+      error,
+    });
   }
 }

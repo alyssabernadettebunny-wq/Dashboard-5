@@ -8,6 +8,7 @@ import {
   type PatternFeedbackType,
   type PatternObservation,
 } from '@/models';
+import { contextEngine, triggerContextExtraction } from '@/contextEngine';
 import { patternEngine, tagEntrySubjects } from '@/patternEngine';
 import { buildSeedEntries, isSeedEntryId } from '@/seed';
 import { entryRepository, patternRepository, settingsRepository } from '@/storage';
@@ -92,7 +93,13 @@ export function AppDataProvider({ children }: PropsWithChildren) {
       const result = await recompute(nextEntries, patterns, settings);
       setEntries(result.entries);
       setPatterns(result.patterns);
-      return result.entries.find((e) => e.id === entry.id)!;
+      const createdEntry = result.entries.find((e) => e.id === entry.id)!;
+
+      // Fires in the background; never awaited here so the entry is already
+      // saved and returned to the caller regardless of extraction outcome.
+      triggerContextExtraction(createdEntry, contextEngine);
+
+      return createdEntry;
     },
     [entries, patterns, settings],
   );

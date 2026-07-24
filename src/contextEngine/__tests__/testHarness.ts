@@ -1,7 +1,7 @@
 import { generateId } from '@/models/ids';
 import { DefaultContextEngine } from '../DefaultContextEngine';
 import { LocalContextExtractionProvider } from '../LocalContextExtractionProvider';
-import { ClarificationQuestionStore, JournalEntryStore, ReconstructedEventStore } from '../storage';
+import { ClarificationQuestionStore, ExtractionRecordStore, JournalEntryStore, ReconstructedEventStore } from '../storage';
 import type { ContextEngine, ContextExtractionProvider, JournalEntry } from '../types';
 import { InMemoryDataStore } from './inMemoryDataStore';
 
@@ -10,8 +10,9 @@ export function buildEngine(provider: ContextExtractionProvider = new LocalConte
   const journalEntryStore = new JournalEntryStore(store);
   const eventStore = new ReconstructedEventStore(store);
   const clarificationStore = new ClarificationQuestionStore(store);
-  const engine: ContextEngine = new DefaultContextEngine(provider, eventStore, clarificationStore);
-  return { journalEntryStore, eventStore, clarificationStore, engine };
+  const extractionRecordStore = new ExtractionRecordStore(store);
+  const engine: ContextEngine = new DefaultContextEngine(provider, eventStore, clarificationStore, extractionRecordStore);
+  return { journalEntryStore, eventStore, clarificationStore, extractionRecordStore, engine };
 }
 
 export function makeEntry(text: string, createdAt = '2026-07-23T12:00:00.000Z'): JournalEntry {

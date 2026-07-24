@@ -151,3 +151,22 @@ export interface ClarificationReviewRepository {
   getPendingQuestions(): Promise<ClarificationQuestion[]>;
   getPendingQuestionsForEntry(journalEntryId: string): Promise<ClarificationQuestion[]>;
 }
+
+export type ExtractionStatus = 'pending' | 'completed' | 'failed';
+
+/**
+ * One record per (journalEntryId, engineVersion) pair. Makes extraction
+ * idempotent: a "completed" record means the entry has already been
+ * processed by this exact engine version and must not be reprocessed —
+ * that's what prevents duplicate events/clarifications when a save callback
+ * fires twice, React re-renders, or an already-processed entry is reopened.
+ * A "failed" record does not block a deliberate retry.
+ */
+export interface ExtractionRecord {
+  journalEntryId: string;
+  engineVersion: string;
+  status: ExtractionStatus;
+  attemptedAt: string;
+  completedAt: string | null;
+  error: string | null;
+}

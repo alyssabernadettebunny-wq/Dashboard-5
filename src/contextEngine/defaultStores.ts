@@ -1,5 +1,5 @@
 import { dataStore } from '@/storage/AsyncStorageDataStore';
-import { ClarificationQuestionStore, JournalEntryStore, ReconstructedEventStore } from './storage';
+import { ClarificationQuestionStore, ExtractionRecordStore, JournalEntryStore, ReconstructedEventStore } from './storage';
 
 /**
  * The app's real, AsyncStorage-backed store instances. Kept in their own file
@@ -10,3 +10,4 @@ import { ClarificationQuestionStore, JournalEntryStore, ReconstructedEventStore 
 export const journalEntryStore = new JournalEntryStore(dataStore);
 export const reconstructedEventStore = new ReconstructedEventStore(dataStore);
 export const clarificationQuestionStore = new ClarificationQuestionStore(dataStore);
+export const extractionRecordStore = new ExtractionRecordStore(dataStore);
