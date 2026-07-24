@@ -44,6 +44,7 @@ export function makeEvent(overrides: Partial<ReconstructedEvent> = {}): Reconstr
     statedTime: null,
     resolvedTime: null,
     timePrecision: 'unknown',
+    resolvedDate: null,
     participants: [],
     sequenceIndex: 0,
     source: { text: 'The user missed the appointment.', startIndex: 0, endIndex: 33 },

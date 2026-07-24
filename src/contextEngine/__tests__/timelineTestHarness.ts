@@ -26,7 +26,7 @@ export function buildTimelineHarness() {
 
   const service: EventTimelineService = new DefaultEventTimelineService(eventStore, visibilityStore, correctionStore, entryLookup);
 
-  return { eventStore, visibilityStore, correctionStore, entries, service };
+  return { store, eventStore, visibilityStore, correctionStore, entries, service };
 }
 
 export function makeJournalEntry(overrides: Partial<JournalEntryFixture> = {}): JournalEntryFixture {
@@ -48,6 +48,7 @@ export function makeTimelineEvent(overrides: Partial<ReconstructedEvent> = {}): 
     statedTime: null,
     resolvedTime: null,
     timePrecision: 'unknown',
+    resolvedDate: null,
     participants: [],
     sequenceIndex: 0,
     source: { text: 'Something happened.', startIndex: 0, endIndex: 20 },

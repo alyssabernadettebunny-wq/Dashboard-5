@@ -106,10 +106,19 @@ export default function EventTimelineScreen() {
         ListEmptyComponent={
           groups !== null ? (
             <Card style={styles.emptyCard}>
-              <Text style={typography.body}>Nothing has been reconstructed yet.</Text>
-              <Text style={[typography.bodySoft, { marginTop: spacing.xs }]}>
-                As you write entries, what happened in them will appear here in order.
-              </Text>
+              {hiddenCount > 0 ? (
+                <>
+                  <Text style={typography.body}>Your visible timeline is clear.</Text>
+                  <Text style={[typography.bodySoft, { marginTop: spacing.xs }]}>Hidden events are still safely stored.</Text>
+                </>
+              ) : (
+                <>
+                  <Text style={typography.body}>No events to show yet.</Text>
+                  <Text style={[typography.bodySoft, { marginTop: spacing.xs }]}>
+                    Events reconstructed from your entries will appear here.
+                  </Text>
+                </>
+              )}
             </Card>
           ) : null
         }

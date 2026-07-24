@@ -1,3 +1,4 @@
+import { EventTimelineVisibilityStore } from '../storage';
 import { compareTimelineEvents } from '../timelineHelpers';
 import type { FactCorrection } from '../types';
 import { buildTimelineHarness, makeJournalEntry, makeTimelineEvent } from './timelineTestHarness';
@@ -73,6 +74,7 @@ describe('Event Timeline — day grouping', () => {
       journalEntryId: entry.id,
       resolvedTime: '2026-07-20T09:00:00.000Z',
       timePrecision: 'exact',
+      resolvedDate: '2026-07-20',
     });
     await eventStore.saveMany([differentDayEvent]);
 
@@ -94,6 +96,53 @@ describe('Event Timeline — day grouping', () => {
     expect(groups).toHaveLength(1);
     expect(groups[0].dateKey).toBe('2026-07-23');
     expect(groups[0].events[0].datePrecision).toBe('anchored');
+  });
+
+  test('a known day with unknown time-of-day still groups under its own resolved date, not the journal entry\'s date — date certainty and time precision are independent', async () => {
+    const { eventStore, entries, service } = buildTimelineHarness();
+    const entry = makeJournalEntry({ id: 'journal_1', createdAt: '2026-07-24T08:00:00.000Z' });
+    entries.set(entry.id, entry);
+
+    // "On Tuesday, Mom called." — a day is safely known (resolvedDate), but
+    // the clock time is not (timePrecision stays 'unknown'). This must NOT
+    // be conflated with "no date known at all".
+    const knownDayUnknownTime = makeTimelineEvent({
+      journalEntryId: entry.id,
+      summary: "The user's mother called.",
+      statedTime: 'Tuesday',
+      resolvedTime: null,
+      timePrecision: 'unknown',
+      resolvedDate: '2026-07-21',
+    });
+    await eventStore.saveMany([knownDayUnknownTime]);
+
+    const groups = await service.getVisibleTimeline();
+    expect(groups).toHaveLength(1);
+    expect(groups[0].dateKey).toBe('2026-07-21');
+    expect(groups[0].events[0].datePrecision).toBe('exact');
+    expect(groups[0].events[0].displayTime).toBe('Time not recorded');
+  });
+
+  test('a known day with a vague (relative) time-of-day groups under its resolved date and preserves the stated phrase, without inventing a clock time', async () => {
+    const { eventStore, entries, service } = buildTimelineHarness();
+    const entry = makeJournalEntry({ id: 'journal_1', createdAt: '2026-07-24T08:00:00.000Z' });
+    entries.set(entry.id, entry);
+
+    const knownDayVagueTime = makeTimelineEvent({
+      journalEntryId: entry.id,
+      summary: "The user's mother called.",
+      statedTime: 'Tuesday afternoon',
+      resolvedTime: null,
+      timePrecision: 'relative',
+      resolvedDate: '2026-07-21',
+    });
+    await eventStore.saveMany([knownDayVagueTime]);
+
+    const groups = await service.getVisibleTimeline();
+    expect(groups).toHaveLength(1);
+    expect(groups[0].dateKey).toBe('2026-07-21');
+    expect(groups[0].events[0].datePrecision).toBe('exact');
+    expect(groups[0].events[0].displayTime).toBe('Tuesday afternoon');
   });
 
   test('day groups list most-recent day first', async () => {
@@ -210,6 +259,30 @@ describe('Event Timeline — hide, restore, and visibility', () => {
     await expect(service.hideEvent('does-not-exist')).rejects.toThrow();
     expect(await visibilityStore.getByEventId('does-not-exist')).toBeNull();
   });
+
+  test('a hidden state survives a freshly constructed EventTimelineVisibilityStore over the same underlying data (simulated reload)', async () => {
+    const { store, visibilityStore } = buildTimelineHarness();
+    await visibilityStore.hide('event_1', '2026-07-23T08:00:00.000Z');
+
+    // A brand-new repository instance, not the same object — this is what a
+    // real app restart looks like: a fresh store wrapping the same persisted
+    // AsyncStorage-backed data.
+    const reloaded = new EventTimelineVisibilityStore(store);
+    const record = await reloaded.getByEventId('event_1');
+    expect(record?.isHidden).toBe(true);
+    expect(record?.hiddenAt).toBe('2026-07-23T08:00:00.000Z');
+  });
+
+  test('a restored state survives a freshly constructed EventTimelineVisibilityStore over the same underlying data (simulated reload)', async () => {
+    const { store, visibilityStore } = buildTimelineHarness();
+    await visibilityStore.hide('event_1', '2026-07-23T08:00:00.000Z');
+    await visibilityStore.restore('event_1', '2026-07-23T09:00:00.000Z');
+
+    const reloaded = new EventTimelineVisibilityStore(store);
+    const record = await reloaded.getByEventId('event_1');
+    expect(record?.isHidden).toBe(false);
+    expect(record?.restoredAt).toBe('2026-07-23T09:00:00.000Z');
+  });
 });
 
 describe('Event Timeline — source context', () => {
@@ -247,6 +320,42 @@ describe('Event Timeline — source context', () => {
   test('getSourceContext throws for an unknown event id', async () => {
     const { service } = buildTimelineHarness();
     await expect(service.getSourceContext('does-not-exist')).rejects.toThrow();
+  });
+
+  test('the reconstructed summary and the cited source passage are kept as distinct values, never merged into one label', async () => {
+    const { eventStore, entries, service } = buildTimelineHarness();
+    const entry = makeJournalEntry({ id: 'journal_1', originalText: 'I met Amy for coffee. It was nice.' });
+    entries.set(entry.id, entry);
+    const event = makeTimelineEvent({
+      journalEntryId: entry.id,
+      id: 'event_1',
+      summary: 'The user met Amy for coffee.',
+      source: { text: 'I met Amy for coffee.', startIndex: 0, endIndex: 21 },
+    });
+    await eventStore.saveMany([event]);
+
+    const context = await service.getSourceContext('event_1');
+    expect(context.event.summary).toBe('The user met Amy for coffee.');
+    expect(context.sourcePassage.text).toBe('I met Amy for coffee.');
+    expect(context.event.summary).not.toBe(context.sourcePassage.text);
+  });
+
+  test('a hidden event still returns full source context — hiding never removes source access', async () => {
+    const { eventStore, entries, service } = buildTimelineHarness();
+    const entry = makeJournalEntry({ id: 'journal_1', originalText: 'I met Amy for coffee. It was nice.' });
+    entries.set(entry.id, entry);
+    const event = makeTimelineEvent({
+      journalEntryId: entry.id,
+      id: 'event_1',
+      source: { text: 'I met Amy for coffee.', startIndex: 0, endIndex: 21 },
+    });
+    await eventStore.saveMany([event]);
+
+    await service.hideEvent('event_1');
+
+    const context = await service.getSourceContext('event_1');
+    expect(context.sourcePassage.text).toBe('I met Amy for coffee.');
+    expect(context.journalEntry.originalText).toBe('I met Amy for coffee. It was nice.');
   });
 });
 

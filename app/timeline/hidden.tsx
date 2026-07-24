@@ -82,7 +82,7 @@ export default function HiddenEventsScreen() {
         ListEmptyComponent={
           groups !== null ? (
             <Card style={styles.emptyCard}>
-              <Text style={typography.body}>No events are hidden.</Text>
+              <Text style={typography.body}>No hidden events.</Text>
             </Card>
           ) : null
         }

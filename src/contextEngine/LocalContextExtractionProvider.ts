@@ -46,6 +46,7 @@ export class LocalContextExtractionProvider implements ContextExtractionProvider
         statedTime: timeInfo.statedTime,
         resolvedTime: timeInfo.resolvedTime,
         timePrecision: timeInfo.timePrecision,
+        resolvedDate: timeInfo.resolvedDate,
         participants,
         sequenceIndex,
         source: { text: span.text, startIndex: span.startIndex, endIndex: span.endIndex },

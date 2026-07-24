@@ -92,6 +92,7 @@ export class DefaultContextEngine implements ContextEngine {
       statedTime: e.statedTime,
       resolvedTime: e.resolvedTime,
       timePrecision: e.timePrecision,
+      resolvedDate: e.resolvedDate ?? null,
       participants: e.participants,
       sequenceIndex: e.sequenceIndex,
       source: e.source,

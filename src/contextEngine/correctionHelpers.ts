@@ -24,9 +24,10 @@ export function buildCorrectedSummary(answer: string): string {
 
 /**
  * Conservative time resolution for a correction answer, reusing the same
- * exact-time/relative-phrase rules the extraction provider uses so answers
- * are handled with the same caution as original entries. When the answer
- * doesn't match a recognized pattern, it's preserved as stated time with
+ * exact-time/relative-phrase/date rules the extraction provider uses so
+ * answers are handled with the same caution as original entries. When
+ * nothing recognizable was found at all — no clock time, no relative phrase,
+ * and no resolvable date — the answer is preserved as stated time with
  * "relative" precision (per the spec's own "Tuesday morning" example) rather
  * than invented as exact or dropped as unknown — the user did answer a time
  * question, so their words are kept, just not converted into a timestamp.
@@ -34,8 +35,8 @@ export function buildCorrectedSummary(answer: string): string {
 export function resolveCorrectedTime(answer: string, entryCreatedAt: string, timezone: string): TimeInfo {
   const trimmed = answer.trim();
   const info = extractTimeInfo(trimmed, entryCreatedAt, timezone);
-  if (info.timePrecision !== 'unknown') return info;
-  return { statedTime: trimmed, resolvedTime: null, timePrecision: 'relative' };
+  if (info.timePrecision !== 'unknown' || info.resolvedDate !== null) return info;
+  return { statedTime: trimmed, resolvedTime: null, timePrecision: 'relative', resolvedDate: null };
 }
 
 /** Short, calm preview text for an inbox card — no ellipsis-heavy truncation drama. */

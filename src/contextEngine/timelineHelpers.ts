@@ -31,18 +31,19 @@ export function compareTimelineEvents(a: ReconstructedEvent, b: ReconstructedEve
 }
 
 /**
- * The date an event's card is grouped under. Uses the event's own resolved
- * time when it carries exact precision (so a stated date genuinely different
- * from the journal entry's own date is respected); otherwise anchors to the
- * date the journal entry was created on, since the current provider can't
- * safely infer a different day without guessing.
+ * The date an event's card is grouped under. Uses the event's own safely
+ * resolved calendar date when one exists — independent of timePrecision, so
+ * a known day ("On Tuesday...") groups under that day even when the exact
+ * clock time is unknown or vague. Only falls back to anchoring on the
+ * journal entry's own creation date when no day at all can be determined
+ * from the source text.
  */
 export function resolveEventDate(
   event: ReconstructedEvent,
   journalEntry: JournalEntry,
 ): { dateKey: string; datePrecision: TimelineDatePrecision } {
-  if (event.timePrecision === 'exact' && event.resolvedTime) {
-    return { dateKey: event.resolvedTime.slice(0, 10), datePrecision: 'exact' };
+  if (event.resolvedDate) {
+    return { dateKey: event.resolvedDate, datePrecision: 'exact' };
   }
   return { dateKey: journalEntry.createdAt.slice(0, 10), datePrecision: 'anchored' };
 }

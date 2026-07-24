@@ -49,6 +49,10 @@ export function validateProviderResult(raw: unknown, originalText: string): Vali
       issues.push(`Event "${event.summary}" rejected: resolvedTime present with "unknown" precision`);
       continue;
     }
+    if (event.resolvedTime !== null && event.resolvedDate && event.resolvedDate !== event.resolvedTime.slice(0, 10)) {
+      issues.push(`Event "${event.summary}" rejected: resolvedDate does not match resolvedTime's calendar date`);
+      continue;
+    }
     const banned = containsBannedPhrase(event.summary);
     if (banned) {
       issues.push(`Event "${event.summary}" rejected: summary contains interpretive language ("${banned}") disguised as fact`);

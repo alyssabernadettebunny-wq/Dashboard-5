@@ -13,6 +13,7 @@ export const extractedEventSchema = z.object({
   statedTime: z.string().nullable(),
   resolvedTime: z.string().datetime({ offset: true }).nullable(),
   timePrecision: z.enum(['exact', 'approximate', 'relative', 'unknown']),
+  resolvedDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable().optional(),
   participants: z.array(z.string()),
   sequenceIndex: z.number().int().nonnegative(),
   source: z.object({

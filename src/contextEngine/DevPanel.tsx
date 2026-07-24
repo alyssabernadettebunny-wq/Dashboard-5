@@ -105,6 +105,7 @@ export function ContextEngineDevPanel() {
     const now = new Date();
     const today = now.toISOString();
     const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString();
+    const twoDaysAgo = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000).toISOString();
 
     const entryA = {
       id: generateId('entry'),
@@ -139,9 +140,21 @@ export function ContextEngineDevPanel() {
       userTags: [],
       connectedPatternIds: [],
     };
+    const entryD = {
+      id: generateId('entry'),
+      createdAt: today,
+      updatedAt: today,
+      text: 'On Tuesday, Mom called about the appointment.',
+      isImportant: false,
+      entryType: 'text' as const,
+      suggestedSubjects: [],
+      userTags: [],
+      connectedPatternIds: [],
+    };
     await entryRepository.save(entryA);
     await entryRepository.save(entryB);
     await entryRepository.save(entryC);
+    await entryRepository.save(entryD);
 
     const exactEvent: ReconstructedEvent = {
       id: generateId('event'),
@@ -150,6 +163,7 @@ export function ContextEngineDevPanel() {
       statedTime: 'at 9:00 am',
       resolvedTime: today.slice(0, 10) + 'T09:00:00' + today.slice(19),
       timePrecision: 'exact',
+      resolvedDate: today.slice(0, 10),
       participants: ['Amy'],
       sequenceIndex: 0,
       source: { text: 'I met Amy for coffee at 9:00 am.', startIndex: 0, endIndex: 33 },
@@ -164,6 +178,7 @@ export function ContextEngineDevPanel() {
       statedTime: 'This morning',
       resolvedTime: null,
       timePrecision: 'relative',
+      resolvedDate: null,
       participants: [],
       sequenceIndex: 1,
       source: { text: 'This morning we also talked about the move.', startIndex: 34, endIndex: 78 },
@@ -178,6 +193,7 @@ export function ContextEngineDevPanel() {
       statedTime: null,
       resolvedTime: null,
       timePrecision: 'unknown',
+      resolvedDate: null,
       participants: ['my brother'],
       sequenceIndex: 0,
       source: { text: 'Something happened with my brother but I do not remember when.', startIndex: 0, endIndex: 65 },
@@ -192,6 +208,7 @@ export function ContextEngineDevPanel() {
       statedTime: null,
       resolvedTime: null,
       timePrecision: 'unknown',
+      resolvedDate: null,
       participants: ['my mother'],
       sequenceIndex: 0,
       source: { text: 'Dinner with my mother went fine.', startIndex: 0, endIndex: 33 },
@@ -199,8 +216,29 @@ export function ContextEngineDevPanel() {
       createdAt: yesterday,
       updatedAt: yesterday,
     };
+    /**
+     * Demonstrates date certainty independent of time-of-day precision: the
+     * day is safely known (a stated weekday), but the clock time is not, so
+     * this groups under its own resolved day rather than the journal entry's
+     * own (later) creation date.
+     */
+    const explicitDateEvent: ReconstructedEvent = {
+      id: generateId('event'),
+      journalEntryId: entryD.id,
+      summary: "The user's mother called about the appointment.",
+      statedTime: 'Tuesday',
+      resolvedTime: null,
+      timePrecision: 'unknown',
+      resolvedDate: twoDaysAgo.slice(0, 10),
+      participants: ['my mother'],
+      sequenceIndex: 0,
+      source: { text: 'On Tuesday, Mom called about the appointment.', startIndex: 0, endIndex: 46 },
+      needsClarification: false,
+      createdAt: today,
+      updatedAt: today,
+    };
 
-    await reconstructedEventStore.saveMany([exactEvent, relativeEvent, unknownEvent, anchoredEvent]);
+    await reconstructedEventStore.saveMany([exactEvent, relativeEvent, unknownEvent, anchoredEvent, explicitDateEvent]);
 
     const demoCorrection: FactCorrection = {
       id: generateId('correction'),

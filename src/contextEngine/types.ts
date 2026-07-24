@@ -49,6 +49,15 @@ export interface ReconstructedEvent {
   timePrecision: EventTimePrecision;
 
   /**
+   * A safely resolved calendar date (YYYY-MM-DD), independent of
+   * timePrecision. A day can be known (an explicit date, or a weekday name)
+   * while the time of day remains approximate, relative, or unknown — date
+   * certainty and time-of-day precision are deliberately separate concerns.
+   * null when no specific day can be safely determined from the source text.
+   */
+  resolvedDate: string | null;
+
+  /**
    * Names or relationship labels explicitly present in the source.
    * Examples: ["Amy"], ["my mother"], [].
    * Do not infer identities that were not stated.
@@ -160,6 +169,8 @@ export interface ExtractedEventRaw {
   statedTime: string | null;
   resolvedTime: string | null;
   timePrecision: EventTimePrecision;
+  /** Optional — absent/undefined is treated the same as null (no safely resolved day). */
+  resolvedDate?: string | null;
   participants: string[];
   sequenceIndex: number;
   source: SourcePassage;
