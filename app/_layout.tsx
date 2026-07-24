@@ -57,6 +57,26 @@ function RootShell() {
               presentation: 'card',
             }}
           />
+          <Stack.Screen
+            name="timeline/index"
+            options={{
+              headerShown: true,
+              title: 'What Happened',
+              headerStyle: { backgroundColor: colors.cream },
+              headerTintColor: colors.darkCherry,
+              presentation: 'card',
+            }}
+          />
+          <Stack.Screen
+            name="timeline/hidden"
+            options={{
+              headerShown: true,
+              title: 'Hidden Events',
+              headerStyle: { backgroundColor: colors.cream },
+              headerTintColor: colors.darkCherry,
+              presentation: 'card',
+            }}
+          />
         </Stack>
       </View>
     </View>

@@ -72,14 +72,14 @@ export class DefaultContextReviewService implements ContextReviewService {
         question,
         event,
         sourcePassage: event.source,
-        originalEntryText: originalEntry.text,
+        originalEntryText: originalEntry.originalText,
       });
     }
 
     return {
       journalEntryId,
       journalCreatedAt: originalEntry.createdAt,
-      journalExcerpt: buildJournalExcerpt(originalEntry.text),
+      journalExcerpt: buildJournalExcerpt(originalEntry.originalText),
       pendingCount: items.length,
       questions: items,
     };

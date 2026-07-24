@@ -3,11 +3,12 @@ import { StyleSheet, Text, TextInput, View } from 'react-native';
 import { Chip } from '@/components/Chip';
 import { PrimaryButton, SecondaryButton } from '@/components/Buttons';
 import { generateId } from '@/models/ids';
+import { entryRepository } from '@/storage';
 import { colors, spacing, typography } from '@/theme';
 import { contextEngine } from './index';
-import { clarificationQuestionStore } from './defaultStores';
+import { clarificationQuestionStore, eventTimelineVisibilityStore, factCorrectionStore, reconstructedEventStore } from './defaultStores';
 import { saveJournalEntry } from './saveJournalEntry';
-import type { ClarificationQuestion, ContextExtractionResult } from './types';
+import type { ClarificationQuestion, ContextExtractionResult, FactCorrection, ReconstructedEvent } from './types';
 
 /**
  * Sprint 001 developer-facing test view. Not part of the main navigation —
@@ -90,12 +91,142 @@ export function ContextEngineDevPanel() {
     await refreshPending();
   }, [lastResult, refreshPending]);
 
+  /**
+   * Manual QA aid only: the local provider can't naturally produce every
+   * timeline state (an explicit date genuinely different from the entry's
+   * own day, an already-corrected event, a hidden event) without new
+   * extraction heuristics, which is out of scope for this sprint. This
+   * manufactures three real app journal entries plus reconstructed-event
+   * fixtures covering exact, relative, unknown, and anchored time states, one
+   * pre-applied correction (for the "Updated by you" marker), and one hidden
+   * event — purely so the Event Timeline UI can be exercised end to end.
+   */
+  const seedTimelineDemoData = useCallback(async () => {
+    const now = new Date();
+    const today = now.toISOString();
+    const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString();
+
+    const entryA = {
+      id: generateId('entry'),
+      createdAt: today,
+      updatedAt: today,
+      text: 'I met Amy for coffee at 9:00 am. This morning we also talked about the move.',
+      isImportant: false,
+      entryType: 'text' as const,
+      suggestedSubjects: [],
+      userTags: [],
+      connectedPatternIds: [],
+    };
+    const entryB = {
+      id: generateId('entry'),
+      createdAt: today,
+      updatedAt: today,
+      text: 'Something happened with my brother but I do not remember when.',
+      isImportant: false,
+      entryType: 'text' as const,
+      suggestedSubjects: [],
+      userTags: [],
+      connectedPatternIds: [],
+    };
+    const entryC = {
+      id: generateId('entry'),
+      createdAt: yesterday,
+      updatedAt: yesterday,
+      text: 'Dinner with my mother went fine.',
+      isImportant: false,
+      entryType: 'text' as const,
+      suggestedSubjects: [],
+      userTags: [],
+      connectedPatternIds: [],
+    };
+    await entryRepository.save(entryA);
+    await entryRepository.save(entryB);
+    await entryRepository.save(entryC);
+
+    const exactEvent: ReconstructedEvent = {
+      id: generateId('event'),
+      journalEntryId: entryA.id,
+      summary: 'The user met Amy for coffee.',
+      statedTime: 'at 9:00 am',
+      resolvedTime: today.slice(0, 10) + 'T09:00:00' + today.slice(19),
+      timePrecision: 'exact',
+      participants: ['Amy'],
+      sequenceIndex: 0,
+      source: { text: 'I met Amy for coffee at 9:00 am.', startIndex: 0, endIndex: 33 },
+      needsClarification: false,
+      createdAt: today,
+      updatedAt: today,
+    };
+    const relativeEvent: ReconstructedEvent = {
+      id: generateId('event'),
+      journalEntryId: entryA.id,
+      summary: 'The user talked about the move.',
+      statedTime: 'This morning',
+      resolvedTime: null,
+      timePrecision: 'relative',
+      participants: [],
+      sequenceIndex: 1,
+      source: { text: 'This morning we also talked about the move.', startIndex: 34, endIndex: 78 },
+      needsClarification: false,
+      createdAt: today,
+      updatedAt: today,
+    };
+    const unknownEvent: ReconstructedEvent = {
+      id: generateId('event'),
+      journalEntryId: entryB.id,
+      summary: 'Something happened with the user\'s brother.',
+      statedTime: null,
+      resolvedTime: null,
+      timePrecision: 'unknown',
+      participants: ['my brother'],
+      sequenceIndex: 0,
+      source: { text: 'Something happened with my brother but I do not remember when.', startIndex: 0, endIndex: 65 },
+      needsClarification: true,
+      createdAt: today,
+      updatedAt: today,
+    };
+    const anchoredEvent: ReconstructedEvent = {
+      id: generateId('event'),
+      journalEntryId: entryC.id,
+      summary: 'The user had dinner with their mother.',
+      statedTime: null,
+      resolvedTime: null,
+      timePrecision: 'unknown',
+      participants: ['my mother'],
+      sequenceIndex: 0,
+      source: { text: 'Dinner with my mother went fine.', startIndex: 0, endIndex: 33 },
+      needsClarification: false,
+      createdAt: yesterday,
+      updatedAt: yesterday,
+    };
+
+    await reconstructedEventStore.saveMany([exactEvent, relativeEvent, unknownEvent, anchoredEvent]);
+
+    const demoCorrection: FactCorrection = {
+      id: generateId('correction'),
+      journalEntryId: entryB.id,
+      eventId: unknownEvent.id,
+      clarificationQuestionId: generateId('clarification'),
+      category: 'participant',
+      changes: [{ eventId: unknownEvent.id, field: 'participants', previousValue: ['my brother'], correctedValue: ['Sam'] }],
+      source: 'user',
+      createdAt: today,
+    };
+    await factCorrectionStore.create(demoCorrection);
+
+    await eventTimelineVisibilityStore.hide(anchoredEvent.id, today);
+  }, []);
+
   return (
     <View style={{ gap: spacing.sm }}>
       <Text style={typography.bodySoft}>
         Paste or type a journal entry and run it through the Context Engine to see the reconstructed events and any
         pending clarification questions — nothing here is interpretation yet, just what happened.
       </Text>
+
+      <SecondaryButton onPress={seedTimelineDemoData} style={styles.button}>
+        Seed timeline demo data (QA only)
+      </SecondaryButton>
 
       <TextInput
         value={text}

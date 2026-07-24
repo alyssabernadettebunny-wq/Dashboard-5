@@ -2,6 +2,8 @@ import type { DataStore } from '@/storage/DataStore';
 import type {
   ClarificationQuestion,
   ClarificationReviewRepository,
+  EventTimelineVisibility,
+  EventTimelineVisibilityRepository,
   ExtractionRecord,
   FactCorrection,
   FactCorrectionRepository,
@@ -21,6 +23,7 @@ const CONTEXT_ENGINE_KEYS = {
   clarifications: '@cherry-brain/context-engine/clarifications',
   extractionRecords: '@cherry-brain/context-engine/extraction-records',
   factCorrections: '@cherry-brain/context-engine/fact-corrections',
+  eventTimelineVisibility: '@cherry-brain/context-engine/event-timeline-visibility',
 } as const;
 
 export class JournalEntryStore {
@@ -223,5 +226,65 @@ export class FactCorrectionRecordStore implements FactCorrectionRepository {
   async remove(id: string): Promise<void> {
     const all = await this.getAll();
     await this.store.setJSON(CONTEXT_ENGINE_KEYS.factCorrections, all.filter((c) => c.id !== id));
+  }
+}
+
+/**
+ * One record per eventId, upserted in place. hide()/restore() are
+ * idempotent: calling either while already in that state is a no-op that
+ * returns the existing record unchanged, so a duplicate tap (or a re-fired
+ * effect) never overwrites a real hiddenAt/restoredAt timestamp.
+ */
+export class EventTimelineVisibilityStore implements EventTimelineVisibilityRepository {
+  constructor(private store: DataStore) {}
+
+  async getAll(): Promise<EventTimelineVisibility[]> {
+    return (await this.store.getJSON<EventTimelineVisibility[]>(CONTEXT_ENGINE_KEYS.eventTimelineVisibility)) ?? [];
+  }
+
+  async getByEventId(eventId: string): Promise<EventTimelineVisibility | null> {
+    const all = await this.getAll();
+    return all.find((v) => v.eventId === eventId) ?? null;
+  }
+
+  private async upsert(record: EventTimelineVisibility): Promise<void> {
+    const all = await this.getAll();
+    const index = all.findIndex((v) => v.eventId === record.eventId);
+    if (index >= 0) {
+      all[index] = record;
+    } else {
+      all.push(record);
+    }
+    await this.store.setJSON(CONTEXT_ENGINE_KEYS.eventTimelineVisibility, all);
+  }
+
+  async hide(eventId: string, timestamp: string): Promise<EventTimelineVisibility> {
+    const existing = await this.getByEventId(eventId);
+    if (existing?.isHidden) return existing;
+    const record: EventTimelineVisibility = {
+      eventId,
+      isHidden: true,
+      hiddenBy: 'user',
+      hiddenAt: timestamp,
+      restoredAt: null,
+      updatedAt: timestamp,
+    };
+    await this.upsert(record);
+    return record;
+  }
+
+  async restore(eventId: string, timestamp: string): Promise<EventTimelineVisibility> {
+    const existing = await this.getByEventId(eventId);
+    if (!existing || !existing.isHidden) {
+      return existing ?? { eventId, isHidden: false, hiddenBy: null, hiddenAt: null, restoredAt: null, updatedAt: timestamp };
+    }
+    const record: EventTimelineVisibility = {
+      ...existing,
+      isHidden: false,
+      restoredAt: timestamp,
+      updatedAt: timestamp,
+    };
+    await this.upsert(record);
+    return record;
   }
 }

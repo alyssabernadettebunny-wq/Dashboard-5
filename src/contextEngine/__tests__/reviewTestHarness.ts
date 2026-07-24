@@ -2,6 +2,11 @@ import { generateId } from '@/models/ids';
 import { DefaultContextReviewService } from '../DefaultContextReviewService';
 import { ClarificationQuestionStore, FactCorrectionRecordStore, ReconstructedEventStore } from '../storage';
 import type { ClarificationQuestion, ContextReviewService, OriginalEntryLookup, ReconstructedEvent } from '../types';
+
+export interface JournalEntryFixture {
+  text: string;
+  createdAt: string;
+}
 import { InMemoryDataStore } from './inMemoryDataStore';
 
 export interface ReviewHarnessFactories {
@@ -16,10 +21,12 @@ export function buildReviewHarness(factories: ReviewHarnessFactories = {}) {
   const clarificationStore = (factories.makeClarificationStore ?? ((s) => new ClarificationQuestionStore(s)))(store);
   const correctionStore = (factories.makeCorrectionStore ?? ((s) => new FactCorrectionRecordStore(s)))(store);
 
-  const entries = new Map<string, { text: string; createdAt: string }>();
+  const entries = new Map<string, JournalEntryFixture>();
   const entryLookup: OriginalEntryLookup = {
     async getOriginalEntry(journalEntryId: string) {
-      return entries.get(journalEntryId) ?? null;
+      const fixture = entries.get(journalEntryId);
+      if (!fixture) return null;
+      return { id: journalEntryId, originalText: fixture.text, createdAt: fixture.createdAt, updatedAt: fixture.createdAt };
     },
   };
 

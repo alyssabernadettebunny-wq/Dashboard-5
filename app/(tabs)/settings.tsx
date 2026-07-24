@@ -5,7 +5,7 @@ import { Card } from '@/components/Card';
 import { Chip } from '@/components/Chip';
 import { PrimaryButton, SecondaryButton } from '@/components/Buttons';
 import { ScreenBackground } from '@/components/ScreenBackground';
-import { contextReviewService } from '@/contextEngine';
+import { contextReviewService, eventTimelineService } from '@/contextEngine';
 import { ContextEngineDevPanel } from '@/contextEngine/DevPanel';
 import { ANALYSIS_CATEGORIES, ANALYSIS_CATEGORY_LABELS } from '@/models';
 import { useAppData } from '@/state';
@@ -33,6 +33,33 @@ function ContextReviewEntryPoint() {
       </Text>
       <PrimaryButton onPress={() => router.push('/review')} style={styles.reviewEntryButton}>
         Open Context Review
+      </PrimaryButton>
+    </Card>
+  );
+}
+
+function EventTimelineEntryPoint() {
+  const router = useRouter();
+  const [eventCount, setEventCount] = useState(0);
+
+  useFocusEffect(
+    useCallback(() => {
+      eventTimelineService.getVisibleTimeline().then((groups) => {
+        setEventCount(groups.reduce((sum, g) => sum + g.events.length, 0));
+      });
+    }, []),
+  );
+
+  return (
+    <Card style={styles.card}>
+      <Text style={typography.label}>WHAT HAPPENED</Text>
+      <Text style={typography.bodySoft}>
+        {eventCount === 0
+          ? 'Nothing has been reconstructed from your entries yet.'
+          : `${eventCount} reconstructed ${eventCount === 1 ? 'event' : 'events'}, in order.`}
+      </Text>
+      <PrimaryButton onPress={() => router.push('/timeline')} style={styles.reviewEntryButton}>
+        Open Timeline
       </PrimaryButton>
     </Card>
   );
@@ -116,6 +143,8 @@ export default function SettingsScreen() {
         </Card>
 
         <ContextReviewEntryPoint />
+
+        <EventTimelineEntryPoint />
 
         <Card style={styles.card}>
           <Text style={typography.label}>CONTEXT ENGINE (DEV TEST)</Text>

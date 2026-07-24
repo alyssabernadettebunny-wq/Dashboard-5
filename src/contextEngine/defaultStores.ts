@@ -2,6 +2,7 @@ import { dataStore } from '@/storage/AsyncStorageDataStore';
 import { entryRepository } from '@/storage';
 import {
   ClarificationQuestionStore,
+  EventTimelineVisibilityStore,
   ExtractionRecordStore,
   FactCorrectionRecordStore,
   JournalEntryStore,
@@ -20,6 +21,7 @@ export const reconstructedEventStore = new ReconstructedEventStore(dataStore);
 export const clarificationQuestionStore = new ClarificationQuestionStore(dataStore);
 export const extractionRecordStore = new ExtractionRecordStore(dataStore);
 export const factCorrectionStore = new FactCorrectionRecordStore(dataStore);
+export const eventTimelineVisibilityStore = new EventTimelineVisibilityStore(dataStore);
 
 /**
  * Bridges to the app's real journal entries for display purposes only
@@ -31,6 +33,6 @@ export const originalEntryLookup: OriginalEntryLookup = {
     const entries = await entryRepository.getAll();
     const entry = entries.find((e) => e.id === journalEntryId);
     if (!entry) return null;
-    return { text: entry.text, createdAt: entry.createdAt };
+    return { id: entry.id, originalText: entry.text, createdAt: entry.createdAt, updatedAt: entry.updatedAt };
   },
 };

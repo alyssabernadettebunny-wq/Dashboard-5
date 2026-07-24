@@ -270,7 +270,7 @@ export interface ContextCorrectionRepository {
 
 /** Narrow read-only bridge to the app's real journal entry text — the Context Engine never stores its own copy. */
 export interface OriginalEntryLookup {
-  getOriginalEntry(journalEntryId: string): Promise<{ text: string; createdAt: string } | null>;
+  getOriginalEntry(journalEntryId: string): Promise<JournalEntry | null>;
 }
 
 export interface ContextReviewItem {
@@ -309,4 +309,68 @@ export interface ContextReviewService {
   getReviewGroup(journalEntryId: string): Promise<ContextReviewGroup | null>;
   answerQuestion(input: AnswerQuestionInput): Promise<AnswerQuestionResult>;
   dismissQuestion(questionId: string): Promise<DismissQuestionResult>;
+}
+
+/**
+ * Sprint 003 — Event Timeline.
+ *
+ * Hiding an event never deletes it or its evidence; it only records that the
+ * user asked not to see it in the default timeline view. A separate
+ * visibility record (rather than fields on ReconstructedEvent) keeps the
+ * Context Engine's core reconstruction model untouched by this presentation
+ * concern.
+ */
+export interface EventTimelineVisibility {
+  eventId: string;
+  isHidden: boolean;
+  hiddenBy: 'user' | null;
+  hiddenAt: string | null;
+  restoredAt: string | null;
+  updatedAt: string;
+}
+
+/**
+ * 'exact' when the event's own resolvedTime supplies the calendar date;
+ * 'anchored' when the day group falls back to the journal entry's createdAt
+ * date because the event's time could not be resolved to a specific day.
+ */
+export type TimelineDatePrecision = 'exact' | 'anchored';
+
+export interface TimelineEventItem {
+  event: ReconstructedEvent;
+  journalEntry: JournalEntry;
+  displayDate: string;
+  displayTime: string;
+  datePrecision: TimelineDatePrecision;
+  isCorrectedByUser: boolean;
+  isHidden: boolean;
+}
+
+export interface TimelineDayGroup {
+  /** Stable sort/grouping key, e.g. "2026-07-23". */
+  dateKey: string;
+  displayDate: string;
+  events: TimelineEventItem[];
+}
+
+export interface EventSourceContext {
+  event: ReconstructedEvent;
+  journalEntry: JournalEntry;
+  sourcePassage: SourcePassage;
+  isCorrectedByUser: boolean;
+}
+
+export interface EventTimelineVisibilityRepository {
+  getByEventId(eventId: string): Promise<EventTimelineVisibility | null>;
+  getAll(): Promise<EventTimelineVisibility[]>;
+  hide(eventId: string, timestamp: string): Promise<EventTimelineVisibility>;
+  restore(eventId: string, timestamp: string): Promise<EventTimelineVisibility>;
+}
+
+export interface EventTimelineService {
+  getVisibleTimeline(): Promise<TimelineDayGroup[]>;
+  getHiddenEvents(): Promise<TimelineDayGroup[]>;
+  hideEvent(eventId: string): Promise<EventTimelineVisibility>;
+  restoreEvent(eventId: string): Promise<EventTimelineVisibility>;
+  getSourceContext(eventId: string): Promise<EventSourceContext>;
 }
