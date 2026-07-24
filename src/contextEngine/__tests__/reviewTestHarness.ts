@@ -4,11 +4,17 @@ import { ClarificationQuestionStore, FactCorrectionRecordStore, ReconstructedEve
 import type { ClarificationQuestion, ContextReviewService, OriginalEntryLookup, ReconstructedEvent } from '../types';
 import { InMemoryDataStore } from './inMemoryDataStore';
 
-export function buildReviewHarness(makeEventStore: (store: InMemoryDataStore) => ReconstructedEventStore = (s) => new ReconstructedEventStore(s)) {
+export interface ReviewHarnessFactories {
+  makeEventStore?: (store: InMemoryDataStore) => ReconstructedEventStore;
+  makeClarificationStore?: (store: InMemoryDataStore) => ClarificationQuestionStore;
+  makeCorrectionStore?: (store: InMemoryDataStore) => FactCorrectionRecordStore;
+}
+
+export function buildReviewHarness(factories: ReviewHarnessFactories = {}) {
   const store = new InMemoryDataStore();
-  const eventStore = makeEventStore(store);
-  const clarificationStore = new ClarificationQuestionStore(store);
-  const correctionStore = new FactCorrectionRecordStore(store);
+  const eventStore = (factories.makeEventStore ?? ((s) => new ReconstructedEventStore(s)))(store);
+  const clarificationStore = (factories.makeClarificationStore ?? ((s) => new ClarificationQuestionStore(s)))(store);
+  const correctionStore = (factories.makeCorrectionStore ?? ((s) => new FactCorrectionRecordStore(s)))(store);
 
   const entries = new Map<string, { text: string; createdAt: string }>();
   const entryLookup: OriginalEntryLookup = {

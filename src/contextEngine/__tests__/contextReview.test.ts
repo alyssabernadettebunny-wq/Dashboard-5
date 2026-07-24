@@ -81,8 +81,9 @@ describe('Participant correction', () => {
     const result = await service.answerQuestion({ questionId: 'q1', answer: '  My mother  ' });
 
     expect(result.updatedEvent.participants).toEqual(['My mother']);
-    expect(result.correction.previousValue).toEqual([]);
-    expect(result.correction.correctedValue).toEqual(['My mother']);
+    expect(result.correction.changes).toEqual([
+      { eventId: 'event_1', field: 'participants', previousValue: [], correctedValue: ['My mother'] },
+    ]);
     expect(result.answeredQuestion.status).toBe('answered');
     expect(result.answeredQuestion.answeredAt).not.toBeNull();
 
@@ -237,6 +238,11 @@ describe('Duplicate answer protection', () => {
 });
 
 describe('Save failure', () => {
+  // This injects the failure at the very first write (eventStore.updateMany),
+  // i.e. the atomicity boundary "Event update fails" — see
+  // contextCorrectionAtomicity.test.ts for the stage-2 (correction creation)
+  // and stage-3 (question marked answered) boundaries, which this test does
+  // not cover on its own.
   it('leaves the question pending, the event unchanged, and no correction record when the event write fails', async () => {
     class ThrowingEventStore extends ReconstructedEventStore {
       async updateMany(): Promise<void> {
@@ -244,7 +250,7 @@ describe('Save failure', () => {
       }
     }
 
-    const { eventStore, clarificationStore, correctionStore, service } = buildReviewHarness((s) => new ThrowingEventStore(s));
+    const { eventStore, clarificationStore, correctionStore, service } = buildReviewHarness({ makeEventStore: (s) => new ThrowingEventStore(s) });
     const event = makeEvent({ id: 'event_1', participants: [] });
     await eventStore.saveMany([event]);
     const question = makeQuestion({ id: 'q1', eventId: 'event_1' });

@@ -69,7 +69,13 @@ export interface ReconstructedEvent {
 }
 
 /** The structured event field a correction targets. */
-export type CorrectableEventField = 'participants' | 'summary' | 'statedTime' | 'resolvedTime' | 'sequenceIndex';
+export type CorrectableEventField =
+  | 'participants'
+  | 'summary'
+  | 'statedTime'
+  | 'resolvedTime'
+  | 'timePrecision'
+  | 'sequenceIndex';
 
 /**
  * The kind of fact a clarification question is narrowing — always a fact,
@@ -199,24 +205,37 @@ export interface ExtractionRecord {
 }
 
 /**
- * Sprint 002 — Context Review.
- *
- * A FactCorrection is an audit record of one accepted answer: what the
- * targeted event field held before, and what it holds after. It never
- * touches JournalEntry.originalText — only structured ReconstructedEvent
- * fields are ever corrected.
+ * Sprint 002 corrective pass — a single change to one event field, always
+ * naming which event it belongs to. A time correction that updates
+ * statedTime + resolvedTime + timePrecision produces three of these; a
+ * sequence swap produces one for each of the two affected events. Only
+ * fields that actually changed are ever recorded.
+ */
+export interface FactCorrectionChange {
+  eventId: string;
+  field: CorrectableEventField;
+  previousValue: unknown;
+  correctedValue: unknown;
+}
+
+/**
+ * A FactCorrection is the complete audit record of one accepted answer:
+ * every structured event field it changed, on every event it touched
+ * (usually one; a sequence swap touches two). It never touches
+ * JournalEntry.originalText — only structured ReconstructedEvent fields
+ * are ever corrected. Exactly one FactCorrection exists per answered
+ * question (enforced by the repository).
  */
 export interface FactCorrection {
   id: string;
   journalEntryId: string;
+  /** The event the clarification question was originally about. */
   eventId: string;
   clarificationQuestionId: string;
 
   category: CorrectionCategory;
-  field: CorrectableEventField;
-
-  previousValue: unknown;
-  correctedValue: unknown;
+  /** Always at least one entry; never duplicate (eventId, field) pairs. */
+  changes: FactCorrectionChange[];
 
   source: 'user';
   createdAt: string;
@@ -224,8 +243,29 @@ export interface FactCorrection {
 
 export interface FactCorrectionRepository {
   create(correction: FactCorrection): Promise<FactCorrection>;
+  /** Matches corrections whose top-level eventId OR any change's eventId is the given id. */
   getByEventId(eventId: string): Promise<FactCorrection[]>;
   getByQuestionId(clarificationQuestionId: string): Promise<FactCorrection | null>;
+  remove(id: string): Promise<void>;
+}
+
+/**
+ * The repository boundary that owns write consistency across the three
+ * stores an answer touches. The service builds the complete bundle in
+ * memory (nothing written yet) and hands it here; commitAnswer either
+ * leaves storage in the full "answered" state or the full original state —
+ * never a partial mix of the two.
+ */
+export interface ContextCorrectionCommit {
+  originalEvents: ReconstructedEvent[];
+  updatedEvents: ReconstructedEvent[];
+  originalQuestion: ClarificationQuestion;
+  answeredQuestion: ClarificationQuestion;
+  correction: FactCorrection;
+}
+
+export interface ContextCorrectionRepository {
+  commitAnswer(bundle: ContextCorrectionCommit): Promise<AnswerQuestionResult>;
 }
 
 /** Narrow read-only bridge to the app's real journal entry text — the Context Engine never stores its own copy. */

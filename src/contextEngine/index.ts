@@ -10,8 +10,11 @@ export {
 export { LocalContextExtractionProvider } from './LocalContextExtractionProvider';
 export { DefaultContextEngine } from './DefaultContextEngine';
 export { DefaultContextReviewService } from './DefaultContextReviewService';
+export { LocalContextCorrectionRepository } from './ContextCorrectionRepository';
 export { ContextReviewError } from './ContextReviewError';
 export type { ContextReviewErrorCode } from './ContextReviewError';
+export { ContextIntegrityError } from './ContextIntegrityError';
+export type { ContextIntegrityErrorIds } from './ContextIntegrityError';
 export { buildCorrectedSummary, resolveCorrectedTime, buildJournalExcerpt } from './correctionHelpers';
 export { validateProviderResult } from './validation';
 export { BANNED_INTERPRETIVE_PHRASES, containsBannedPhrase } from './bannedPhrases';

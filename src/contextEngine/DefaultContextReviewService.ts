@@ -1,4 +1,5 @@
 import { generateId } from '@/models/ids';
+import { LocalContextCorrectionRepository } from './ContextCorrectionRepository';
 import { ContextReviewError } from './ContextReviewError';
 import { buildCorrectedSummary, buildJournalExcerpt, resolveCorrectedTime } from './correctionHelpers';
 import type { ClarificationQuestionStore, FactCorrectionRecordStore, ReconstructedEventStore } from './storage';
@@ -11,17 +12,22 @@ import type {
   ContextReviewService,
   DismissQuestionResult,
   FactCorrection,
+  FactCorrectionChange,
   OriginalEntryLookup,
   ReconstructedEvent,
 } from './types';
 
 export class DefaultContextReviewService implements ContextReviewService {
+  private correctionRepository: LocalContextCorrectionRepository;
+
   constructor(
     private clarificationStore: ClarificationQuestionStore,
     private eventStore: ReconstructedEventStore,
     private correctionStore: FactCorrectionRecordStore,
     private entryLookup: OriginalEntryLookup,
-  ) {}
+  ) {
+    this.correctionRepository = new LocalContextCorrectionRepository(eventStore, clarificationStore, correctionStore);
+  }
 
   async getInboxGroups(): Promise<ContextReviewGroup[]> {
     const pending = await this.clarificationStore.getPendingQuestions();
@@ -108,11 +114,11 @@ export class DefaultContextReviewService implements ContextReviewService {
     const entryCreatedAt = originalEntry?.createdAt ?? event.createdAt;
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-    let previousValue: unknown;
-    let correctedValue: unknown;
-    let updatedEventFields: Partial<ReconstructedEvent>;
+    let changes: FactCorrectionChange[];
     let submittedAnswerText: string;
-    let siblingUpdate: ReconstructedEvent | null = null;
+    let siblingOriginal: ReconstructedEvent | null = null;
+    let siblingUpdated: ReconstructedEvent | null = null;
+    let updatedFieldsForEvent: Partial<ReconstructedEvent>;
 
     if (question.targetField === 'sequenceIndex') {
       if (!question.options || question.options.length === 0) {
@@ -126,18 +132,23 @@ export class DefaultContextReviewService implements ContextReviewService {
         throw new ContextReviewError('OPTION_NOT_FOUND', `Option ${input.selectedOptionId} not found`);
       }
 
-      previousValue = event.sequenceIndex;
-      correctedValue = option.value;
       submittedAnswerText = option.label;
-
       const desiredIndex = option.value as number;
-      updatedEventFields = { sequenceIndex: desiredIndex };
+      updatedFieldsForEvent = { sequenceIndex: desiredIndex };
+      changes = [{ eventId: event.id, field: 'sequenceIndex', previousValue: event.sequenceIndex, correctedValue: desiredIndex }];
 
       if (desiredIndex !== event.sequenceIndex) {
         const siblings = await this.eventStore.getForEntry(question.journalEntryId);
         const swapPartner = siblings.find((e) => e.id !== event.id && e.sequenceIndex === desiredIndex);
         if (swapPartner) {
-          siblingUpdate = { ...swapPartner, sequenceIndex: event.sequenceIndex, updatedAt: new Date().toISOString() };
+          siblingOriginal = swapPartner;
+          siblingUpdated = { ...swapPartner, sequenceIndex: event.sequenceIndex, updatedAt: new Date().toISOString() };
+          changes.push({
+            eventId: swapPartner.id,
+            field: 'sequenceIndex',
+            previousValue: swapPartner.sequenceIndex,
+            correctedValue: event.sequenceIndex,
+          });
         }
       }
     } else {
@@ -148,27 +159,48 @@ export class DefaultContextReviewService implements ContextReviewService {
       submittedAnswerText = trimmed;
 
       if (question.targetField === 'participants') {
-        previousValue = event.participants;
-        correctedValue = [trimmed];
-        updatedEventFields = { participants: [trimmed] };
+        updatedFieldsForEvent = { participants: [trimmed] };
+        changes = [{ eventId: event.id, field: 'participants', previousValue: event.participants, correctedValue: [trimmed] }];
       } else if (question.targetField === 'summary') {
-        previousValue = event.summary;
         const corrected = buildCorrectedSummary(trimmed);
-        correctedValue = corrected;
-        updatedEventFields = { summary: corrected };
+        updatedFieldsForEvent = { summary: corrected };
+        changes = [{ eventId: event.id, field: 'summary', previousValue: event.summary, correctedValue: corrected }];
       } else if (question.targetField === 'statedTime' || question.targetField === 'resolvedTime') {
-        previousValue = question.targetField === 'statedTime' ? event.statedTime : event.resolvedTime;
         const timeInfo = resolveCorrectedTime(trimmed, entryCreatedAt, timezone);
-        correctedValue = question.targetField === 'statedTime' ? timeInfo.statedTime : timeInfo.resolvedTime;
-        updatedEventFields = {
+        updatedFieldsForEvent = {
           statedTime: timeInfo.statedTime,
           resolvedTime: timeInfo.resolvedTime,
           timePrecision: timeInfo.timePrecision,
         };
+        changes = [];
+        if (timeInfo.statedTime !== event.statedTime) {
+          changes.push({ eventId: event.id, field: 'statedTime', previousValue: event.statedTime, correctedValue: timeInfo.statedTime });
+        }
+        if (timeInfo.resolvedTime !== event.resolvedTime) {
+          changes.push({
+            eventId: event.id,
+            field: 'resolvedTime',
+            previousValue: event.resolvedTime,
+            correctedValue: timeInfo.resolvedTime,
+          });
+        }
+        if (timeInfo.timePrecision !== event.timePrecision) {
+          changes.push({
+            eventId: event.id,
+            field: 'timePrecision',
+            previousValue: event.timePrecision,
+            correctedValue: timeInfo.timePrecision,
+          });
+        }
+        if (changes.length === 0) {
+          throw new ContextReviewError('NO_CHANGE', 'That answer matches what is already recorded — nothing to correct.');
+        }
       } else {
         throw new ContextReviewError('EVENT_NOT_FOUND', `Unsupported target field: ${question.targetField}`);
       }
     }
+
+    assertNoDuplicateChanges(changes);
 
     const now = new Date().toISOString();
     const correction: FactCorrection = {
@@ -177,38 +209,32 @@ export class DefaultContextReviewService implements ContextReviewService {
       eventId: event.id,
       clarificationQuestionId: question.id,
       category: question.category,
-      field: question.targetField,
-      previousValue,
-      correctedValue,
+      changes,
       source: 'user',
       createdAt: now,
     };
 
-    // Write ordering matters, in both directions: the event update happens
-    // first, so if IT fails, nothing else is persisted (no orphaned
-    // correction record); the correction record happens next, so if THAT
-    // fails, the event is already correct but no answered-without-a-record
-    // state exists; marking the question "answered" happens last of all, so
-    // a crash mid-operation always leaves the question pending — safe to
-    // retry — rather than answered with nothing (or only half of something)
-    // behind it.
-    const updatedEvent: ReconstructedEvent = { ...event, ...updatedEventFields, updatedAt: now };
-    if (siblingUpdate) {
-      await this.eventStore.updateMany([updatedEvent, siblingUpdate]);
-    } else {
-      await this.eventStore.updateMany([updatedEvent]);
-    }
-
-    await this.correctionStore.create(correction);
-
-    const answeredQuestion = await this.clarificationStore.update(question.id, (q) => ({
-      ...q,
+    const updatedEvent: ReconstructedEvent = { ...event, ...updatedFieldsForEvent, updatedAt: now };
+    const answeredQuestion: ClarificationQuestion = {
+      ...question,
       status: 'answered',
       answer: submittedAnswerText,
       answeredAt: now,
-    }));
+    };
 
-    return { updatedEvent, answeredQuestion, correction };
+    const originalEvents = siblingOriginal ? [event, siblingOriginal] : [event];
+    const updatedEvents = siblingUpdated ? [updatedEvent, siblingUpdated] : [updatedEvent];
+
+    // The repository owns the atomic write (event(s) -> correction -> answered
+    // question), including rollback of everything written so far if any later
+    // stage fails. Nothing above this line has touched storage.
+    return this.correctionRepository.commitAnswer({
+      originalEvents,
+      updatedEvents,
+      originalQuestion: question,
+      answeredQuestion,
+      correction,
+    });
   }
 
   async dismissQuestion(questionId: string): Promise<DismissQuestionResult> {
@@ -234,3 +260,13 @@ export class DefaultContextReviewService implements ContextReviewService {
   }
 }
 
+function assertNoDuplicateChanges(changes: FactCorrectionChange[]): void {
+  const seen = new Set<string>();
+  for (const change of changes) {
+    const key = `${change.eventId}:${change.field}`;
+    if (seen.has(key)) {
+      throw new ContextReviewError('DUPLICATE_FIELD', `Duplicate change for event ${change.eventId} field "${change.field}"`);
+    }
+    seen.add(key);
+  }
+}

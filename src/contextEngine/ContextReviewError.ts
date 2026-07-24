@@ -5,7 +5,9 @@ export type ContextReviewErrorCode =
   | 'ALREADY_DISMISSED'
   | 'EMPTY_ANSWER'
   | 'OPTION_REQUIRED'
-  | 'OPTION_NOT_FOUND';
+  | 'OPTION_NOT_FOUND'
+  | 'NO_CHANGE'
+  | 'DUPLICATE_FIELD';
 
 /**
  * A controlled domain error for repeated or invalid review actions —

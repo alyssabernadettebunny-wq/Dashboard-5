@@ -212,11 +212,16 @@ export class FactCorrectionRecordStore implements FactCorrectionRepository {
 
   async getByEventId(eventId: string): Promise<FactCorrection[]> {
     const all = await this.getAll();
-    return all.filter((c) => c.eventId === eventId);
+    return all.filter((c) => c.eventId === eventId || c.changes.some((change) => change.eventId === eventId));
   }
 
   async getByQuestionId(clarificationQuestionId: string): Promise<FactCorrection | null> {
     const all = await this.getAll();
     return all.find((c) => c.clarificationQuestionId === clarificationQuestionId) ?? null;
+  }
+
+  async remove(id: string): Promise<void> {
+    const all = await this.getAll();
+    await this.store.setJSON(CONTEXT_ENGINE_KEYS.factCorrections, all.filter((c) => c.id !== id));
   }
 }
