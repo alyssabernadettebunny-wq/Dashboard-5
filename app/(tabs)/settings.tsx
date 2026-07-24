@@ -3,6 +3,7 @@ import { Card } from '@/components/Card';
 import { Chip } from '@/components/Chip';
 import { SecondaryButton } from '@/components/Buttons';
 import { ScreenBackground } from '@/components/ScreenBackground';
+import { ContextEngineDevPanel } from '@/contextEngine/DevPanel';
 import { ANALYSIS_CATEGORIES, ANALYSIS_CATEGORY_LABELS } from '@/models';
 import { useAppData } from '@/state';
 import { colors, spacing, typography } from '@/theme';
@@ -82,6 +83,11 @@ export default function SettingsScreen() {
             <SecondaryButton onPress={loadSeedData}>Add sample entries</SecondaryButton>
             <SecondaryButton onPress={removeSeedData}>Remove sample entries</SecondaryButton>
           </View>
+        </Card>
+
+        <Card style={styles.card}>
+          <Text style={typography.label}>CONTEXT ENGINE (DEV TEST)</Text>
+          <ContextEngineDevPanel />
         </Card>
       </ScrollView>
     </ScreenBackground>
