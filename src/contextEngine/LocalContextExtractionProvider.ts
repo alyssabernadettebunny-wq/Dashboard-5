@@ -1,5 +1,5 @@
 import { extractParticipants } from './participantExtraction';
-import { looksLikeConcreteEvent } from './eventClassification';
+import { looksLikeConcreteEvent, startsNewOccurrence } from './eventClassification';
 import { splitIntoSentenceSpans } from './sentenceSpans';
 import { extractTimeInfo } from './timeResolution';
 import type {
@@ -12,45 +12,55 @@ import type {
 
 const UNRESOLVED_PRONOUN_PATTERN = /\b(her|him|them)\b/i;
 
-/**
- * Transparent, local, rule-based extraction provider — no external AI service.
- * Kept behind the `ContextExtractionProvider` interface so a real model-backed
- * provider can replace this later without the ContextEngine, storage, or UI
- * changing at all.
- *
- * Deliberately conservative: sentence-level segmentation, a small action-verb
- * vocabulary to filter out vague mood statements, and a single clarification
- * heuristic (an unnamed pronoun referring to a person). This is enough to
- * satisfy the sprint's required behavior without inventing precision the
- * source text doesn't support.
- */
+interface Candidate {
+  text: string;
+  startIndex: number;
+  endIndex: number;
+  participants: string[];
+}
+
+/** Local rule-based extraction. It deliberately prefers missing a weak event over manufacturing fragments. */
 export class LocalContextExtractionProvider implements ContextExtractionProvider {
   async extract(input: ContextExtractionProviderInput): Promise<ContextExtractionProviderResultRaw> {
     const spans = splitIntoSentenceSpans(input.originalText);
-
-    const events: ExtractedEventRaw[] = [];
-    const clarificationQuestions: ExtractedClarificationRaw[] = [];
+    const groups: Candidate[][] = [];
+    let current: Candidate[] = [];
 
     for (const span of spans) {
       const participants = extractParticipants(span.text);
       if (!looksLikeConcreteEvent(span.text, participants)) continue;
 
-      const timeInfo = extractTimeInfo(span.text, input.entryCreatedAt, input.timezone);
-      const sequenceIndex = events.length;
+      const candidate = { ...span, participants };
+      if (startsNewOccurrence(span.text) && current.length > 0) {
+        groups.push(current);
+        current = [];
+      }
+      current.push(candidate);
+    }
+    if (current.length > 0) groups.push(current);
 
-      const pronounMatch = participants.length === 0 ? UNRESOLVED_PRONOUN_PATTERN.exec(span.text) : null;
-      const needsClarification = pronounMatch !== null;
+    const events: ExtractedEventRaw[] = [];
+    const clarificationQuestions: ExtractedClarificationRaw[] = [];
+
+    for (const group of groups) {
+      const first = group[0];
+      const last = group[group.length - 1];
+      const sourceText = input.originalText.slice(first.startIndex, last.endIndex);
+      const participants = Array.from(new Set(group.flatMap((item) => item.participants)));
+      const timeInfo = extractTimeInfo(sourceText, input.entryCreatedAt, input.timezone);
+      const sequenceIndex = events.length;
+      const pronounMatch = participants.length === 0 ? UNRESOLVED_PRONOUN_PATTERN.exec(sourceText) : null;
 
       events.push({
-        summary: buildFactualSummary(span.text),
+        summary: group.map((item) => item.text.trim()).join(' '),
         statedTime: timeInfo.statedTime,
         resolvedTime: timeInfo.resolvedTime,
         timePrecision: timeInfo.timePrecision,
         resolvedDate: timeInfo.resolvedDate,
         participants,
         sequenceIndex,
-        source: { text: span.text, startIndex: span.startIndex, endIndex: span.endIndex },
-        needsClarification,
+        source: { text: sourceText, startIndex: first.startIndex, endIndex: last.endIndex },
+        needsClarification: pronounMatch !== null,
       });
 
       if (pronounMatch) {
@@ -68,13 +78,4 @@ export class LocalContextExtractionProvider implements ContextExtractionProvider
 
     return { events, clarificationQuestions };
   }
-}
-
-/**
- * The local provider's "summary" is the sentence itself, lightly trimmed —
- * it never rewrites wording or infers meaning, so there is no interpretive
- * content to accidentally introduce.
- */
-function buildFactualSummary(sentenceText: string): string {
-  return sentenceText;
 }

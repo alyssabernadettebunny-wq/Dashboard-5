@@ -39,13 +39,13 @@ export const SUBJECT_DEFINITIONS: SubjectDefinition[] = [
     key: 'creative_work',
     label: 'Creative and software ideas',
     category: 'creative_interests',
-    keywords: ['software', 'coding', 'code', 'app', 'idea', 'project', 'design', 'drawing', 'writing', 'music', 'building', 'build'],
+    keywords: ['software', 'coding', 'code', 'app development', 'software project', 'design project', 'drawing project', 'music project'],
   },
   {
     key: 'comfort_place',
     label: 'Comfort place',
     category: 'household_patterns',
-    keywords: ['home', 'house', 'bed', 'couch', 'comfort', 'cozy'],
+    keywords: ['comfort place', 'safe place', 'cozy corner', 'my bed', 'my couch'],
   },
   {
     key: 'errands_pharmacy',

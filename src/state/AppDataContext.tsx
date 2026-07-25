@@ -75,7 +75,15 @@ export function AppDataProvider({ children }: PropsWithChildren) {
           settingsRepository.get(),
         ]);
         if (!active) return;
-        setEntries(loadedEntries);
+        // Defensive default: older stored entries may predate the revisions field.
+        const normalizedEntries = loadedEntries.map((entry) => ({
+          ...entry,
+          revisions: entry.revisions ?? [],
+        }));
+        if (JSON.stringify(normalizedEntries) !== JSON.stringify(loadedEntries)) {
+          await entryRepository.replaceAll(normalizedEntries);
+        }
+        setEntries(normalizedEntries);
         setPatterns(loadedPatterns);
         setSettings(loadedSettings);
         setStorageProblems([]);
@@ -108,6 +116,7 @@ export function AppDataProvider({ children }: PropsWithChildren) {
           suggestedSubjects: tagEntrySubjects({ text: input.text }),
           userTags: [],
           connectedPatternIds: [],
+          revisions: [],
         };
         const nextEntries = [...entries, entry];
         const result = await recompute(nextEntries, patterns, settings);
@@ -131,18 +140,25 @@ export function AppDataProvider({ children }: PropsWithChildren) {
   const updateEntry = useCallback(
     async (id: string, input: UpdateEntryInput) => {
       const now = new Date().toISOString();
-      const nextEntries = entries.map((e) =>
-        e.id === id
-          ? {
-              ...e,
-              title: input.title?.trim() || undefined,
-              text: input.text.trim(),
-              isImportant: input.isImportant,
-              suggestedSubjects: tagEntrySubjects({ text: input.text }),
-              updatedAt: now,
-            }
-          : e,
-      );
+      const nextEntries = entries.map((e) => {
+        if (e.id !== id) return e;
+
+        const nextTitle = input.title?.trim() || undefined;
+        const nextText = input.text.trim();
+        const contentChanged = nextTitle !== e.title || nextText !== e.text;
+
+        return {
+          ...e,
+          title: nextTitle,
+          text: nextText,
+          isImportant: input.isImportant,
+          suggestedSubjects: tagEntrySubjects({ text: nextText }),
+          revisions: contentChanged
+            ? [...(e.revisions ?? []), { title: e.title, text: e.text, savedAt: now }]
+            : (e.revisions ?? []),
+          updatedAt: now,
+        };
+      });
       const result = await recompute(nextEntries, patterns, settings);
       setEntries(result.entries);
       setPatterns(result.patterns);

@@ -14,6 +14,7 @@ export default function EntryDetailScreen() {
   const { entries, patterns, updateEntry, deleteEntry } = useAppData();
   const entry = entries.find((e) => e.id === id);
 
+  const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState(entry?.title ?? '');
   const [text, setText] = useState(entry?.text ?? '');
   const [isImportant, setIsImportant] = useState(entry?.isImportant ?? false);
@@ -23,6 +24,7 @@ export default function EntryDetailScreen() {
       setTitle(entry.title ?? '');
       setText(entry.text);
       setIsImportant(entry.isImportant);
+      setIsEditing(false);
     }
   }, [entry?.id]);
 
@@ -38,9 +40,20 @@ export default function EntryDetailScreen() {
 
   const connectedPatterns = patterns.filter((p) => entry.connectedPatternIds.includes(p.id));
 
+  const resetDraft = () => {
+    setTitle(entry.title ?? '');
+    setText(entry.text);
+    setIsImportant(entry.isImportant);
+  };
+
   const handleSave = async () => {
     await updateEntry(entry.id, { title, text, isImportant });
-    router.back();
+    setIsEditing(false);
+  };
+
+  const handleCancel = () => {
+    resetDraft();
+    setIsEditing(false);
   };
 
   const handleDelete = () => {
@@ -65,32 +78,44 @@ export default function EntryDetailScreen() {
             {new Date(entry.createdAt).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })}
           </Text>
 
-          <TextInput
-            value={title}
-            onChangeText={setTitle}
-            placeholder="Title (optional)"
-            placeholderTextColor={colors.inkSoft}
-            style={[typography.title, styles.titleInput]}
-          />
+          {isEditing ? (
+            <TextInput
+              value={title}
+              onChangeText={setTitle}
+              placeholder="Title (optional)"
+              placeholderTextColor={colors.inkSoft}
+              style={[typography.title, styles.titleInput]}
+            />
+          ) : (
+            <Text style={[typography.title, styles.readTitle]}>{entry.title || 'Untitled entry'}</Text>
+          )}
 
           <Card style={styles.textCard}>
-            <TextInput
-              value={text}
-              onChangeText={setText}
-              multiline
-              textAlignVertical="top"
-              style={[typography.body, styles.textInput]}
-            />
+            {isEditing ? (
+              <TextInput
+                value={text}
+                onChangeText={setText}
+                multiline
+                textAlignVertical="top"
+                style={[typography.body, styles.textInput]}
+              />
+            ) : (
+              <Text style={[typography.body, styles.readText]} selectable>{entry.text}</Text>
+            )}
           </Card>
 
           <View style={styles.importantRow}>
             <Text style={typography.body}>This matters</Text>
-            <Switch
-              value={isImportant}
-              onValueChange={setIsImportant}
-              trackColor={{ true: colors.dustyRose, false: colors.hairline }}
-              thumbColor={colors.white}
-            />
+            {isEditing ? (
+              <Switch
+                value={isImportant}
+                onValueChange={setIsImportant}
+                trackColor={{ true: colors.dustyRose, false: colors.hairline }}
+                thumbColor={colors.white}
+              />
+            ) : (
+              <Text style={typography.bodySoft}>{entry.isImportant ? 'Yes' : 'No'}</Text>
+            )}
           </View>
 
           {(entry.suggestedSubjects.length > 0 || entry.userTags.length > 0) && (
@@ -100,9 +125,7 @@ export default function EntryDetailScreen() {
               ))}
               {entry.userTags
                 .filter((t) => !entry.suggestedSubjects.some((s) => s.key === t))
-                .map((t) => (
-                  <Chip key={t} label={t} />
-                ))}
+                .map((t) => <Chip key={t} label={t} />)}
             </View>
           )}
 
@@ -115,14 +138,20 @@ export default function EntryDetailScreen() {
             </Card>
           )}
 
-          <View style={styles.buttonRow}>
-            <PrimaryButton onPress={handleSave} style={styles.flexButton}>
-              Save changes
-            </PrimaryButton>
-            <SecondaryButton onPress={handleDelete} style={styles.flexButton}>
-              Delete
-            </SecondaryButton>
-          </View>
+          {isEditing ? (
+            <>
+              <View style={styles.buttonRow}>
+                <PrimaryButton onPress={handleSave} style={styles.flexButton}>Save changes</PrimaryButton>
+                <SecondaryButton onPress={handleCancel} style={styles.flexButton}>Cancel</SecondaryButton>
+              </View>
+              <SecondaryButton onPress={handleDelete}>Delete entry</SecondaryButton>
+            </>
+          ) : (
+            <View style={styles.buttonRow}>
+              <PrimaryButton onPress={() => setIsEditing(true)} style={styles.flexButton}>Edit entry</PrimaryButton>
+              <SecondaryButton onPress={() => router.back()} style={styles.flexButton}>Back</SecondaryButton>
+            </View>
+          )}
         </ScrollView>
       </KeyboardAvoidingView>
     </ScreenBackground>
@@ -133,8 +162,10 @@ const styles = StyleSheet.create({
   content: { padding: spacing.lg, paddingBottom: spacing.xxl, gap: spacing.md },
   missing: { padding: spacing.lg },
   titleInput: { borderBottomWidth: 1, borderBottomColor: colors.hairline, paddingVertical: spacing.sm },
+  readTitle: { borderBottomWidth: 1, borderBottomColor: colors.hairline, paddingVertical: spacing.sm },
   textCard: { minHeight: 200, padding: spacing.md },
   textInput: { flex: 1, minHeight: 170 },
+  readText: { lineHeight: 26 },
   importantRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   tagRow: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.xs },
   patternsCard: { gap: spacing.xs },

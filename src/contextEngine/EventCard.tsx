@@ -3,6 +3,7 @@ import { Card } from '@/components/Card';
 import { GhostButton } from '@/components/Buttons';
 import { colors, spacing, typography } from '@/theme';
 import type { TimelineEventItem } from './types';
+import { filterDisplayParticipants } from './participantExtraction';
 
 interface EventCardProps {
   item: TimelineEventItem;
@@ -13,12 +14,13 @@ interface EventCardProps {
 
 /** One event's read-only presentation on the timeline — no interpretation, only what was reconstructed. */
 export function EventCard({ item, onPressSource, onHide, onRestore }: EventCardProps) {
+  const displayParticipants = filterDisplayParticipants(item.event.participants);
   return (
     <Card style={styles.card}>
       <Text style={typography.caption}>{item.displayTime}</Text>
       <Text style={typography.body}>{item.event.summary}</Text>
-      {item.event.participants.length > 0 && (
-        <Text style={typography.bodySoft}>{item.event.participants.join(', ')}</Text>
+      {displayParticipants.length > 0 && (
+        <Text style={typography.bodySoft}>{displayParticipants.join(', ')}</Text>
       )}
 
       <View style={styles.footerRow}>

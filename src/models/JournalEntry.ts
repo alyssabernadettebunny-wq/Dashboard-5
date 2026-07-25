@@ -7,6 +7,12 @@ export interface SuggestedSubject {
   source: 'system' | 'user';
 }
 
+export interface JournalEntryRevision {
+  title?: string;
+  text: string;
+  savedAt: string;
+}
+
 export interface JournalEntry {
   id: string;
   createdAt: string;
@@ -18,4 +24,6 @@ export interface JournalEntry {
   suggestedSubjects: SuggestedSubject[];
   userTags: string[];
   connectedPatternIds: string[];
+  /** Quiet data-protection history. Older entries may omit this field. */
+  revisions?: JournalEntryRevision[];
 }
