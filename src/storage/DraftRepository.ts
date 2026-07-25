@@ -1,5 +1,6 @@
 import type { DataStore } from './DataStore';
 import { STORAGE_KEYS } from './keys';
+import { readStoredObject } from './StorageIntegrity';
 
 export interface EntryDraft {
   title: string;
@@ -18,7 +19,7 @@ export class LocalDraftRepository implements DraftRepository {
   constructor(private store: DataStore) {}
 
   async get(): Promise<EntryDraft | null> {
-    return this.store.getJSON<EntryDraft>(STORAGE_KEYS.draft);
+    return readStoredObject<EntryDraft>(this.store, STORAGE_KEYS.draft);
   }
 
   async save(draft: EntryDraft): Promise<void> {

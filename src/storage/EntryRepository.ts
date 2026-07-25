@@ -1,6 +1,7 @@
 import type { JournalEntry } from '@/models';
 import type { DataStore } from './DataStore';
 import { STORAGE_KEYS } from './keys';
+import { readStoredArray } from './StorageIntegrity';
 
 export interface EntryRepository {
   getAll(): Promise<JournalEntry[]>;
@@ -13,8 +14,7 @@ export class LocalEntryRepository implements EntryRepository {
   constructor(private store: DataStore) {}
 
   async getAll(): Promise<JournalEntry[]> {
-    const entries = await this.store.getJSON<JournalEntry[]>(STORAGE_KEYS.entries);
-    return entries ?? [];
+    return readStoredArray<JournalEntry>(this.store, STORAGE_KEYS.entries);
   }
 
   async save(entry: JournalEntry): Promise<void> {

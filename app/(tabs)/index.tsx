@@ -1,5 +1,5 @@
-import { useRouter } from 'expo-router';
-import { useMemo, useState } from 'react';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { useCallback, useMemo, useState } from 'react';
 import { FlatList, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { CherrySprig } from '@/components/CherrySprig';
 import { ConfidenceBadge } from '@/components/ConfidenceBadge';
@@ -10,6 +10,7 @@ import { ScreenBackground } from '@/components/ScreenBackground';
 import { useResponsive } from '@/hooks/useResponsive';
 import type { JournalEntry, PatternObservation } from '@/models';
 import { derivePatternStatus } from '@/patternEngine';
+import { contextReviewService } from '@/contextEngine';
 import { useAppData } from '@/state';
 import { colors, spacing, typography } from '@/theme';
 
@@ -80,13 +81,23 @@ function QuickCatchCard() {
   const { createEntry } = useAppData();
   const [text, setText] = useState('');
   const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   const handleSave = async () => {
-    if (!text.trim()) return;
-    await createEntry({ text, isImportant: false });
-    setText('');
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+    if (!text.trim() || saving) return;
+    setSaving(true);
+    setSaveError(null);
+    try {
+      await createEntry({ text, isImportant: false });
+      setText('');
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    } catch {
+      setSaveError("That entry wasn’t saved. Your words are still here.");
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -100,10 +111,11 @@ function QuickCatchCard() {
         multiline
         style={[typography.bodySoft, styles.quickInput]}
       />
-      <SecondaryButton onPress={handleSave} disabled={!text.trim()} style={styles.quickSaveButton}>
-        Save
+      <SecondaryButton onPress={handleSave} disabled={!text.trim() || saving} style={styles.quickSaveButton}>
+        {saving ? 'Saving…' : 'Save'}
       </SecondaryButton>
       {saved && <Text style={[typography.caption, styles.noted]}>Saved. It's safe with me.</Text>}
+      {saveError && <Text style={[typography.caption, styles.saveError]}>{saveError}</Text>}
     </Card>
   );
 }
@@ -159,6 +171,38 @@ function ActivePatternsRail({ patterns }: { patterns: PatternObservation[] }) {
   );
 }
 
+function UnderstandWhatHappenedCard() {
+  const router = useRouter();
+  const [pendingCount, setPendingCount] = useState(0);
+
+  useFocusEffect(
+    useCallback(() => {
+      let active = true;
+      contextReviewService.getInboxGroups().then((groups) => {
+        if (active) setPendingCount(groups.reduce((sum, group) => sum + group.pendingCount, 0));
+      }).catch(() => {
+        if (active) setPendingCount(0);
+      });
+      return () => {
+        active = false;
+      };
+    }, []),
+  );
+
+  return (
+    <Card style={styles.understandCard}>
+      <Text style={typography.label}>UNDERSTAND WHAT HAPPENED</Text>
+      <Text style={typography.bodySoft}>Review details Cherry Brain was unsure about, or see events in chronological order.</Text>
+      <View style={styles.understandActions}>
+        <SecondaryButton onPress={() => router.push('/review')}>
+          {pendingCount > 0 ? `Context Review · ${pendingCount} ${pendingCount === 1 ? 'detail' : 'details'}` : 'Context Review'}
+        </SecondaryButton>
+        <SecondaryButton onPress={() => router.push('/timeline')}>Timeline</SecondaryButton>
+      </View>
+    </Card>
+  );
+}
+
 export default function HomeScreen() {
   const router = useRouter();
   const { patterns, entries, loading } = useAppData();
@@ -176,6 +220,7 @@ export default function HomeScreen() {
       <ScreenBackground maxWidth={HOME_DESKTOP_MAX_WIDTH}>
         <ScrollView contentContainerStyle={styles.desktopScroll}>
           <HomeHeader onDrop={() => router.push('/drop')} />
+          <UnderstandWhatHappenedCard />
           <View style={styles.desktopColumns}>
             <View style={styles.mainColumn}>
               {visiblePatterns.length === 0 && !loading ? (
@@ -205,7 +250,7 @@ export default function HomeScreen() {
         data={visiblePatterns}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.listContent}
-        ListHeaderComponent={<HomeHeader onDrop={() => router.push('/drop')} />}
+        ListHeaderComponent={<><HomeHeader onDrop={() => router.push('/drop')} /><UnderstandWhatHappenedCard /></>}
         renderItem={({ item }) => <PatternCard pattern={item} />}
         ItemSeparatorComponent={() => <View style={{ height: spacing.md }} />}
         ListEmptyComponent={
@@ -241,6 +286,9 @@ const styles = StyleSheet.create({
   evidenceButton: { alignSelf: 'flex-start', paddingLeft: 0 },
   feedbackRow: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.xs, marginTop: spacing.xs },
   noted: { color: colors.mauve, fontStyle: 'italic' },
+  saveError: { color: colors.darkCherry },
+  understandCard: { gap: spacing.sm, marginBottom: spacing.lg },
+  understandActions: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
   emptyCard: { marginTop: spacing.lg },
   railCard: { gap: spacing.sm },
   quickInput: { minHeight: 70, textAlignVertical: 'top' },

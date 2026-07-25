@@ -17,6 +17,8 @@ export default function DropScreen() {
   const [isImportant, setIsImportant] = useState(false);
   const [savedEntry, setSavedEntry] = useState<JournalEntry | null>(null);
   const [confirmation, setConfirmation] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const draftLoaded = useRef(false);
 
   useEffect(() => {
@@ -46,15 +48,23 @@ export default function DropScreen() {
   const now = new Date();
 
   const handleSave = async () => {
-    if (!text.trim()) return;
-    const entry = await createEntry({ title, text, isImportant });
-    setSavedEntry(entry);
-    setTitle('');
-    setText('');
-    setIsImportant(false);
-    await draftRepository.clear();
-    setConfirmation(true);
-    setTimeout(() => setConfirmation(false), 2600);
+    if (!text.trim() || saving) return;
+    setSaving(true);
+    setSaveError(null);
+    try {
+      const entry = await createEntry({ title, text, isImportant });
+      setSavedEntry(entry);
+      setTitle('');
+      setText('');
+      setIsImportant(false);
+      await draftRepository.clear();
+      setConfirmation(true);
+      setTimeout(() => setConfirmation(false), 2600);
+    } catch {
+      setSaveError("That entry wasn’t saved. Your words are still here.");
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -101,9 +111,11 @@ export default function DropScreen() {
             <Chip label="🖼 Add image — coming soon" />
           </View>
 
-          <PrimaryButton onPress={handleSave} disabled={!text.trim()} style={styles.saveButton}>
-            Save
+          <PrimaryButton onPress={handleSave} disabled={!text.trim() || saving} style={styles.saveButton}>
+            {saving ? 'Saving…' : 'Save'}
           </PrimaryButton>
+
+          {saveError && <Text style={[typography.caption, styles.saveError]}>{saveError}</Text>}
 
           {confirmation && (
             <View style={styles.confirmationBanner}>
@@ -148,6 +160,7 @@ const styles = StyleSheet.create({
   importantRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   laterRow: { flexDirection: 'row', gap: spacing.xs, flexWrap: 'wrap' },
   saveButton: {},
+  saveError: { color: colors.darkCherry, textAlign: 'center' },
   confirmationBanner: {
     flexDirection: 'row',
     alignItems: 'center',

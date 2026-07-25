@@ -6,6 +6,7 @@ import { Chip } from '@/components/Chip';
 import { PrimaryButton, SecondaryButton } from '@/components/Buttons';
 import { ScreenBackground } from '@/components/ScreenBackground';
 import { contextReviewService, eventTimelineService } from '@/contextEngine';
+import { downloadCherryBrainBackup } from '@/backup';
 import { ContextEngineDevPanel } from '@/contextEngine/DevPanel';
 import { ANALYSIS_CATEGORIES, ANALYSIS_CATEGORY_LABELS } from '@/models';
 import { useAppData } from '@/state';
@@ -79,6 +80,21 @@ const PRODUCT_RULES = [
 
 export default function SettingsScreen() {
   const { settings, setBoundary, unsuppressSubject, loadSeedData, removeSeedData } = useAppData();
+  const [backupMessage, setBackupMessage] = useState<string | null>(null);
+  const [backupBusy, setBackupBusy] = useState(false);
+
+  const exportBackup = async () => {
+    setBackupBusy(true);
+    setBackupMessage(null);
+    try {
+      await downloadCherryBrainBackup();
+      setBackupMessage('Your Cherry Brain backup was created.');
+    } catch {
+      setBackupMessage('Your backup could not be created. Nothing was changed.');
+    } finally {
+      setBackupBusy(false);
+    }
+  };
 
   return (
     <ScreenBackground>
@@ -131,25 +147,36 @@ export default function SettingsScreen() {
           </Text>
         </Card>
 
+        {__DEV__ && (
+          <Card style={styles.card}>
+            <Text style={typography.label}>DEVELOPMENT SEED DATA</Text>
+            <Text style={typography.bodySoft}>Developer-only sample data controls.</Text>
+            <View style={styles.tagRow}>
+              <SecondaryButton onPress={loadSeedData}>Add sample entries</SecondaryButton>
+              <SecondaryButton onPress={removeSeedData}>Remove sample entries</SecondaryButton>
+            </View>
+          </Card>
+        )}
+
         <Card style={styles.card}>
-          <Text style={typography.label}>DEVELOPMENT SEED DATA</Text>
-          <Text style={typography.bodySoft}>
-            Optional sample entries you can add to see the pattern engine in action, and remove at any time.
-          </Text>
-          <View style={styles.tagRow}>
-            <SecondaryButton onPress={loadSeedData}>Add sample entries</SecondaryButton>
-            <SecondaryButton onPress={removeSeedData}>Remove sample entries</SecondaryButton>
-          </View>
+          <Text style={typography.label}>BACKUP</Text>
+          <Text style={typography.bodySoft}>Download a JSON copy of your journal entries, reconstructed events, corrections, and timeline state.</Text>
+          <PrimaryButton onPress={exportBackup} disabled={backupBusy} style={styles.reviewEntryButton}>
+            {backupBusy ? 'Creating backup…' : 'Export Cherry Brain Backup'}
+          </PrimaryButton>
+          {backupMessage && <Text style={typography.caption}>{backupMessage}</Text>}
         </Card>
 
         <ContextReviewEntryPoint />
 
         <EventTimelineEntryPoint />
 
-        <Card style={styles.card}>
-          <Text style={typography.label}>CONTEXT ENGINE (DEV TEST)</Text>
-          <ContextEngineDevPanel />
-        </Card>
+        {__DEV__ && (
+          <Card style={styles.card}>
+            <Text style={typography.label}>CONTEXT ENGINE (DEV TEST)</Text>
+            <ContextEngineDevPanel />
+          </Card>
+        )}
       </ScrollView>
     </ScreenBackground>
   );

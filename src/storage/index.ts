@@ -1,5 +1,6 @@
 export * from './DataStore';
 export * from './AsyncStorageDataStore';
+export * from './StorageIntegrity';
 export * from './EntryRepository';
 export * from './PatternRepository';
 export * from './SettingsRepository';

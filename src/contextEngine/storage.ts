@@ -1,4 +1,5 @@
 import type { DataStore } from '@/storage/DataStore';
+import { readStoredArray } from '@/storage/StorageIntegrity';
 import type {
   ClarificationQuestion,
   ClarificationReviewRepository,
@@ -17,7 +18,7 @@ import type {
  * entry always remains readable even if event/clarification extraction
  * never runs or fails outright.
  */
-const CONTEXT_ENGINE_KEYS = {
+export const CONTEXT_ENGINE_KEYS = {
   journalEntries: '@cherry-brain/context-engine/journal-entries',
   events: '@cherry-brain/context-engine/events',
   clarifications: '@cherry-brain/context-engine/clarifications',
@@ -30,7 +31,7 @@ export class JournalEntryStore {
   constructor(private store: DataStore) {}
 
   async getAll(): Promise<JournalEntry[]> {
-    return (await this.store.getJSON<JournalEntry[]>(CONTEXT_ENGINE_KEYS.journalEntries)) ?? [];
+    return readStoredArray<JournalEntry>(this.store, CONTEXT_ENGINE_KEYS.journalEntries);
   }
 
   async getById(id: string): Promise<JournalEntry | null> {
@@ -54,7 +55,7 @@ export class ReconstructedEventStore {
   constructor(private store: DataStore) {}
 
   async getAll(): Promise<ReconstructedEvent[]> {
-    return (await this.store.getJSON<ReconstructedEvent[]>(CONTEXT_ENGINE_KEYS.events)) ?? [];
+    return readStoredArray<ReconstructedEvent>(this.store, CONTEXT_ENGINE_KEYS.events);
   }
 
   async getForEntry(journalEntryId: string): Promise<ReconstructedEvent[]> {
@@ -87,7 +88,7 @@ export class ClarificationQuestionStore implements ClarificationReviewRepository
   constructor(private store: DataStore) {}
 
   async getAll(): Promise<ClarificationQuestion[]> {
-    return (await this.store.getJSON<ClarificationQuestion[]>(CONTEXT_ENGINE_KEYS.clarifications)) ?? [];
+    return readStoredArray<ClarificationQuestion>(this.store, CONTEXT_ENGINE_KEYS.clarifications);
   }
 
   async getById(id: string): Promise<ClarificationQuestion | null> {
@@ -137,7 +138,7 @@ export class ExtractionRecordStore {
   constructor(private store: DataStore) {}
 
   async getAll(): Promise<ExtractionRecord[]> {
-    return (await this.store.getJSON<ExtractionRecord[]>(CONTEXT_ENGINE_KEYS.extractionRecords)) ?? [];
+    return readStoredArray<ExtractionRecord>(this.store, CONTEXT_ENGINE_KEYS.extractionRecords);
   }
 
   async getForEntry(journalEntryId: string, engineVersion: string): Promise<ExtractionRecord | null> {
@@ -201,7 +202,7 @@ export class FactCorrectionRecordStore implements FactCorrectionRepository {
   constructor(private store: DataStore) {}
 
   async getAll(): Promise<FactCorrection[]> {
-    return (await this.store.getJSON<FactCorrection[]>(CONTEXT_ENGINE_KEYS.factCorrections)) ?? [];
+    return readStoredArray<FactCorrection>(this.store, CONTEXT_ENGINE_KEYS.factCorrections);
   }
 
   async create(correction: FactCorrection): Promise<FactCorrection> {
@@ -239,7 +240,7 @@ export class EventTimelineVisibilityStore implements EventTimelineVisibilityRepo
   constructor(private store: DataStore) {}
 
   async getAll(): Promise<EventTimelineVisibility[]> {
-    return (await this.store.getJSON<EventTimelineVisibility[]>(CONTEXT_ENGINE_KEYS.eventTimelineVisibility)) ?? [];
+    return readStoredArray<EventTimelineVisibility>(this.store, CONTEXT_ENGINE_KEYS.eventTimelineVisibility);
   }
 
   async getByEventId(eventId: string): Promise<EventTimelineVisibility | null> {

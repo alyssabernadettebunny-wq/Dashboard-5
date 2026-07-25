@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type PropsWithChildren } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type PropsWithChildren } from 'react';
 import {
   createDefaultSettings,
   generateId,
@@ -11,7 +11,8 @@ import {
 import { contextEngine, triggerContextExtraction } from '@/contextEngine';
 import { patternEngine, tagEntrySubjects } from '@/patternEngine';
 import { buildSeedEntries, isSeedEntryId } from '@/seed';
-import { entryRepository, patternRepository, settingsRepository } from '@/storage';
+import { entryRepository, patternRepository, settingsRepository, storageIntegrityRegistry, type CorruptStorageRecord } from '@/storage';
+import { StorageRecoveryScreen } from '@/components/StorageRecoveryScreen';
 import { syncConnectedPatternIds } from './deriveConnections';
 
 export interface CreateEntryInput {
@@ -59,47 +60,70 @@ export function AppDataProvider({ children }: PropsWithChildren) {
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [patterns, setPatterns] = useState<PatternObservation[]>([]);
   const [settings, setSettings] = useState<AppSettings>(createDefaultSettings());
+  const [storageProblems, setStorageProblems] = useState<CorruptStorageRecord[]>([]);
+  const [loadVersion, setLoadVersion] = useState(0);
+  const createEntryInFlight = useRef<Promise<JournalEntry> | null>(null);
 
   useEffect(() => {
+    let active = true;
+    setLoading(true);
     (async () => {
-      const [loadedEntries, loadedPatterns, loadedSettings] = await Promise.all([
-        entryRepository.getAll(),
-        patternRepository.getAll(),
-        settingsRepository.get(),
-      ]);
-      setEntries(loadedEntries);
-      setPatterns(loadedPatterns);
-      setSettings(loadedSettings);
-      setLoading(false);
+      try {
+        const [loadedEntries, loadedPatterns, loadedSettings] = await Promise.all([
+          entryRepository.getAll(),
+          patternRepository.getAll(),
+          settingsRepository.get(),
+        ]);
+        if (!active) return;
+        setEntries(loadedEntries);
+        setPatterns(loadedPatterns);
+        setSettings(loadedSettings);
+        setStorageProblems([]);
+      } catch {
+        if (!active) return;
+        setStorageProblems(storageIntegrityRegistry.getAll());
+      } finally {
+        if (active) setLoading(false);
+      }
     })();
-  }, []);
+    return () => {
+      active = false;
+    };
+  }, [loadVersion]);
 
   const createEntry = useCallback(
-    async (input: CreateEntryInput) => {
-      const now = new Date().toISOString();
-      const entry: JournalEntry = {
-        id: generateId('entry'),
-        createdAt: now,
-        updatedAt: now,
-        title: input.title?.trim() || undefined,
-        text: input.text.trim(),
-        isImportant: input.isImportant,
-        entryType: 'text',
-        suggestedSubjects: tagEntrySubjects({ text: input.text }),
-        userTags: [],
-        connectedPatternIds: [],
-      };
-      const nextEntries = [...entries, entry];
-      const result = await recompute(nextEntries, patterns, settings);
-      setEntries(result.entries);
-      setPatterns(result.patterns);
-      const createdEntry = result.entries.find((e) => e.id === entry.id)!;
+    (input: CreateEntryInput): Promise<JournalEntry> => {
+      if (createEntryInFlight.current) return createEntryInFlight.current;
 
-      // Fires in the background; never awaited here so the entry is already
-      // saved and returned to the caller regardless of extraction outcome.
-      triggerContextExtraction(createdEntry, contextEngine);
+      const operation = (async () => {
+        const now = new Date().toISOString();
+        const entry: JournalEntry = {
+          id: generateId('entry'),
+          createdAt: now,
+          updatedAt: now,
+          title: input.title?.trim() || undefined,
+          text: input.text.trim(),
+          isImportant: input.isImportant,
+          entryType: 'text',
+          suggestedSubjects: tagEntrySubjects({ text: input.text }),
+          userTags: [],
+          connectedPatternIds: [],
+        };
+        const nextEntries = [...entries, entry];
+        const result = await recompute(nextEntries, patterns, settings);
+        setEntries(result.entries);
+        setPatterns(result.patterns);
+        const createdEntry = result.entries.find((e) => e.id === entry.id)!;
 
-      return createdEntry;
+        triggerContextExtraction(createdEntry, contextEngine);
+        return createdEntry;
+      })();
+
+      createEntryInFlight.current = operation;
+      void operation.finally(() => {
+        if (createEntryInFlight.current === operation) createEntryInFlight.current = null;
+      });
+      return operation;
     },
     [entries, patterns, settings],
   );
@@ -333,6 +357,10 @@ export function AppDataProvider({ children }: PropsWithChildren) {
       removeSeedData,
     ],
   );
+
+  if (storageProblems.length > 0) {
+    return <StorageRecoveryScreen records={storageProblems} onRecovered={() => setLoadVersion((value) => value + 1)} />;
+  }
 
   return <AppDataContext.Provider value={value}>{children}</AppDataContext.Provider>;
 }

@@ -1,6 +1,7 @@
 import type { PatternObservation } from '@/models';
 import type { DataStore } from './DataStore';
 import { STORAGE_KEYS } from './keys';
+import { readStoredArray } from './StorageIntegrity';
 
 export interface PatternRepository {
   getAll(): Promise<PatternObservation[]>;
@@ -12,8 +13,7 @@ export class LocalPatternRepository implements PatternRepository {
   constructor(private store: DataStore) {}
 
   async getAll(): Promise<PatternObservation[]> {
-    const patterns = await this.store.getJSON<PatternObservation[]>(STORAGE_KEYS.patterns);
-    return patterns ?? [];
+    return readStoredArray<PatternObservation>(this.store, STORAGE_KEYS.patterns);
   }
 
   async save(pattern: PatternObservation): Promise<void> {
