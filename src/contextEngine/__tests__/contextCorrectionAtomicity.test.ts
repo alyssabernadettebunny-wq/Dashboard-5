@@ -153,9 +153,10 @@ describe('Time correction audit completeness', () => {
     const result = await service.answerQuestion({ questionId: 'q1', answer: 'Tuesday morning' });
 
     const fields = result.correction.changes.map((c) => c.field).sort();
-    // statedTime and timePrecision both actually changed (null -> value, 'unknown' -> 'relative');
-    // resolvedTime did not change (stayed null), so it must be absent.
-    expect(fields).toEqual(['statedTime', 'timePrecision']);
+    // statedTime, timePrecision, and resolvedDate all actually changed (null ->
+    // value, 'unknown' -> 'relative', null -> the resolved Tuesday); resolvedTime
+    // did not change (stayed null), so it must be absent.
+    expect(fields).toEqual(['resolvedDate', 'statedTime', 'timePrecision']);
     expect(result.correction.changes.find((c) => c.field === 'timePrecision')?.correctedValue).not.toBe('exact');
 
     const reloadedCorrections = await correctionStore.getByEventId('event_1');

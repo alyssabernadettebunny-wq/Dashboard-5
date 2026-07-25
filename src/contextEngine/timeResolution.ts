@@ -10,6 +10,9 @@ const RELATIVE_TIME_PHRASES = [
   'later', 'earlier', 'tonight', 'today', 'yesterday', 'tomorrow', 'soon', 'afterward', 'afterwards',
 ];
 
+/** A bare day-part word with no weekday attached (e.g. a correction answer of just "afternoon"). */
+const DAYPART_PATTERN = /\b(morning|afternoon|evening)\b/i;
+
 const EXACT_TIME_PATTERN = /\bat\s+(\d{1,2})(?::(\d{2}))?\s*(am|pm)\b/i;
 
 const WEEKDAY_NAMES = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
@@ -63,20 +66,34 @@ function toDateKey(year: number, month: number, day: number): string {
 }
 
 /**
- * Best-effort resolution for an explicit clock time (e.g. "at 3:00 pm"),
- * anchored to the calendar date the entry was created on, in the given
- * timezone. Illustrative per the spec's worked example; not exercised by the
- * sprint's required test cases, so kept intentionally simple.
+ * Resolution for an explicit clock time (e.g. "at 3:00 pm"). Anchored to the
+ * calendar date the entry was created on, in the given timezone — unless an
+ * explicit day-level date was also found in the same text (e.g. "July 21 at
+ * 3:00 pm"), in which case that safely resolved date is used instead of the
+ * entry's own date.
  */
-function resolveExactTime(hour12: number, minute: number, meridiem: 'am' | 'pm', entryCreatedAt: string, timezone: string): string {
+function resolveExactTime(
+  hour12: number,
+  minute: number,
+  meridiem: 'am' | 'pm',
+  entryCreatedAt: string,
+  timezone: string,
+  dateOverride: string | null,
+): string {
   let hour = hour12 % 12;
   if (meridiem === 'pm') hour += 12;
 
-  const { year, month, day } = getCalendarParts(new Date(entryCreatedAt), timezone);
+  let dateKey: string;
+  if (dateOverride) {
+    dateKey = dateOverride;
+  } else {
+    const { year, month, day } = getCalendarParts(new Date(entryCreatedAt), timezone);
+    dateKey = toDateKey(year, month, day);
+  }
   const offset = getUtcOffsetString(new Date(entryCreatedAt), timezone);
   const hh = String(hour).padStart(2, '0');
   const mm = String(minute).padStart(2, '0');
-  return `${toDateKey(year, month, day)}T${hh}:${mm}:00${offset}`;
+  return `${dateKey}T${hh}:${mm}:00${offset}`;
 }
 
 /**
@@ -162,8 +179,9 @@ export function extractTimeInfo(sentence: string, entryCreatedAt: string, timezo
     const hour = parseInt(exactMatch[1], 10);
     const minute = exactMatch[2] ? parseInt(exactMatch[2], 10) : 0;
     const meridiem = exactMatch[3].toLowerCase() as 'am' | 'pm';
-    const resolvedTime = resolveExactTime(hour, minute, meridiem, entryCreatedAt, timezone);
-    return { statedTime: exactMatch[0], resolvedTime, timePrecision: 'exact', resolvedDate: resolvedTime.slice(0, 10) };
+    const resolvedTime = resolveExactTime(hour, minute, meridiem, entryCreatedAt, timezone, dateInfo.resolvedDate);
+    const statedTime = dateInfo.matchedPhrase ? `${dateInfo.matchedPhrase} ${exactMatch[0]}` : exactMatch[0];
+    return { statedTime, resolvedTime, timePrecision: 'exact', resolvedDate: resolvedTime.slice(0, 10) };
   }
 
   for (const phrase of RELATIVE_TIME_PHRASES) {
@@ -181,6 +199,15 @@ export function extractTimeInfo(sentence: string, entryCreatedAt: string, timezo
     // language, so precision is 'relative' rather than 'unknown' in that case.
     const timePrecision: EventTimePrecision = /morning|afternoon|evening/i.test(dateInfo.matchedPhrase) ? 'relative' : 'unknown';
     return { statedTime: dateInfo.matchedPhrase, resolvedTime: null, timePrecision, resolvedDate: dateInfo.resolvedDate };
+  }
+
+  // No date reference anywhere, but a bare day-part word alone (e.g. a
+  // correction answer of just "afternoon") is still vague time-of-day
+  // language worth preserving — with no date implied by it.
+  const daypartMatch = DAYPART_PATTERN.exec(sentence);
+  if (daypartMatch) {
+    const original = findOriginalCasing(sentence, daypartMatch[0]) ?? daypartMatch[0];
+    return { statedTime: original, resolvedTime: null, timePrecision: 'relative', resolvedDate: null };
   }
 
   return { statedTime: null, resolvedTime: null, timePrecision: 'unknown', resolvedDate: null };

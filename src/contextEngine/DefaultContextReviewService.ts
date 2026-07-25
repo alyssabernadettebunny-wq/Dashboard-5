@@ -192,6 +192,22 @@ export class DefaultContextReviewService implements ContextReviewService {
             correctedValue: timeInfo.timePrecision,
           });
         }
+        // A newly resolved date from the answer overwrites the event's date.
+        // When the answer carries no date reference at all (timeInfo.resolvedDate
+        // is null), the event's existing resolvedDate is left untouched —
+        // omitted from updatedFieldsForEvent entirely — rather than being
+        // cleared, so a time-only correction never erases a previously known day.
+        if (timeInfo.resolvedDate !== null) {
+          updatedFieldsForEvent.resolvedDate = timeInfo.resolvedDate;
+          if (timeInfo.resolvedDate !== event.resolvedDate) {
+            changes.push({
+              eventId: event.id,
+              field: 'resolvedDate',
+              previousValue: event.resolvedDate,
+              correctedValue: timeInfo.resolvedDate,
+            });
+          }
+        }
         if (changes.length === 0) {
           throw new ContextReviewError('NO_CHANGE', 'That answer matches what is already recorded — nothing to correct.');
         }

@@ -83,6 +83,7 @@ export type CorrectableEventField =
   | 'summary'
   | 'statedTime'
   | 'resolvedTime'
+  | 'resolvedDate'
   | 'timePrecision'
   | 'sequenceIndex';
 
