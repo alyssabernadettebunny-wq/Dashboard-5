@@ -1,12 +1,13 @@
 export * from './DataStore';
 export * from './AsyncStorageDataStore';
+export * from './FileServerDataStore';
 export * from './StorageIntegrity';
 export * from './EntryRepository';
 export * from './PatternRepository';
 export * from './SettingsRepository';
 export * from './DraftRepository';
 
-import { dataStore } from './AsyncStorageDataStore';
+import { dataStore } from './FileServerDataStore';
 import { LocalEntryRepository } from './EntryRepository';
 import { LocalPatternRepository } from './PatternRepository';
 import { LocalSettingsRepository } from './SettingsRepository';

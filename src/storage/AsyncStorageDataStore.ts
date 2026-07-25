@@ -31,5 +31,3 @@ export class AsyncStorageDataStore implements DataStore {
     storageIntegrityRegistry.clear(key);
   }
 }
-
-export const dataStore: DataStore = new AsyncStorageDataStore();

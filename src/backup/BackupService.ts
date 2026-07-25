@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
 import type { JournalEntry as AppJournalEntry, PatternObservation, AppSettings } from '@/models';
 import type {
@@ -11,6 +10,7 @@ import type {
 } from '@/contextEngine';
 import { CONTEXT_ENGINE_KEYS } from '@/contextEngine/storage';
 import { STORAGE_KEYS } from '@/storage/keys';
+import { dataStore } from '@/storage/FileServerDataStore';
 
 export interface CherryBrainBackup {
   format: 'cherry-brain-backup';
@@ -42,7 +42,7 @@ const ARRAY_KEYS = {
 } as const;
 
 async function readArray<T>(key: string, readableOnly: boolean, warnings: CherryBrainBackup['integrityWarnings']): Promise<T[]> {
-  const raw = await AsyncStorage.getItem(key);
+  const raw = await dataStore.getRaw!(key);
   if (raw == null) return [];
   try {
     const parsed: unknown = JSON.parse(raw);
@@ -57,7 +57,7 @@ async function readArray<T>(key: string, readableOnly: boolean, warnings: Cherry
 }
 
 async function readObject<T>(key: string, readableOnly: boolean, warnings: CherryBrainBackup['integrityWarnings']): Promise<T | null> {
-  const raw = await AsyncStorage.getItem(key);
+  const raw = await dataStore.getRaw!(key);
   if (raw == null) return null;
   try {
     const parsed: unknown = JSON.parse(raw);
@@ -129,4 +129,70 @@ export async function downloadCherryBrainBackup(options: { readableOnly?: boolea
   anchor.remove();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
   return filename;
+}
+
+/**
+ * Everything below talks to Cherry Brain's local file-storage server directly
+ * (see scripts/serve-production.mjs) — the permanent Data/Backups/Exports
+ * folders, not browser storage. This is the storage-safety layer surfaced in
+ * Settings.
+ */
+
+export interface StorageStatus {
+  status: 'ok' | 'problem';
+  problemMessage: string | null;
+  dataPath: string;
+  backupsPath: string;
+  exportsPath: string;
+  recoveryPath: string;
+  archivePath: string;
+  appPath: string;
+  lastSavedAt: string | null;
+  lastBackupAt: string | null;
+  fixedAddress: string;
+}
+
+export interface BackupFileInfo {
+  filename: string;
+  modifiedAt: string;
+  size: number;
+}
+
+async function api<T>(path: string, init?: RequestInit): Promise<T> {
+  const response = await fetch(`/api${path}`, {
+    ...init,
+    headers: { 'Content-Type': 'application/json', ...(init?.headers ?? {}) },
+  });
+  const body = await response.json().catch(() => null);
+  if (!response.ok) {
+    throw new Error(body?.error || `Cherry Brain's local server returned an error (${response.status}).`);
+  }
+  return body as T;
+}
+
+export async function getStorageStatus(): Promise<StorageStatus> {
+  return api<StorageStatus>('/status');
+}
+
+export async function backUpNow(label = 'manual'): Promise<{ ok: true; filename: string | null }> {
+  return api('/backup', { method: 'POST', body: JSON.stringify({ label }) });
+}
+
+export async function listBackups(): Promise<BackupFileInfo[]> {
+  const result = await api<{ backups: BackupFileInfo[] }>('/backups');
+  return result.backups;
+}
+
+export async function restoreBackup(filename: string): Promise<{ ok: true; restoredFrom: string; lastSavedAt: string }> {
+  return api('/restore', { method: 'POST', body: JSON.stringify({ filename }) });
+}
+
+export async function exportCopyToFolder(): Promise<{ ok: true; filename: string; path: string }> {
+  return api('/export', { method: 'POST' });
+}
+
+export type CherryBrainFolder = 'data' | 'backups' | 'exports' | 'recovery' | 'archive' | 'app';
+
+export async function openCherryBrainFolder(which: CherryBrainFolder): Promise<void> {
+  await api('/open-folder', { method: 'POST', body: JSON.stringify({ which }) });
 }

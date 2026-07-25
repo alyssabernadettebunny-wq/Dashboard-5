@@ -6,8 +6,8 @@ import { Chip } from '@/components/Chip';
 import { PrimaryButton, SecondaryButton } from '@/components/Buttons';
 import { ScreenBackground } from '@/components/ScreenBackground';
 import { contextReviewService, eventTimelineService } from '@/contextEngine';
-import { downloadCherryBrainBackup } from '@/backup';
 import { ContextEngineDevPanel } from '@/contextEngine/DevPanel';
+import { StorageSafetyPanel } from '@/components/StorageSafetyPanel';
 import { ANALYSIS_CATEGORIES, ANALYSIS_CATEGORY_LABELS } from '@/models';
 import { useAppData } from '@/state';
 import { colors, spacing, typography } from '@/theme';
@@ -80,21 +80,6 @@ const PRODUCT_RULES = [
 
 export default function SettingsScreen() {
   const { settings, setBoundary, unsuppressSubject, loadSeedData, removeSeedData } = useAppData();
-  const [backupMessage, setBackupMessage] = useState<string | null>(null);
-  const [backupBusy, setBackupBusy] = useState(false);
-
-  const exportBackup = async () => {
-    setBackupBusy(true);
-    setBackupMessage(null);
-    try {
-      await downloadCherryBrainBackup();
-      setBackupMessage('Your Cherry Brain backup was created.');
-    } catch {
-      setBackupMessage('Your backup could not be created. Nothing was changed.');
-    } finally {
-      setBackupBusy(false);
-    }
-  };
 
   return (
     <ScreenBackground>
@@ -141,11 +126,13 @@ export default function SettingsScreen() {
         <Card style={styles.card}>
           <Text style={typography.label}>WHERE YOUR DATA LIVES</Text>
           <Text style={typography.bodySoft}>
-            Everything you write is stored only on this device ({Platform.OS}), using local on-device storage. Nothing is sent
-            anywhere or shared with anyone. Encrypted cloud sync and an AI-assisted analysis option are planned for later, and will
-            always be something you turn on, not something that happens by default.
+            Everything you write is stored only on this device ({Platform.OS}), in a permanent file outside your browser. Nothing
+            is sent anywhere or shared with anyone. Encrypted cloud sync and an AI-assisted analysis option are planned for later,
+            and will always be something you turn on, not something that happens by default.
           </Text>
         </Card>
+
+        <StorageSafetyPanel />
 
         {__DEV__ && (
           <Card style={styles.card}>
@@ -157,15 +144,6 @@ export default function SettingsScreen() {
             </View>
           </Card>
         )}
-
-        <Card style={styles.card}>
-          <Text style={typography.label}>BACKUP</Text>
-          <Text style={typography.bodySoft}>Download a JSON copy of your journal entries, reconstructed events, corrections, and timeline state.</Text>
-          <PrimaryButton onPress={exportBackup} disabled={backupBusy} style={styles.reviewEntryButton}>
-            {backupBusy ? 'Creating backup…' : 'Export Cherry Brain Backup'}
-          </PrimaryButton>
-          {backupMessage && <Text style={typography.caption}>{backupMessage}</Text>}
-        </Card>
 
         <ContextReviewEntryPoint />
 

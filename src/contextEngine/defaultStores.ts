@@ -1,4 +1,4 @@
-import { dataStore } from '@/storage/AsyncStorageDataStore';
+import { dataStore } from '@/storage/FileServerDataStore';
 import { entryRepository } from '@/storage';
 import {
   ClarificationQuestionStore,

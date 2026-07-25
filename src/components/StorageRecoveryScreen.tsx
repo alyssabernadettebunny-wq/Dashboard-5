@@ -4,7 +4,7 @@ import { downloadCherryBrainBackup } from '@/backup';
 import { PrimaryButton, SecondaryButton } from '@/components/Buttons';
 import { Card } from '@/components/Card';
 import { ScreenBackground } from '@/components/ScreenBackground';
-import { dataStore } from '@/storage/AsyncStorageDataStore';
+import { dataStore } from '@/storage/FileServerDataStore';
 import type { CorruptStorageRecord } from '@/storage/StorageIntegrity';
 import { colors, spacing, typography } from '@/theme';
 
