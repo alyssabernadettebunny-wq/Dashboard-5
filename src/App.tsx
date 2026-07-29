@@ -6,6 +6,7 @@ import FoodPage from './pages/FoodPage'
 import PetsPage from './pages/PetsPage'
 import RhythmPage from './pages/RhythmPage'
 import GirlsPage from './pages/GirlsPage'
+import MessagesPage from './pages/MessagesPage'
 import MoneyPage from './pages/MoneyPage'
 import NotesPage from './pages/NotesPage'
 import SparkPage from './pages/SparkPage'
@@ -32,6 +33,7 @@ const NAV_ITEMS = [
   { key: 'body-weather', label: 'Body Weather', icon: '☁️', enabled: true },
   { key: 'house', label: 'Home', icon: '🏡', enabled: true },
   { key: 'girls', label: 'Girls', icon: '💗', enabled: true },
+  { key: 'messages', label: 'Messages', icon: '💬', enabled: true },
   { key: 'pets', label: 'Pets', icon: '🐾', enabled: true },
   { key: 'food', label: 'Food', icon: '🍡', enabled: true },
   { key: 'money', label: 'Money', icon: '💰', enabled: true },
@@ -267,6 +269,7 @@ function App() {
             {page === 'home' && <HomePage />}
             {page === 'rhythm' && <RhythmPage />}
             {page === 'girls' && <GirlsPage />}
+            {page === 'messages' && <MessagesPage />}
             {page === 'money' && <MoneyPage />}
             {page === 'notes' && <NotesPage />}
             {page === 'spark' && <SparkPage />}
