@@ -1,6 +1,8 @@
 import JournalEntries from '../widgets/JournalEntries'
 import NoteCategories from '../widgets/NoteCategories'
 import ChecklistCard from '../widgets/ChecklistCard'
+import GuidedCheckIn from '../widgets/GuidedCheckIn'
+import WellbeingReport from '../widgets/WellbeingReport'
 import SubTabs from '../components/SubTabs'
 
 export default function NotesPage() {
@@ -17,6 +19,17 @@ export default function NotesPage() {
             content: (
               <div className="grid">
                 <JournalEntries />
+              </div>
+            ),
+          },
+          {
+            key: 'checkin',
+            label: 'Check-In',
+            icon: '🩵',
+            content: (
+              <div className="grid">
+                <GuidedCheckIn />
+                <WellbeingReport />
               </div>
             ),
           },
