@@ -2,6 +2,7 @@ import CreativeProjects from '../widgets/CreativeProjects'
 import GoalsDreams from '../widgets/GoalsDreams'
 import FunPrompts from '../widgets/FunPrompts'
 import TinyCollections from '../widgets/TinyCollections'
+import BeautyDeals from '../widgets/BeautyDeals'
 import SubTabs from '../components/SubTabs'
 
 export default function SparkPage() {
@@ -48,6 +49,16 @@ export default function SparkPage() {
             content: (
               <div className="grid">
                 <TinyCollections />
+              </div>
+            ),
+          },
+          {
+            key: 'beauty',
+            label: 'Beauty Deals',
+            icon: '💄',
+            content: (
+              <div className="grid">
+                <BeautyDeals />
               </div>
             ),
           },
