@@ -1,0 +1,149 @@
+{
+  "updatedAt": "2026-08-08T00:00:00Z",
+  "deals": [
+    {
+      "category": "skin",
+      "type": "free-sample",
+      "store": "Sephora",
+      "title": "Up to 3 free deluxe samples with any order",
+      "description": "Pick free deluxe beauty samples at checkout with any order, plus earn Beauty Insider points toward full-size rewards.",
+      "link": "https://www.sephora.com/beauty/free-beauty-samples"
+    },
+    {
+      "category": "skin",
+      "type": "free-sample",
+      "store": "Dermalogica",
+      "title": "Free travel & trial sizes with purchase",
+      "description": "Complimentary trial sizes of best-selling cleansers, exfoliants, moisturizers and targeted treatments with purchase.",
+      "link": "https://www.dermalogica.com/collections/free-samples"
+    },
+    {
+      "category": "skin",
+      "type": "free-trial",
+      "store": "Eight Saints Skincare",
+      "title": "Free Discovery Kit (8 trial-size products)",
+      "description": "Free trial kit plus a $20-off coupon and a free mini with your first full-size purchase.",
+      "link": "https://eightsaintsskincare.com/products/discovery-kit"
+    },
+    {
+      "category": "skin",
+      "type": "free-sample",
+      "store": "PINCHme",
+      "title": "Sample Tuesday — free full sample boxes",
+      "description": "Log in Tuesday mornings to claim a curated free box of skincare/beauty samples, shipped free.",
+      "link": "https://www.pinchme.com/"
+    },
+    {
+      "category": "skin",
+      "type": "sale-event",
+      "store": "Sephora",
+      "title": "Sephora Sale / One-Day Deals",
+      "description": "Rotating daily deals and a biannual sitewide savings event; Sephora often matches Ulta's 21 Days of Beauty discounts.",
+      "link": "https://www.sephora.com/beauty/sephora-sale"
+    },
+    {
+      "category": "skin",
+      "type": "sale-event",
+      "store": "Ulta Beauty",
+      "title": "21 Days of Beauty — up to 50% off",
+      "description": "Rotating daily 50% off picks across skincare, makeup, and haircare; runs in spring and again around September.",
+      "link": "https://www.ulta.com/promotion/21-days-of-beauty"
+    },
+    {
+      "category": "skin",
+      "type": "clearance",
+      "store": "Sephora",
+      "title": "Sephora clearance — up to 50% off",
+      "description": "Ongoing clearance section with discontinued and overstock skincare/makeup at up to half off.",
+      "link": "https://www.dealnews.com/Sephora-Clearance-Deals-free-shipping/21837240.html"
+    },
+    {
+      "category": "kbeauty",
+      "type": "deal",
+      "store": "Olive Young Global",
+      "title": "Flash Deals on K-beauty",
+      "description": "Rotating flash discounts on Korean skincare/makeup; free shipping on orders over $60. Season sales run March/June/Sept/Dec.",
+      "link": "https://global.oliveyoung.com/display/page/flash-deal"
+    },
+    {
+      "category": "kbeauty",
+      "type": "deal",
+      "store": "YesStyle",
+      "title": "K-beauty storewide discounts",
+      "description": "Ongoing sale section for Korean skincare and cosmetics brands.",
+      "link": "https://www.yesstyle.com/"
+    },
+    {
+      "category": "hair",
+      "type": "free-sample",
+      "store": "PINCHme",
+      "title": "Hair care samples in rotating sample boxes",
+      "description": "Recent boxes have included full-size-adjacent hair masks and treatments from mainstream brands.",
+      "link": "https://www.pinchme.com/"
+    },
+    {
+      "category": "hair",
+      "type": "free-sample",
+      "store": "Hims",
+      "title": "Free hair care sampling program",
+      "description": "Sign up to be considered for free hair care products in exchange for feedback.",
+      "link": "https://www.hims.com/"
+    },
+    {
+      "category": "hair",
+      "type": "deal",
+      "store": "Curls Monthly",
+      "title": "Curly hair subscription box",
+      "description": "Affordable monthly box to trial curl-focused products at a discount vs. full-size.",
+      "link": "https://curlsmonthly.com/"
+    },
+    {
+      "category": "makeup",
+      "type": "sale-event",
+      "store": "CVS",
+      "title": "CVS Epic Beauty Sale (runs ~Aug 16–29)",
+      "description": "Twice-yearly (March & August) storewide beauty sale with BOGO deals, a $10-off-$30 coupon, and ExtraBucks stacking.",
+      "link": "https://www.cvs.com/shop/content/makeup-deals"
+    },
+    {
+      "category": "makeup",
+      "type": "deal",
+      "store": "CVS",
+      "title": "Makeup from $2",
+      "description": "Rotating drugstore makeup markdowns, stackable with manufacturer + store coupons.",
+      "link": "https://www.cvs.com/shop/beauty/makeup"
+    },
+    {
+      "category": "makeup",
+      "type": "clearance",
+      "store": "Target",
+      "title": "Target Beauty clearance rack",
+      "description": "Check in-store clearance endcaps and the online clearance filter for markdown makeup.",
+      "link": "https://www.target.com/c/makeup-beauty/-/N-5xtd7"
+    },
+    {
+      "category": "body",
+      "type": "sale-event",
+      "store": "Bath & Body Works",
+      "title": "Full-size body care as low as $5.50",
+      "description": "Recurring sales drop full-size lotion, body wash, and soap under $6; candles run 50% off during the same events.",
+      "link": "https://www.bathandbodyworks.com/c/body-care/body-care-promotion"
+    },
+    {
+      "category": "body",
+      "type": "deal",
+      "store": "Amazon",
+      "title": "Body wash & lotion deals",
+      "description": "Rotating coupons and Subscribe & Save discounts on body wash/lotion multi-packs (e.g. Cetaphil, Pacifica, Aveeno).",
+      "link": "https://www.amazon.com/Body-Lotions-Todays-Deals-Moisturizers/s?keywords=Body+Lotions"
+    },
+    {
+      "category": "body",
+      "type": "deal",
+      "store": "Ulta Beauty",
+      "title": "Shower gel & body wash on sale",
+      "description": "Filtered sale section for discounted shower gel and body wash.",
+      "link": "https://www.ulta.com/shop/body-care/bath-shower/shower-gel-body-wash?special+offer=sale"
+    }
+  ]
+}
