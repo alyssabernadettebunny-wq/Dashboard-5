@@ -1,0 +1,13 @@
+name = "beauty-dash-checkin"
+main = "src/index.js"
+compatibility_date = "2026-08-01"
+
+# Secrets (set these with `wrangler secret put <NAME>`, never commit them):
+#   ANTHROPIC_API_KEY  — your Anthropic API key from console.anthropic.com
+#   CHECKIN_SECRET     — a passphrase you make up; the dashboard must send it
+#                        to use this worker, so random visitors can't burn
+#                        your API credits even if they find the worker URL.
+#
+# Allowed browser origin (edit if your GitHub Pages URL differs):
+[vars]
+ALLOWED_ORIGIN = "https://alyssabernadettebunny-wq.github.io"
