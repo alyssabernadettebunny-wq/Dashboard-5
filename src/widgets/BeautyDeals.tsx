@@ -108,7 +108,7 @@ export default function BeautyDeals() {
       meta={autoDeals ? `Updated ${new Date(autoDeals.updatedAt).toLocaleDateString([], { month: 'short', day: 'numeric' })}` : undefined}
       wide
     >
-      <p style={{ fontSize: 11.5, color: 'var(--text-muted)', margin: '0 0 8px' }}>
+      <p style={{ fontSize: 11.5, color: 'var(--text-body)', margin: '0 0 8px' }}>
         Free trials, free samples, deals & steep sales across hair, skin, K-beauty, body & makeup — ask me to refresh this list anytime for the latest finds.
       </p>
 
@@ -144,10 +144,10 @@ export default function BeautyDeals() {
                     <b>{TYPES[d.type]?.icon ?? '🏷️'} {d.store}</b> — {d.title}
                   </div>
                   {d.description && (
-                    <div style={{ color: 'var(--text-muted)', fontSize: 11, whiteSpace: 'normal' }}>{d.description}</div>
+                    <div style={{ color: 'var(--text-body)', fontSize: 11, whiteSpace: 'normal' }}>{d.description}</div>
                   )}
                   {d.link && (
-                    <a href={d.link} target="_blank" rel="noreferrer" style={{ color: 'var(--text-muted)', fontSize: 11 }}>
+                    <a href={d.link} target="_blank" rel="noreferrer" style={{ color: 'var(--purple-heading)', fontSize: 11, fontWeight: 600 }}>
                       View offer ↗
                     </a>
                   )}
@@ -200,7 +200,7 @@ export default function BeautyDeals() {
                     {t.title && ` — ${t.title}`}
                   </div>
                   {t.link && (
-                    <a href={t.link} target="_blank" rel="noreferrer" style={{ color: 'var(--text-muted)', fontSize: 11 }}>
+                    <a href={t.link} target="_blank" rel="noreferrer" style={{ color: 'var(--purple-heading)', fontSize: 11, fontWeight: 600 }}>
                       View offer ↗
                     </a>
                   )}
